@@ -11,3 +11,10 @@ data/
 .env
 build/
 dist/
+videos/
+*.mp4
+*.pdf
+*.docx
+*.png
+*.jpeg
+*.jpg

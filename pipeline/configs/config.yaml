@@ -1,0 +1,18 @@
+demo_mode: true
+
+video:
+  fps: 30
+  resolution: [1280, 720]
+  pose_model: rtmpose-s        # champion; "simplebaseline" = challenger
+  window_seconds: 4
+  stride_seconds: 1
+
+audio:
+  sample_rate: 16000
+  channels: 1
+  asr_model: whisper-small     # champion; "wav2vec2.0" = challenger
+
+reasoning:
+  vlm_model: Qwen2.5-VL-3B-Instruct
+  max_output_tokens: 1024
+  temperature: 0.2

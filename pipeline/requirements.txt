@@ -1,0 +1,16 @@
+numpy>=1.24
+opencv-python>=4.8
+sounddevice>=0.4
+matplotlib>=3.7
+pyyaml>=6.0
+fastapi>=0.110
+uvicorn>=0.29
+pydantic>=2.0
+pytest>=7.4
+
+# Model backends — install whichever your subsystem needs
+# torch>=2.1
+# transformers>=4.40
+# faster-whisper
+# mediapipe
+# webrtcvad
