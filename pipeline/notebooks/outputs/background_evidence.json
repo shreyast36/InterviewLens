@@ -1,5 +1,5 @@
 {
-  "video": "demo_interview.mp4",
+  "video": "demo_kitchen.mp4",
   "fps_sampled": 3,
   "model": "YOLO-World-S",
   "taxonomy": {
@@ -29,12 +29,30 @@
   "detections": [
     {
       "track_id": 1,
+      "class": "laptop",
+      "tier": "distracting",
+      "persistence_pct": 0.836,
+      "start_s": 0.0,
+      "end_s": 17.28,
+      "box_area_frac": 0.1014
+    },
+    {
+      "track_id": 2,
       "class": "cabinet",
       "tier": "neutral",
-      "persistence_pct": 0.075,
-      "start_s": 15.349,
-      "end_s": 28.362,
-      "box_area_frac": 0.0879
+      "persistence_pct": 1.0,
+      "start_s": 0.0,
+      "end_s": 17.28,
+      "box_area_frac": 0.0322
+    },
+    {
+      "track_id": 3,
+      "class": "cabinet",
+      "tier": "neutral",
+      "persistence_pct": 1.0,
+      "start_s": 0.0,
+      "end_s": 17.28,
+      "box_area_frac": 0.0501
     }
   ]
 }

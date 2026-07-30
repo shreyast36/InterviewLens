@@ -1,5 +1,5 @@
 Metric,Champion: YOLO-World-S,Challenger: RT-DETR-R18
-mAP@[.5:.95],0.216,0.182
-AP50,0.277,0.231
-AP-small,0.084,0.064
-Latency (ms/frame),3.8,13.8
+mAP@[.5:.95],0.216,0.178
+AP50,0.277,0.229
+AP-small,0.084,0.057
+Latency (ms/frame),3.8,13.6
