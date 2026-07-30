@@ -1,0 +1,2349 @@
+{
+  "video": "demo_kitchen.mp4",
+  "fps_fused": 3,
+  "duration_s": 17.4,
+  "source_streams": {
+    "pose": {
+      "model": "RTMPose-S",
+      "fps_sampled": 5
+    },
+    "background": {
+      "model": "YOLO-World-S",
+      "fps_sampled": 3
+    }
+  },
+  "timeline": [
+    {
+      "timestamp_s": 0.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1053.6754150390625,
+            798.1922607421875,
+            2116.470947265625,
+            1920.583984375
+          ],
+          "headroom_pct": 0.3695334494113922,
+          "centering_offset": [
+            -0.17444102466106415,
+            0.25869277119636536
+          ],
+          "roll_deg": 169.3802947998047
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 0.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1052.99072265625,
+            788.1720581054688,
+            2125.652587890625,
+            1912.1573486328125
+          ],
+          "headroom_pct": 0.36489447951316833,
+          "centering_offset": [
+            -0.17222830653190613,
+            0.25015246868133545
+          ],
+          "roll_deg": 168.69009399414062
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 0.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1057.4403076171875,
+            781.5640869140625,
+            2142.39404296875,
+            1907.0767822265625
+          ],
+          "headroom_pct": 0.36183521151542664,
+          "centering_offset": [
+            -0.166709765791893,
+            0.24474114179611206
+          ],
+          "roll_deg": 167.90525817871094
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 1.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1053.74755859375,
+            746.9437255859375,
+            2164.54931640625,
+            1925.4771728515625
+          ],
+          "headroom_pct": 0.345807284116745,
+          "centering_offset": [
+            -0.16190186142921448,
+            0.23723189532756805
+          ],
+          "roll_deg": 160.7099609375
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 1.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1070.5655517578125,
+            796.3963623046875,
+            2159.35009765625,
+            1915.0689697265625
+          ],
+          "headroom_pct": 0.3687020242214203,
+          "centering_offset": [
+            -0.15887616574764252,
+            0.25530803203582764
+          ],
+          "roll_deg": 171.86990356445312
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 1.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1064.65869140625,
+            839.2610473632812,
+            2176.1474609375,
+            1912.1265869140625
+          ],
+          "headroom_pct": 0.38854679465293884,
+          "centering_offset": [
+            -0.15604005753993988,
+            0.2737905979156494
+          ],
+          "roll_deg": 174.2893829345703
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 2.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1064.5262451171875,
+            735.7372436523438,
+            2168.102294921875,
+            1909.942138671875
+          ],
+          "headroom_pct": 0.3406190872192383,
+          "centering_offset": [
+            -0.158169686794281,
+            0.224851593375206
+          ],
+          "roll_deg": 164.74488830566406
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 2.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1070.996337890625,
+            712.090576171875,
+            2202.349365234375,
+            1910.274658203125
+          ],
+          "headroom_pct": 0.32967156171798706,
+          "centering_offset": [
+            -0.14756622910499573,
+            0.21405798196792603
+          ],
+          "roll_deg": 171.46922302246094
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 2.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1068.3226318359375,
+            747.0833129882812,
+            2191.492431640625,
+            1905.0416259765625
+          ],
+          "headroom_pct": 0.3458718955516815,
+          "centering_offset": [
+            -0.1510898619890213,
+            0.22783565521240234
+          ],
+          "roll_deg": 170.53768920898438
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 3.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1079.37060546875,
+            771.6394653320312,
+            2173.217529296875,
+            1910.234619140625
+          ],
+          "headroom_pct": 0.3572404980659485,
+          "centering_offset": [
+            -0.15297183394432068,
+            0.24160835146903992
+          ],
+          "roll_deg": 169.99197387695312
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 3.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1078.517578125,
+            783.9442749023438,
+            2177.759033203125,
+            1907.505126953125
+          ],
+          "headroom_pct": 0.36293715238571167,
+          "centering_offset": [
+            -0.15201130509376526,
+            0.2460414171218872
+          ],
+          "roll_deg": 167.47122192382812
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 3.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1078.2119140625,
+            802.0541381835938,
+            2184.4658203125,
+            1903.539794921875
+          ],
+          "headroom_pct": 0.37132135033607483,
+          "centering_offset": [
+            -0.1503443419933319,
+            0.2525898218154907
+          ],
+          "roll_deg": 168.11129760742188
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 4.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1074.033447265625,
+            791.6847534179688,
+            2183.103271484375,
+            1910.1534423828125
+          ],
+          "headroom_pct": 0.3665207326412201,
+          "centering_offset": [
+            -0.15178731083869934,
+            0.25085097551345825
+          ],
+          "roll_deg": 166.7594757080078
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 4.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1077.25390625,
+            771.12939453125,
+            2171.528564453125,
+            1907.8544921875
+          ],
+          "headroom_pct": 0.3570043444633484,
+          "centering_offset": [
+            -0.1539628952741623,
+            0.24027031660079956
+          ],
+          "roll_deg": 168.6900634765625
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 4.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1077.1744384765625,
+            772.6976928710938,
+            2167.089599609375,
+            1901.02392578125
+          ],
+          "headroom_pct": 0.3577304184436798,
+          "centering_offset": [
+            -0.15513953566551208,
+            0.2378341108560562
+          ],
+          "roll_deg": 168.11135864257812
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 5.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1077.9974365234375,
+            796.9176635742188,
+            2161.67724609375,
+            1904.0535888671875
+          ],
+          "headroom_pct": 0.36894336342811584,
+          "centering_offset": [
+            -0.15633468329906464,
+            0.25044962763786316
+          ],
+          "roll_deg": 171.46920776367188
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 5.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1080.960205078125,
+            794.9659423828125,
+            2163.559814453125,
+            1906.30712890625
+          ],
+          "headroom_pct": 0.3680397868156433,
+          "centering_offset": [
+            -0.1550729125738144,
+            0.2505893409252167
+          ],
+          "roll_deg": 165.96376037597656
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 5.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1083.50244140625,
+            791.3570556640625,
+            2161.942626953125,
+            1903.6495361328125
+          ],
+          "headroom_pct": 0.36636900901794434,
+          "centering_offset": [
+            -0.15483202040195465,
+            0.24768823385238647
+          ],
+          "roll_deg": 166.75946044921875
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 6.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1091.776611328125,
+            779.98681640625,
+            2205.695556640625,
+            1908.9586181640625
+          ],
+          "headroom_pct": 0.3611049950122833,
+          "centering_offset": [
+            -0.1412832885980606,
+            0.24488209187984467
+          ],
+          "roll_deg": 162.8972625732422
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 6.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1085.9608154296875,
+            789.4488525390625,
+            2369.85205078125,
+            1915.57373046875
+          ],
+          "headroom_pct": 0.3654855787754059,
+          "centering_offset": [
+            -0.10004869848489761,
+            0.2523252069950104
+          ],
+          "roll_deg": 162.64598083496094
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 6.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1083.5369873046875,
+            787.4457397460938,
+            2269.525390625,
+            1912.353271484375
+          ],
+          "headroom_pct": 0.36455821990966797,
+          "centering_offset": [
+            -0.12680664658546448,
+            0.2499069720506668
+          ],
+          "roll_deg": 165.96376037597656
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 7.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1077.51513671875,
+            789.2435913085938,
+            2325.75732421875,
+            1905.8148193359375
+          ],
+          "headroom_pct": 0.3653905391693115,
+          "centering_offset": [
+            -0.11373113095760345,
+            0.24771219491958618
+          ],
+          "roll_deg": 165.06857299804688
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 7.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1080.68505859375,
+            793.41455078125,
+            2342.790771484375,
+            1914.7066650390625
+          ],
+          "headroom_pct": 0.36732155084609985,
+          "centering_offset": [
+            -0.10846983641386032,
+            0.2537597715854645
+          ],
+          "roll_deg": 165.06854248046875
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 7.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1086.0533447265625,
+            785.5391235351562,
+            2351.94287109375,
+            1915.0181884765625
+          ],
+          "headroom_pct": 0.3636755347251892,
+          "centering_offset": [
+            -0.10468851774930954,
+            0.25025802850723267
+          ],
+          "roll_deg": 165.9637451171875
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 8.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1087.4656982421875,
+            787.043212890625,
+            2280.438720703125,
+            1905.455322265625
+          ],
+          "headroom_pct": 0.3643718659877777,
+          "centering_offset": [
+            -0.12294159084558487,
+            0.24652710556983948
+          ],
+          "roll_deg": 165.9637451171875
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 8.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1087.4102783203125,
+            777.3505859375,
+            2206.362060546875,
+            1905.948486328125
+          ],
+          "headroom_pct": 0.3598845303058624,
+          "centering_offset": [
+            -0.14224675297737122,
+            0.24226808547973633
+          ],
+          "roll_deg": 167.47117614746094
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 8.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1091.2828369140625,
+            785.7507934570312,
+            2188.230712890625,
+            1907.2938232421875
+          ],
+          "headroom_pct": 0.36377352476119995,
+          "centering_offset": [
+            -0.1459599882364273,
+            0.24677994847297668
+          ],
+          "roll_deg": 167.47120666503906
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 9.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1088.2249755859375,
+            790.7847290039062,
+            2174.812744140625,
+            1905.4737548828125
+          ],
+          "headroom_pct": 0.36610403656959534,
+          "centering_offset": [
+            -0.1502506285905838,
+            0.24826784431934357
+          ],
+          "roll_deg": 172.23480224609375
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 9.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1086.0087890625,
+            781.2234497070312,
+            2177.63037109375,
+            1907.4212646484375
+          ],
+          "headroom_pct": 0.36167752742767334,
+          "centering_offset": [
+            -0.15009397268295288,
+            0.24474294483661652
+          ],
+          "roll_deg": 168.111328125
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 9.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1085.0411376953125,
+            774.7850341796875,
+            2167.194580078125,
+            1905.2489013671875
+          ],
+          "headroom_pct": 0.3586967885494232,
+          "centering_offset": [
+            -0.1530635803937912,
+            0.24075645208358765
+          ],
+          "roll_deg": 171.46923828125
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 10.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1082.9432373046875,
+            792.1885986328125,
+            2143.41650390625,
+            1908.7220458984375
+          ],
+          "headroom_pct": 0.3667539954185486,
+          "centering_offset": [
+            -0.1598021239042282,
+            0.25042158365249634
+          ],
+          "roll_deg": 171.86988830566406
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 10.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1081.4832763671875,
+            784.5934448242188,
+            2178.0400390625,
+            1915.265380859375
+          ],
+          "headroom_pct": 0.3632377088069916,
+          "centering_offset": [
+            -0.15116576850414276,
+            0.24993467330932617
+          ],
+          "roll_deg": 165.0685272216797
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 10.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1077.904296875,
+            776.96435546875,
+            2141.107666015625,
+            1909.2069091796875
+          ],
+          "headroom_pct": 0.35970571637153625,
+          "centering_offset": [
+            -0.16171564161777496,
+            0.2435978651046753
+          ],
+          "roll_deg": 165.9637451171875
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 11.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1079.267333984375,
+            785.7173461914062,
+            2149.657470703125,
+            1911.9539794921875
+          ],
+          "headroom_pct": 0.36375802755355835,
+          "centering_offset": [
+            -0.1591341644525528,
+            0.2489219456911087
+          ],
+          "roll_deg": 168.6900634765625
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 11.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1083.7901611328125,
+            796.9671630859375,
+            2149.96826171875,
+            1910.3212890625
+          ],
+          "headroom_pct": 0.368966281414032,
+          "centering_offset": [
+            -0.1578754484653473,
+            0.2533743381500244
+          ],
+          "roll_deg": 168.11135864257812
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 11.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1084.791015625,
+            789.8486938476562,
+            2162.7724609375,
+            1914.2950439453125
+          ],
+          "headroom_pct": 0.36567068099975586,
+          "centering_offset": [
+            -0.15428034961223602,
+            0.2519184350967407
+          ],
+          "roll_deg": 165.2564239501953
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 12.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1088.981201171875,
+            804.57421875,
+            2160.03125,
+            1910.4957275390625
+          ],
+          "headroom_pct": 0.3724880516529083,
+          "centering_offset": [
+            -0.15390300750732422,
+            0.25697678327560425
+          ],
+          "roll_deg": 170.5376739501953
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 12.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1085.1485595703125,
+            805.180419921875,
+            2138.146484375,
+            1911.55615234375
+          ],
+          "headroom_pct": 0.37276870012283325,
+          "centering_offset": [
+            -0.16060027480125427,
+            0.25774842500686646
+          ],
+          "roll_deg": 167.47117614746094
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 12.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1081.81494140625,
+            782.91552734375,
+            2247.0869140625,
+            1917.2509765625
+          ],
+          "headroom_pct": 0.3624608814716339,
+          "centering_offset": [
+            -0.13309846818447113,
+            0.25007709860801697
+          ],
+          "roll_deg": 160.34619140625
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 13.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1078.9757080078125,
+            780.61376953125,
+            2330.2763671875,
+            1916.73193359375
+          ],
+          "headroom_pct": 0.3613952696323395,
+          "centering_offset": [
+            -0.11217396706342697,
+            0.24877116084098816
+          ],
+          "roll_deg": 163.61045837402344
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 13.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1086.68212890625,
+            790.3849487304688,
+            2270.3466796875,
+            1914.8663330078125
+          ],
+          "headroom_pct": 0.36591896414756775,
+          "centering_offset": [
+            -0.12577374279499054,
+            0.25243112444877625
+          ],
+          "roll_deg": 162.64596557617188
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 13.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1085.7728271484375,
+            788.70751953125,
+            2312.230712890625,
+            1915.8570556640625
+          ],
+          "headroom_pct": 0.3651423752307892,
+          "centering_offset": [
+            -0.11510327458381653,
+            0.2521131634712219
+          ],
+          "roll_deg": 162.64596557617188
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 14.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1086.442138671875,
+            784.3395385742188,
+            2349.011962890625,
+            1914.0072021484375
+          ],
+          "headroom_pct": 0.3631201684474945,
+          "centering_offset": [
+            -0.10535049438476562,
+            0.24923457205295563
+          ],
+          "roll_deg": 165.06858825683594
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 14.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1095.044677734375,
+            786.3599853515625,
+            2367.32373046875,
+            1912.8046875
+          ],
+          "headroom_pct": 0.3640555441379547,
+          "centering_offset": [
+            -0.09834156185388565,
+            0.2496132105588913
+          ],
+          "roll_deg": 167.47116088867188
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 14.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1094.5384521484375,
+            794.47314453125,
+            2330.707763671875,
+            1926.3243408203125
+          ],
+          "headroom_pct": 0.3678116500377655,
+          "centering_offset": [
+            -0.10800883173942566,
+            0.25962841510772705
+          ],
+          "roll_deg": 169.99200439453125
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 15.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1097.33154296875,
+            806.7135009765625,
+            2297.610107421875,
+            1911.572509765625
+          ],
+          "headroom_pct": 0.3734784722328186,
+          "centering_offset": [
+            -0.11590061336755753,
+            0.25846579670906067
+          ],
+          "roll_deg": 173.990966796875
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 15.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1092.8677978515625,
+            794.6400146484375,
+            2172.75439453125,
+            1912.4173583984375
+          ],
+          "headroom_pct": 0.3678888976573944,
+          "centering_offset": [
+            -0.14957758784294128,
+            0.2532672882080078
+          ],
+          "roll_deg": 172.2348175048828
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 15.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1090.77197265625,
+            778.016357421875,
+            2180.3974609375,
+            1910.653564453125
+          ],
+          "headroom_pct": 0.36019274592399597,
+          "centering_offset": [
+            -0.14813296496868134,
+            0.2447545975446701
+          ],
+          "roll_deg": 168.69003295898438
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 16.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1093.947265625,
+            788.8866577148438,
+            2175.8896484375,
+            1913.7254638671875
+          ],
+          "headroom_pct": 0.36522531509399414,
+          "centering_offset": [
+            -0.14847996830940247,
+            0.2512092888355255
+          ],
+          "roll_deg": 171.02734375
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 16.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1094.6898193359375,
+            806.8173217773438,
+            2183.84228515625,
+            1915.0777587890625
+          ],
+          "headroom_pct": 0.37352654337882996,
+          "centering_offset": [
+            -0.14621557295322418,
+            0.26013657450675964
+          ],
+          "roll_deg": 174.55966186523438
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 16.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1095.769775390625,
+            802.1107177734375,
+            2175.028076171875,
+            1915.095703125
+          ],
+          "headroom_pct": 0.3713475465774536,
+          "centering_offset": [
+            -0.14822973310947418,
+            0.25796598196029663
+          ],
+          "roll_deg": 170.5376739501953
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 17.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1101.3321533203125,
+            778.3929443359375,
+            2186.204345703125,
+            1911.9140625
+          ],
+          "headroom_pct": 0.360367089509964,
+          "centering_offset": [
+            -0.14387066662311554,
+            0.24551256000995636
+          ],
+          "roll_deg": 168.1113739013672
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    },
+    {
+      "timestamp_s": 17.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1097.1212158203125,
+            778.37939453125,
+            2145.5576171875,
+            1911.223876953125
+          ],
+          "headroom_pct": 0.3603608310222626,
+          "centering_offset": [
+            -0.15555241703987122,
+            0.2451867014169693
+          ],
+          "roll_deg": 169.69512939453125
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop"
+      ]
+    }
+  ]
+}
