@@ -79,18 +79,17 @@ final_project/
 
 ## Demo video
 
-All three notebooks operate on the same video, `notebooks/data/demo_interview.mp4` —
-52.0 s, 29.97 fps, 490×360, single person talking to camera. Trimmed from
-`videos/Online Webcam Job Interview Tips.mp4` ("Zoe's Online Interview Tips",
-user-provided): the original 66.1 s clip had 4 title-card/summary-slide segments
-(~13 s total) cut in throughout — not real footage — which were removed with `ffmpeg`
-`select`/`aselect` filters (see git history on `configs/config.yaml` and
-`notebooks/shared_video.py` for when/why). The untrimmed original is kept at
-`notebooks/data/demo_interview_original_with_slides.mp4` for reference. Using one
-consistent video across all three notebooks is what lets Notebook 3's fused timeline
-show real, matching timestamps. **TODO**: confirm and cite the original source/license
-of this clip in Notebook 1's setup section before the file is included in the final
-report submission.
+All three notebooks operate on the same video, `notebooks/data/demo_kitchen.mp4` —
+17.56 s, 25 fps, 3840×2160, single person (kitchen, using a laptop). Source:
+`videos/5983740-uhd_3840_2160_25fps.mp4` (Pexels, free-to-use — no license TODO, unlike
+the prior clip). Adopted in place of the original talking-head interview clip
+(`notebooks/data/demo_interview_archived_talking_head.mp4`, itself trimmed from
+`videos/Online Webcam Job Interview Tips.mp4` to remove 4 title-card slides — kept for
+reference) after a champion-only test showed the interview clip's tight close-up crop
+left almost no background visible (<10% track persistence in Pipeline B), while this
+kitchen clip gave 100% track persistence with zero misclassified detections (laptop +
+2 cabinets, all correct on visual inspection). Using one consistent video across all
+three notebooks is what lets Notebook 3's fused timeline show real, matching timestamps.
 
 ### Shared demo video — single source of truth + checksum guard
 
