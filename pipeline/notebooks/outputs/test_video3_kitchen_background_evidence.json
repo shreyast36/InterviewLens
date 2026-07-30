@@ -1,0 +1,38 @@
+{
+  "video": "data/test_alt_background_3.mp4",
+  "tracks": [
+    {
+      "track_id": 1,
+      "class_name": "laptop_computer",
+      "display_name": "laptop",
+      "tier": "distracting",
+      "persistence_pct": 1.0,
+      "start_s": 0.0,
+      "end_s": 17.28,
+      "box_area_frac": 0.1016,
+      "frames_present": 55
+    },
+    {
+      "track_id": 2,
+      "class_name": "cabinet",
+      "display_name": "cabinet",
+      "tier": "neutral",
+      "persistence_pct": 1.0,
+      "start_s": 0.0,
+      "end_s": 17.28,
+      "box_area_frac": 0.0322,
+      "frames_present": 55
+    },
+    {
+      "track_id": 3,
+      "class_name": "cabinet",
+      "display_name": "cabinet",
+      "tier": "neutral",
+      "persistence_pct": 1.0,
+      "start_s": 0.0,
+      "end_s": 17.28,
+      "box_area_frac": 0.0501,
+      "frames_present": 55
+    }
+  ]
+}

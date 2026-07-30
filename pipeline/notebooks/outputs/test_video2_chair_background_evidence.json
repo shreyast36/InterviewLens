@@ -1,0 +1,27 @@
+{
+  "video": "data/test_alt_background_2.mp4",
+  "tracks": [
+    {
+      "track_id": 1,
+      "class_name": "chair",
+      "display_name": "chair",
+      "tier": "neutral",
+      "persistence_pct": 1.0,
+      "start_s": 0.667,
+      "end_s": 17.0,
+      "box_area_frac": 0.3651,
+      "frames_present": 50
+    },
+    {
+      "track_id": 2,
+      "class_name": "sofa",
+      "display_name": "sofa",
+      "tier": "neutral",
+      "persistence_pct": 1.0,
+      "start_s": 1.0,
+      "end_s": 16.333,
+      "box_area_frac": 0.3441,
+      "frames_present": 47
+    }
+  ]
+}

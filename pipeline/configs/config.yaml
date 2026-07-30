@@ -1,5 +1,21 @@
 demo_mode: true
 
+# Single source of truth for which video file notebooks 01/02/03 all analyze. Every
+# notebook verifies the file at notebooks/data/<filename> against this checksum before
+# running (see notebooks/shared_video.py) -- update sha256 here whenever the video
+# changes, or notebooks will fail loudly instead of silently drifting apart.
+demo_video:
+  filename: demo_kitchen.mp4
+  sha256: fc94b875a10d3eea27a94f208b7dfccdb6d682ed73f24a8114dae505d8a0fab5
+  source: >
+    videos/5983740-uhd_3840_2160_25fps.mp4 (Pexels, free-to-use) -- adopted as the
+    official demo after champion-only test tracking showed 100% track persistence with
+    zero misclassifications (laptop + 2 kitchen cabinets), vs. <10% persistence on the
+    prior talking-head clip (too tight a crop, almost no background visible). Superseded
+    demo_interview.mp4 (the trimmed interview clip) is kept at
+    notebooks/data/demo_interview_archived_talking_head.mp4 for reference.
+  duration_s: 17.56
+
 video:
   fps: 30
   resolution: [1280, 720]

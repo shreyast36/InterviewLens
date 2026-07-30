@@ -71,6 +71,7 @@ final_project/
     ├── 01_pipeline_A_pose_estimation.ipynb
     ├── 02_pipeline_B_background_analysis.ipynb
     ├── 03_evidence_fusion_timeline.ipynb
+    ├── shared_video.py      # single-source-of-truth + checksum-verified video loader
     ├── data/                # downloaded dataset subsets + demo video
     ├── outputs/             # evidence JSONs, figures, eval tables
     └── saved_models/        # fine-tuned challenger weights
@@ -78,12 +79,42 @@ final_project/
 
 ## Demo video
 
-All three notebooks operate on the same video, `notebooks/data/demo_interview.mp4`
-(copied from `videos/Online Webcam Job Interview Tips.mp4`, user-provided) — 66.1 s,
-29.97 fps, 490×360, single person talking to camera. Using one consistent video across
-all three notebooks is what lets Notebook 3's fused timeline show real, matching
-timestamps. **TODO**: confirm and cite the original source/license of this clip in
-Notebook 1's setup section before the file is included in the final report submission.
+All three notebooks operate on the same video, `notebooks/data/demo_interview.mp4` —
+52.0 s, 29.97 fps, 490×360, single person talking to camera. Trimmed from
+`videos/Online Webcam Job Interview Tips.mp4` ("Zoe's Online Interview Tips",
+user-provided): the original 66.1 s clip had 4 title-card/summary-slide segments
+(~13 s total) cut in throughout — not real footage — which were removed with `ffmpeg`
+`select`/`aselect` filters (see git history on `configs/config.yaml` and
+`notebooks/shared_video.py` for when/why). The untrimmed original is kept at
+`notebooks/data/demo_interview_original_with_slides.mp4` for reference. Using one
+consistent video across all three notebooks is what lets Notebook 3's fused timeline
+show real, matching timestamps. **TODO**: confirm and cite the original source/license
+of this clip in Notebook 1's setup section before the file is included in the final
+report submission.
+
+### Shared demo video — single source of truth + checksum guard
+
+Every notebook loads the video via `notebooks/shared_video.py`'s
+`load_verified_video_path(DATA_DIR)` instead of hardcoding
+`DATA_DIR / "demo_interview.mp4"`. That helper:
+
+1. Reads the file*name* and expected SHA256 from `configs/config.yaml`'s `demo_video:`
+   block (the single source of truth for which video the whole project analyzes).
+2. Computes the SHA256 of the actual file on disk and asserts it matches.
+3. Raises a clear `AssertionError` (not a silent pass-through) if the file is missing or
+   its content has drifted from what's recorded.
+
+**Why**: Pipeline A and Pipeline B used to each hardcode their own
+`DEMO_VIDEO_PATH = DATA_DIR / "demo_interview.mp4"` literal. Nothing stopped one notebook
+from being pointed at a different/updated video while the other kept analyzing the old
+one — a silent mismatch that would only surface much later, in Notebook 3's fused
+timeline (or not at all). The checksum makes that failure loud and immediate, at the top
+of whichever notebook has the stale reference.
+
+**When swapping the demo video**: update `configs/config.yaml`'s `demo_video.filename`
+and `demo_video.sha256` (`sha256sum notebooks/data/<file>`) once, in that single file,
+then re-run every notebook in order (01 → 02 → 03) so all evidence JSONs are regenerated
+against the same footage. Do not hand-edit `DEMO_VIDEO_PATH` inside a notebook.
 
 ## Background training videos (`final_project/videos/`)
 

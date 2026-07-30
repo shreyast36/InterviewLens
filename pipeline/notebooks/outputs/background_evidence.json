@@ -1,0 +1,40 @@
+{
+  "video": "demo_interview.mp4",
+  "fps_sampled": 3,
+  "model": "YOLO-World-S",
+  "taxonomy": {
+    "bath_towel": "mild",
+    "bed": "mild",
+    "blanket": "mild",
+    "cabinet": "neutral",
+    "chair": "neutral",
+    "computer_keyboard": "distracting",
+    "curtain": "neutral",
+    "drawer": "neutral",
+    "fan": "distracting",
+    "flowerpot": "neutral",
+    "lamp": "neutral",
+    "laptop_computer": "distracting",
+    "mirror": "neutral",
+    "monitor_(computer_equipment) computer_monitor": "distracting",
+    "painting": "neutral",
+    "pillow": "mild",
+    "poster": "neutral",
+    "sofa": "neutral",
+    "speaker_(stero_equipment)": "distracting",
+    "television_set": "distracting",
+    "towel": "mild",
+    "vase": "neutral"
+  },
+  "detections": [
+    {
+      "track_id": 1,
+      "class": "cabinet",
+      "tier": "neutral",
+      "persistence_pct": 0.075,
+      "start_s": 15.349,
+      "end_s": 28.362,
+      "box_area_frac": 0.0879
+    }
+  ]
+}

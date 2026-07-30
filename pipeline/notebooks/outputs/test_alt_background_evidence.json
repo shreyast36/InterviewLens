@@ -1,0 +1,16 @@
+{
+  "video": "data/test_alt_background.mp4",
+  "tracks": [
+    {
+      "track_id": 1,
+      "class_name": "television_set",
+      "display_name": "television",
+      "tier": "distracting",
+      "persistence_pct": 1.0,
+      "start_s": 0.0,
+      "end_s": 34.88,
+      "box_area_frac": 0.0715,
+      "frames_present": 110
+    }
+  ]
+}
