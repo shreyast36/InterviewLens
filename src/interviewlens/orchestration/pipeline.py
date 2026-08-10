@@ -11,10 +11,13 @@ from interviewlens.audio_pipeline.postprocessing import normalize_disfluencies
 from interviewlens.audio_pipeline.preprocessing import preprocess
 from interviewlens.common.config import AppConfig, load_config
 from interviewlens.common.schemas import CoachingReport, Transcript
-from interviewlens.reasoning.evidence_assembly import assemble_evidence
+from interviewlens.reasoning.evidence_assembly import assemble_evidence, from_fused_evidence_json
 from interviewlens.reasoning.evidence_validation import validate
 from interviewlens.reasoning.vlm_reasoning import VLMReasoner
 from interviewlens.reporting.coaching_report import build_coaching_report
+from interviewlens.video_pipeline.ab_fusion import fuse_evidence
+from interviewlens.video_pipeline.batch_background import extract_background_evidence
+from interviewlens.video_pipeline.batch_pose import detect_signal_events, extract_pose_evidence, grab_frames, valid_tracking_pct as batch_valid_tracking_pct
 from interviewlens.video_pipeline.capture import synthetic_frames
 from interviewlens.video_pipeline.keypoint_processor import normalize_frame, valid_tracking_pct
 from interviewlens.video_pipeline.pose_estimation import build_pose_estimator
@@ -100,3 +103,84 @@ def run_pipeline(question: str, config: AppConfig | None = None) -> CoachingRepo
         validation=validation,
     )
     return report
+
+
+def run_pipeline_from_video(
+    video_path: str,
+    question: str,
+    config: AppConfig | None = None,
+    pose_sample_fps: int = 5,
+    background_sample_fps: int = 3,
+) -> CoachingReport:
+    """Runs the real pipeline against an uploaded video file: Pipeline A (pose,
+    RTMPose-S) -> rule-based signal detection -> Pipeline B (background,
+    YOLO-World-S + ByteTrack) -> A/B evidence fusion -> VLM reasoning -> evidence
+    validation -> coaching report.
+
+    This is the "someone uploads a video" path -- run_pipeline() above stays
+    synthetic/demo-mode and untouched for whoever continues the real-time
+    streaming architecture. There is deliberately no manual keypoint-review gate
+    here (compare pipeline/notebooks/00_master_pipeline.ipynb section 4): a live
+    API request has no human in the loop. Confidence gating -- compute_framing's
+    conf_thresh in batch_pose.py, evidence_validation's MIN_EVENT_CONFIDENCE, and
+    the unstable_tracking rule in detect_signal_events() -- is the automated
+    substitute for that human review.
+
+    Audio is still the synthetic placeholder from Person B's subsystem (real ASR
+    on the uploaded video's audio track is not wired up here -- out of scope for
+    closing the *video* wiring gap specifically).
+    """
+    config = config or load_config()
+
+    # ---- Pipeline A: pose + rule-based signals ---------------------------
+    pose_evidence = extract_pose_evidence(video_path, sample_fps=pose_sample_fps)
+    pose_evidence["signal_events"] = detect_signal_events(pose_evidence)
+    tracking_pct = batch_valid_tracking_pct(pose_evidence)
+
+    # ---- Pipeline B: background detection + tracking ---------------------
+    background_evidence = extract_background_evidence(video_path, pose_evidence, sample_fps=background_sample_fps)
+
+    # ---- A/B fusion --------------------------------------------------------
+    fused = fuse_evidence(pose_evidence, background_evidence)
+    duration_s = fused["duration_s"]
+
+    # ---- Audio (Person B, synthetic placeholder -- see docstring) --------
+    asr_model = build_asr_model(config.audio.asr_model)
+    raw_audio = synthetic_audio(duration_s=duration_s, sample_rate=config.audio.sample_rate)
+    segments = preprocess(raw_audio, config.audio.sample_rate)
+    transcripts = [asr_model.transcribe(seg) for seg in segments]
+    combined_words = [w for t in transcripts for w in t.words]
+    transcript = normalize_disfluencies(
+        Transcript(text=" ".join(t.text for t in transcripts), words=combined_words)
+    )
+    audio_metrics = compute_metrics(transcript, total_duration_s=duration_s)
+
+    # ---- Multimodal fusion & evidence assembly (Person C) -----------------
+    # Two passes: the first tells us which frame indices the VLM wants to see;
+    # the second hands it the actual decoded frames at those indices.
+    probe = from_fused_evidence_json(fused, question=question, transcript=transcript, audio_metrics=audio_metrics)
+    all_frames = grab_frames(video_path, probe.selected_frames, fused["fps_fused"])
+    evidence = from_fused_evidence_json(
+        fused, question=question, transcript=transcript, audio_metrics=audio_metrics, all_frames=all_frames,
+    )
+
+    # ---- VLM reasoning (Person C) ------------------------------------------
+    reasoner = VLMReasoner(
+        model_name=config.reasoning.vlm_model,
+        max_tokens=config.reasoning.max_output_tokens,
+        temperature=config.reasoning.temperature,
+    )
+    reasoning_output = reasoner.reason(evidence)
+
+    # ---- Evidence validation (Person C) ------------------------------------
+    validation = validate(evidence, reasoning_output)
+
+    # ---- Coaching report (Person D) ----------------------------------------
+    return build_coaching_report(
+        duration_s=duration_s,
+        valid_tracking_pct=tracking_pct,
+        audio_metrics=audio_metrics,
+        visual_events=evidence.visual_events,
+        reasoning=reasoning_output,
+        validation=validation,
+    )

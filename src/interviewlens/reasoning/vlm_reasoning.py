@@ -51,6 +51,10 @@ one of these exact tokens (choose only ones that actually appear in the evidence
 you for THIS clip -- do not use a token just because it's in this list):
 {_SIGNAL_VOCAB}
 
+REQUIRED COVERAGE: the evidence you are given below will tell you exactly which signal
+types are present in this clip. You must produce one observation for every one of them,
+not just the first one or two -- do not stop early.
+
 Return STRICT JSON with this shape:
 {{
   "observations": ["<signal_type>: what happened and when, using only the evidence given"],
@@ -64,6 +68,21 @@ def build_prompt(evidence: EvidencePackage) -> str:
     framing    = evidence.event_timestamps.get("framing_summary", [])
     background = evidence.event_timestamps.get("background_objects", [])
     summary    = evidence.event_timestamps.get("signal_summary")
+
+    # Force full coverage: list the *actual* distinct signal types present for this
+    # clip (not the whole static vocabulary -- most won't apply to any given video)
+    # and require one observation per type. Without this, a model will happily stop
+    # after 1-2 signals even when several are present (seen in testing: a clip with
+    # 7 distinct flagged signal types got only 2 covered).
+    present_types = sorted({e["type"] for e in evidence.event_timestamps.get("visual_events", [])})
+    coverage_line = ""
+    if present_types:
+        coverage_line = (
+            f"REQUIRED COVERAGE: this clip's evidence contains these signal types: "
+            f"{', '.join(present_types)}. You MUST include at least one observation "
+            f"for EACH one listed here -- do not stop after covering only some of "
+            f"them.\n\n"
+        )
 
     summary_line = ""
     if summary:
@@ -84,6 +103,7 @@ def build_prompt(evidence: EvidencePackage) -> str:
         f"fillers={evidence.audio_metrics.filler_word_count}, "
         f"long_pauses={evidence.audio_metrics.long_pause_count}\n\n"
         f"{summary_line}"
+        f"{coverage_line}"
         f"Visual events (each already merged into one span per continuous "
         f"occurrence — do not treat repeated entries as separate incidents): "
         f"{evidence.event_timestamps.get('visual_events', [])}\n\n"
@@ -96,6 +116,8 @@ def build_prompt(evidence: EvidencePackage) -> str:
         f"Reminder: only comment on the events/metrics listed above, by their exact "
         f"names. Do not describe appearance, clothing, food, drink, or surroundings "
         f"visible in the attached frames unless they appear in the evidence text above."
+        + (f"\n\nYou still need one observation for each of: {', '.join(present_types)}."
+           if present_types else "")
     )
 
 
@@ -215,6 +237,28 @@ class VLMReasoner:
         return _parse_json_response(response, evidence)
 
 
+def _coerce_str_list(value, field_name: str) -> list[str]:
+    """Coerce a JSON value into list[str], tolerating models that occasionally nest an
+    object per item (e.g. {"signal_type": "head_tilt", "text": "..."}) instead of a
+    flat string -- observed in real Qwen2.5-VL-3B-Instruct output once REQUIRED
+    COVERAGE started asking it to enumerate several signal types at once. Silently
+    trusting the shape here used to crash validate() downstream with
+    AttributeError: 'dict' object has no attribute 'lower'."""
+    if not isinstance(value, list):
+        return []
+    out = []
+    for item in value:
+        if isinstance(item, str):
+            out.append(item)
+        elif isinstance(item, dict):
+            logger.warning("VLM returned a dict instead of a string in %r: %r — coercing.", field_name, item)
+            out.append(" ".join(str(v) for v in item.values()))
+        else:
+            logger.warning("VLM returned an unexpected %s in %r: %r — coercing.", type(item).__name__, field_name, item)
+            out.append(str(item))
+    return out
+
+
 def _parse_json_response(response: str, evidence: EvidencePackage) -> dict:
     """Extract the JSON block from the VLM's raw text output.
 
@@ -225,9 +269,9 @@ def _parse_json_response(response: str, evidence: EvidencePackage) -> dict:
     try:
         parsed = json.loads(cleaned)
         return {
-            "observations": list(parsed.get("observations", [])),
-            "explanations": list(parsed.get("explanations", [])),
-            "suggestions":  list(parsed.get("suggestions", [])),
+            "observations": _coerce_str_list(parsed.get("observations", []), "observations"),
+            "explanations": _coerce_str_list(parsed.get("explanations", []), "explanations"),
+            "suggestions":  _coerce_str_list(parsed.get("suggestions", []), "suggestions"),
         }
     except (json.JSONDecodeError, AttributeError):
         logger.warning("VLM returned non-JSON output; falling back to mock.")

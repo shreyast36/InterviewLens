@@ -31,7 +31,7 @@ ALLOWED_KEYWORDS = {
     # rule-based pose signals (00_master_pipeline.ipynb §5)
     "face", "touch", "touching", "grooming", "hair", "arm", "arms", "cross",
     "crossed", "shoulder", "shoulders", "head", "nose", "chin", "down",
-    "looking", "gaze", "lean",
+    "looking", "gaze", "lean", "leans",
     "leaning", "sway", "swaying", "nod", "nodding", "fidget", "fidgeting",
     "restless", "still", "frozen", "sudden", "startle", "jump", "wrist",
     "unstable", "tracking", "reliable", "transient", "appear", "disappear",
