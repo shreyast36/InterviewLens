@@ -20,8 +20,16 @@ from interviewlens.common.schemas import EvidencePackage, ReasoningOutput, Valid
 
 MIN_EVENT_CONFIDENCE = 0.5
 ALLOWED_KEYWORDS = {
-    "filler", "pause", "hand", "posture", "movement", "wpm", "speaking",
-    "confidence", "delivery", "eye", "gesture", "signal", "issue",
+    # audio delivery
+    "filler", "pause", "wpm", "speaking", "delivery",
+    # body language / gesture (original temporal-model signals)
+    "hand", "posture", "movement", "eye", "gesture",
+    # framing signals (RTMPose-S, from A/B branch)
+    "headroom", "framing", "center", "centering", "tilt", "tilted", "camera",
+    # background signals (YOLO-World-S, from A/B branch)
+    "background", "distracting", "object", "laptop", "monitor", "screen",
+    # general
+    "confidence", "signal", "issue",
 }
 
 

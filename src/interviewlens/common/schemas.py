@@ -14,9 +14,16 @@ from typing import Any
 
 
 class SignalType(str, Enum):
+    # Original gesture/posture signals (A's temporal model)
     REPETITIVE_HAND_MOVEMENT = "repetitive_hand_movement"
     FREQUENT_POSTURE_SHIFTING = "frequent_posture_shifting"
-    HAND_TO_FACE_ACTIVITY = "hand_to_face_activity"
+    HAND_TO_FACE_ACTIVITY    = "hand_to_face_activity"
+    # Framing signals — derived from RTMPose-S bounding-box analysis (A)
+    HEADROOM_TOO_LOOSE       = "headroom_too_loose"
+    OFF_CENTER               = "off_center"
+    TILTED                   = "tilted"
+    # Background signals — derived from YOLO-World-S object detection (A)
+    BACKGROUND_DISTRACTING   = "background_distracting"
 
 
 @dataclass
@@ -95,6 +102,9 @@ class EvidencePackage:
     visual_events: list[VisualEvent]
     selected_frames: list[int]
     event_timestamps: dict[str, Any] = field(default_factory=dict)
+    # PIL Images corresponding to selected_frames, ready to pass to the VLM.
+    # Empty when running in demo/test mode without real video frames.
+    frame_images: list = field(default_factory=list)
 
 
 @dataclass

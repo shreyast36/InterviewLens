@@ -43,9 +43,11 @@ def run_pipeline(question: str, config: AppConfig | None = None) -> CoachingRepo
 
     visual_events = []
     pose_frames = []
+    all_frames: dict[int, object] = {}  # frame_index → raw BGR numpy array for VLM
     n_frames = config.video.fps * 8  # ~8s synthetic clip
     for frame, timestamp in synthetic_frames(n_frames, fps=config.video.fps):
         frame_idx = int(timestamp * config.video.fps)
+        all_frames[frame_idx] = frame  # store raw frame for evidence assembly
         pose_frame = pose_estimator.estimate(frame, frame_idx, timestamp)
         pose_frame = normalize_frame(pose_frame)
         pose_frames.append(pose_frame)
@@ -74,6 +76,7 @@ def run_pipeline(question: str, config: AppConfig | None = None) -> CoachingRepo
         audio_metrics=audio_metrics,
         visual_events=visual_events,
         fps=config.video.fps,
+        all_frames=all_frames,
     )
 
     # ---- 5. VLM reasoning (Person C) ------------------------------------
