@@ -24,6 +24,7 @@ class SignalType(str, Enum):
     TILTED                   = "tilted"
     # Background signals — derived from YOLO-World-S object detection (A)
     BACKGROUND_DISTRACTING   = "background_distracting"
+    BACKGROUND_MILD          = "background_mild"
     # Rule-based pose signals — geometry over reviewed RTMPose-S keypoints,
     # 00_master_pipeline.ipynb §5 (architecture block 2.4, no extra model).
     # Kept granular rather than folded into the three signals above: a coach
@@ -49,6 +50,18 @@ class SignalType(str, Enum):
     # Background: object enters/exits mid-clip rather than sitting static —
     # derived in the fusion stage from YOLO-World-S + ByteTrack track windows.
     TRANSIENT_OBJECT         = "transient_object"
+    # Background rules — video_pipeline/batch_background.py (clutter + pixel-level
+    # lighting) and video_pipeline/ab_fusion.py (dominant_object, from track area).
+    CLUTTERED_BACKGROUND     = "cluttered_background"
+    DOMINANT_OBJECT          = "dominant_object"
+    LOW_LIGHT                = "low_light"
+    OVEREXPOSED              = "overexposed"
+    BACKLIT_FACE             = "backlit_face"
+    # Audio quality — audio_pipeline/batch_audio_quality.py. Signal-level checks
+    # only (RMS/silence patterns), not ASR/transcription -- that stays Person B's
+    # separate, still-synthetic subsystem.
+    LOW_MIC_LEVEL            = "low_mic_level"
+    INTERMITTENT_AUDIO       = "intermittent_audio"
 
 
 @dataclass

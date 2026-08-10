@@ -343,22 +343,29 @@ def detect_signal_events(pose_evidence: dict) -> list[dict]:
                 for i in range(start, start + period_window):
                     series(name)[i] = True
 
-    def events_from(name, flags, this_min_consec):
-        events, run = [], None
-        for i, on in enumerate(list(flags) + [False]):
-            if on and run is None:
-                run = i
-            elif not on and run is not None:
-                if i - run >= this_min_consec:
-                    events.append({"type": name, "start_s": float(ts[run]), "end_s": float(ts[i - 1])})
-                run = None
-        return events
-
     signal_events = []
     for name, flags in sorted(rule_series.items()):
-        signal_events.extend(events_from(name, flags, 1 if name == "sudden_movement" else min_consec))
+        signal_events.extend(events_from_boolean_series(name, flags, ts, 1 if name == "sudden_movement" else min_consec))
     signal_events.sort(key=lambda e: (e["start_s"], e["type"]))
     return signal_events
+
+
+def events_from_boolean_series(name: str, flags: list[bool], ts: np.ndarray, min_consec: int) -> list[dict]:
+    """Collapses a per-sample boolean series into {"type", "start_s", "end_s"} events,
+    requiring min_consec consecutive True samples before a run counts (so single-sample
+    jitter never becomes evidence). Shared between pose's rule engine above and
+    batch_background.py's lighting/clutter rules -- same hysteresis logic, different
+    source series.
+    """
+    events, run = [], None
+    for i, on in enumerate(list(flags) + [False]):
+        if on and run is None:
+            run = i
+        elif not on and run is not None:
+            if i - run >= min_consec:
+                events.append({"type": name, "start_s": float(ts[run]), "end_s": float(ts[i - 1])})
+            run = None
+    return events
 
 
 def grab_frames(video_path: str, frame_indices: list[int], fps: float) -> dict[int, np.ndarray]:

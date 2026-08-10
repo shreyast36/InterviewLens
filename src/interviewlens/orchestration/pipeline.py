@@ -5,6 +5,7 @@ integration contract test for the whole team.
 from __future__ import annotations
 
 from interviewlens.audio_pipeline.asr import build_asr_model
+from interviewlens.audio_pipeline.batch_audio_quality import extract_audio_quality_evidence
 from interviewlens.audio_pipeline.capture import synthetic_audio
 from interviewlens.audio_pipeline.delivery_analytics import compute_metrics
 from interviewlens.audio_pipeline.postprocessing import normalize_disfluencies
@@ -126,9 +127,14 @@ def run_pipeline_from_video(
     the unstable_tracking rule in detect_signal_events() -- is the automated
     substitute for that human review.
 
-    Audio is still the synthetic placeholder from Person B's subsystem (real ASR
-    on the uploaded video's audio track is not wired up here -- out of scope for
-    closing the *video* wiring gap specifically).
+    Transcript/WPM/filler-word audio metrics are still the synthetic placeholder
+    from Person B's subsystem (real ASR on the uploaded video's audio track is a
+    separate, larger piece of scope). Audio *quality* is real, though: the
+    uploaded video's actual audio track is analyzed for low_mic_level and
+    intermittent_audio (signal-level RMS checks, no ASR) via
+    audio_pipeline.batch_audio_quality, and merged into the same fused evidence
+    the VLM sees. A video with no audio track at all is handled gracefully --
+    extract_audio_quality_evidence() never raises, it just contributes no signals.
     """
     config = config or load_config()
 
@@ -140,8 +146,12 @@ def run_pipeline_from_video(
     # ---- Pipeline B: background detection + tracking ---------------------
     background_evidence = extract_background_evidence(video_path, pose_evidence, sample_fps=background_sample_fps)
 
+    # ---- Audio quality (signal-level only -- low mic level / intermittent audio;
+    # never raises, returns has_audio=False for videos with no audio track) --------
+    audio_quality_evidence = extract_audio_quality_evidence(video_path)
+
     # ---- A/B fusion --------------------------------------------------------
-    fused = fuse_evidence(pose_evidence, background_evidence)
+    fused = fuse_evidence(pose_evidence, background_evidence, audio_quality_evidence)
     duration_s = fused["duration_s"]
 
     # ---- Audio (Person B, synthetic placeholder -- see docstring) --------

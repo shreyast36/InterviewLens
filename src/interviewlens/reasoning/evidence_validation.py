@@ -36,6 +36,16 @@ ALLOWED_KEYWORDS = {
     "restless", "still", "frozen", "sudden", "startle", "jump", "wrist",
     "unstable", "tracking", "reliable", "transient", "appear", "disappear",
     "enter", "leave", "brief",
+    # background rules (batch_background.py + ab_fusion.py)
+    "clutter", "cluttered", "dominant", "occupies", "light", "lighting",
+    "dark", "bright", "brightness", "overexposed", "underexposed", "backlit",
+    "silhouette", "exposure", "shadow", "shadows", "window", "lamp",
+    # expanded background taxonomy: pets/people/appliances
+    "pet", "dog", "cat", "person", "appliance", "washer", "washing",
+    "refrigerator", "fridge", "blender",
+    # audio quality (audio_pipeline/batch_audio_quality.py)
+    "mic", "microphone", "audio", "volume", "quiet", "loud", "noise",
+    "intermittent", "connection", "cutting", "dropout", "dropping",
     # general
     "confidence", "signal", "issue",
 } | {s.value for s in SignalType}  # e.g. "arms_crossed", "headroom_too_loose" -- vlm_reasoning.py's

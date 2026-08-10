@@ -18,6 +18,7 @@ import numpy as np
 HEADROOM_MIN, HEADROOM_MAX = 0.05, 0.25
 CENTERING_MAX_OFFSET = 0.15
 ROLL_MAX_DEG = 10.0
+DOMINANT_OBJECT_AREA_FRAC = 0.18  # a track occupying >=18% of the frame area is "dominant"
 
 
 def _framing_flags(framing: dict | None) -> list[str]:
@@ -39,11 +40,14 @@ def _framing_flags(framing: dict | None) -> list[str]:
     return flags
 
 
-def fuse_evidence(pose_evidence: dict, background_evidence: dict) -> dict:
+def fuse_evidence(pose_evidence: dict, background_evidence: dict, audio_evidence: dict | None = None) -> dict:
     """Builds a common timeline at the coarser of the two streams' sample rates,
     resamples both onto it, merges in pose_evidence["signal_events"] (rule-based pose
-    signals) and transient background objects (tracks whose whole lifetime sits
-    strictly inside the clip -- something entered/left frame mid-video), and computes
+    signals), background_evidence["signal_events"] (lighting + cluttered_background),
+    transient/dominant background objects (from track windows/area), and optionally
+    audio_evidence["signal_events"] (low_mic_level, intermittent_audio -- see
+    audio_pipeline/batch_audio_quality.py; pass None or a video with no audio track
+    and this simply contributes nothing, no special-casing needed here), and computes
     a signal_summary aggregate (per-type counts/durations, % of timeline flagged,
     longest clean streak) for the VLM prompt to cite.
     """
@@ -88,9 +92,16 @@ def fuse_evidence(pose_evidence: dict, background_evidence: dict) -> dict:
         })
 
     all_signal_events = list(pose_evidence.get("signal_events", []))
+    # background_evidence's own signal_events: lighting (low_light, overexposed,
+    # backlit_face) and cluttered_background -- see batch_background.py.
+    all_signal_events += background_evidence.get("signal_events", [])
+    if audio_evidence:
+        all_signal_events += audio_evidence.get("signal_events", [])
     for d in background_evidence["detections"]:
         if d["start_s"] > 1.0 and d["end_s"] < video_duration_s - 1.0 and d["end_s"] - d["start_s"] >= 0.5:
             all_signal_events.append({"type": f"transient_object:{d['class']}", "start_s": d["start_s"], "end_s": d["end_s"]})
+        if d["box_area_frac"] >= DOMINANT_OBJECT_AREA_FRAC:
+            all_signal_events.append({"type": f"dominant_object:{d['class']}", "start_s": d["start_s"], "end_s": d["end_s"]})
 
     def signal_flags_at(ts: float) -> list[str]:
         half_step = 0.5 / fusion_fps
@@ -131,6 +142,7 @@ def fuse_evidence(pose_evidence: dict, background_evidence: dict) -> dict:
         "source_streams": {
             "pose": {"model": pose_evidence["model"], "fps_sampled": pose_fps},
             "background": {"model": background_evidence["model"], "fps_sampled": bg_fps},
+            "audio_quality": {"has_audio": bool(audio_evidence and audio_evidence.get("has_audio"))},
         },
         "signal_summary": signal_summary,
         "timeline": fused_timeline,

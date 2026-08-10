@@ -127,6 +127,10 @@ _FLAG_TO_SIGNAL: dict[str, SignalType] = {
     "off_center":            SignalType.OFF_CENTER,
     "tilted":                SignalType.TILTED,
     "background_distracting": SignalType.BACKGROUND_DISTRACTING,
+    # was silently dropped before: fuse_evidence() emits "background_mild:<class>" for
+    # any non-neutral tier, but only "background_distracting" had a mapping here --
+    # mild-tier objects (pillow, towel, cup, ...) never reached the VLM.
+    "background_mild":       SignalType.BACKGROUND_MILD,
     # original temporal-model signals, if A ever emits them via flags too
     "repetitive_hand_movement": SignalType.REPETITIVE_HAND_MOVEMENT,
     "frequent_posture_shifting": SignalType.FREQUENT_POSTURE_SHIFTING,
@@ -151,6 +155,22 @@ _FLAG_TO_SIGNAL: dict[str, SignalType] = {
     "nodding":            SignalType.NODDING,
     "unstable_tracking":  SignalType.UNSTABLE_TRACKING,
     "transient_object":   SignalType.TRANSIENT_OBJECT,
+    # background rules (batch_background.py + ab_fusion.py) — see schemas.py
+    "cluttered_background": SignalType.CLUTTERED_BACKGROUND,
+    "dominant_object":       SignalType.DOMINANT_OBJECT,
+    "low_light":             SignalType.LOW_LIGHT,
+    "overexposed":           SignalType.OVEREXPOSED,
+    "backlit_face":          SignalType.BACKLIT_FACE,
+    # audio quality (audio_pipeline/batch_audio_quality.py)
+    "low_mic_level":         SignalType.LOW_MIC_LEVEL,
+    "intermittent_audio":    SignalType.INTERMITTENT_AUDIO,
+}
+
+_OBJECT_SIGNAL_TIERS = {
+    SignalType.BACKGROUND_DISTRACTING: "distracting",
+    SignalType.BACKGROUND_MILD: "mild",
+    SignalType.TRANSIENT_OBJECT: "transient",
+    SignalType.DOMINANT_OBJECT: "dominant",
 }
 
 
@@ -216,9 +236,9 @@ def from_fused_evidence_json(
         visual_events.append(
             VisualEvent(signal_type=signal, start_time_s=start, end_time_s=end, confidence=1.0)
         )
-        if signal in (SignalType.BACKGROUND_DISTRACTING, SignalType.TRANSIENT_OBJECT) and detail:
+        if signal in _OBJECT_SIGNAL_TIERS and detail:
             background_objects.append({
-                "object": detail, "tier": "distracting" if signal == SignalType.BACKGROUND_DISTRACTING else "transient",
+                "object": detail, "tier": _OBJECT_SIGNAL_TIERS[signal],
                 "start_s": start, "end_s": end,
             })
     if unknown_flags:

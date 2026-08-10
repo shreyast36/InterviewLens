@@ -55,6 +55,18 @@ REQUIRED COVERAGE: the evidence you are given below will tell you exactly which 
 types are present in this clip. You must produce one observation for every one of them,
 not just the first one or two -- do not stop early.
 
+LIGHTING SUGGESTIONS: if low_light, overexposed, or backlit_face is among the signals
+present, your "suggestions" entry for it must include a concrete fix, not a vague
+comment: for low_light, add or move toward a light source in front of you; for
+overexposed, reduce or diffuse the light source that is too strong; for backlit_face,
+the light behind you (e.g. a window) is brighter than your face -- turn to face that
+light source instead, or add a light in front of you to balance it.
+
+AUDIO SUGGESTIONS: if low_mic_level or intermittent_audio is among the signals present,
+your "suggestions" entry for it must include a concrete fix: for low_mic_level, move
+closer to the microphone or increase input gain; for intermittent_audio, check the
+network/microphone connection and consider a wired connection instead of wifi/bluetooth.
+
 Return STRICT JSON with this shape:
 {{
   "observations": ["<signal_type>: what happened and when, using only the evidence given"],

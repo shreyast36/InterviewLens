@@ -12,9 +12,22 @@ from collections import Counter, defaultdict
 import cv2
 import numpy as np
 
+from interviewlens.video_pipeline.batch_pose import CONF, UPPER_BODY_NAMES, events_from_boolean_series
+
 logger = logging.getLogger(__name__)
 
-# lvis_category_name -> (display_name_for_prompt, tier)
+CLUTTER_MIN_OBJECTS = 4     # simultaneous tracked objects (any tier) to call the frame cluttered
+LOW_LIGHT_MAX_LUMA = 60.0   # mean frame luma (0-255) below this -> too dark
+OVEREXPOSED_MIN_LUMA = 210.0  # mean frame luma above this -> blown out
+BACKLIT_FRAME_LUMA_MIN = 140.0   # frame bright enough that a dark face is suspicious
+BACKLIT_CONTRAST_MIN = 35.0      # frame_luma - face_patch_luma gap that suggests backlighting
+
+# background_category_key -> (display_name_for_prompt, tier). YOLO-World is open-
+# vocabulary -- these keys are just text prompts fed to set_classes(), not an index
+# into a fixed model head, so the taxonomy can be extended freely without retraining.
+# The original 22 (through "speaker") are unchanged from the course notebooks; keep
+# them stable since other evidence (committed pipeline/notebooks/outputs/*.json) was
+# generated against that exact vocabulary.
 CATEGORY_INFO = {
     "chair": ("chair", "neutral"),
     "sofa": ("sofa", "neutral"),
@@ -38,6 +51,53 @@ CATEGORY_INFO = {
     "laptop_computer": ("laptop", "distracting"),
     "computer_keyboard": ("keyboard", "distracting"),
     "speaker_(stero_equipment)": ("speaker", "distracting"),
+
+    # --- expanded neutral: more common static furniture/decor ---
+    "bookcase": ("bookshelf", "neutral"),
+    "houseplant": ("plant", "neutral"),
+    "clock": ("clock", "neutral"),
+    "rug": ("rug", "neutral"),
+    "desk": ("desk", "neutral"),
+    "shelf": ("shelf", "neutral"),
+    "window": ("window", "neutral"),
+    "door": ("door", "neutral"),
+    "whiteboard": ("whiteboard", "neutral"),
+    "candle": ("candle", "neutral"),
+    "trophy": ("trophy", "neutral"),
+    "guitar": ("guitar", "neutral"),
+
+    # --- expanded mild: soft clutter, informal-setting signals ---
+    "clothes_hamper": ("laundry basket", "mild"),
+    "shoe": ("shoe", "mild"),
+    "backpack": ("backpack", "mild"),
+    "box_(container)": ("cardboard box", "mild"),
+    "trash_can": ("trash can", "mild"),
+    "plate": ("plate", "mild"),
+    "cup": ("cup", "mild"),
+    "bottle": ("bottle", "mild"),
+
+    # --- expanded distracting: more active electronics/screens ---
+    "tablet_computer": ("tablet", "distracting"),
+    "cellular_telephone": ("phone", "distracting"),
+    "headphones": ("headphones", "distracting"),
+    "printer": ("printer", "distracting"),
+    "router_(computer_equipment)": ("router", "distracting"),
+
+    # --- people/pets appearing in the background: explicitly distracting -- a
+    # person or animal entering frame draws attention (and raises a privacy/
+    # professionalism concern) in a way static furniture never does. The
+    # existing person-suppression step (IoU against the subject's own framing
+    # bbox) already keeps the interviewee's own body from self-matching here --
+    # only a genuinely separate person/pet survives to be flagged.
+    "person": ("person", "distracting"),
+    "dog": ("dog", "distracting"),
+    "cat": ("cat", "distracting"),
+
+    # --- kitchen/home appliances: explicitly distracting -- signals an
+    # unprofessional/non-dedicated interview setting.
+    "washer_(washing_machine)": ("washing machine", "distracting"),
+    "refrigerator": ("refrigerator", "distracting"),
+    "blender": ("blender", "distracting"),
 }
 CLASS_NAMES = sorted(CATEGORY_INFO.keys())
 CLASS_ID = {name: i for i, name in enumerate(CLASS_NAMES)}
@@ -140,16 +200,69 @@ def _iou_overlap_frac(box_a, box_b) -> float:
     return inter / area_a
 
 
+_FACE_IDX = {name: i for i, name in enumerate(UPPER_BODY_NAMES)}
+
+
+def _frame_luma(frame_bgr: np.ndarray) -> float:
+    return float(cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2GRAY).mean())
+
+
+def _face_patch_luma(frame_bgr: np.ndarray, keypoints: list, frame_w: int, frame_h: int) -> tuple[float | None, float]:
+    """Returns (mean luma of a small patch around the face, face-keypoint confidence).
+    Patch luma is None when the face wasn't localized at all this frame (nose at the
+    all-zero "no person" sentinel) -- deliberately uses the raw keypoint position
+    regardless of confidence to locate the patch, since a backlit face is exactly the
+    case where confidence is low but the model still has a rough fix on where the face
+    is (that's the whole point of the rule)."""
+    nose = keypoints[_FACE_IDX["nose"]]
+    l_eye = keypoints[_FACE_IDX["left_eye"]]
+    r_eye = keypoints[_FACE_IDX["right_eye"]]
+    l_sh = keypoints[_FACE_IDX["left_shoulder"]]
+    r_sh = keypoints[_FACE_IDX["right_shoulder"]]
+    face_conf = float(np.mean([nose[2], l_eye[2], r_eye[2]]))
+
+    nx, ny = nose[0], nose[1]
+    if nx == 0.0 and ny == 0.0:
+        return None, face_conf
+
+    if l_sh[2] > CONF and r_sh[2] > CONF:
+        radius = abs(r_sh[0] - l_sh[0]) * 0.35
+    else:
+        radius = 0.06 * frame_w
+    radius = max(6.0, radius)
+
+    x1, y1 = max(0, int(nx - radius)), max(0, int(ny - radius))
+    x2, y2 = min(frame_w, int(nx + radius)), min(frame_h, int(ny + radius))
+    if x2 <= x1 or y2 <= y1:
+        return None, face_conf
+    return _frame_luma(frame_bgr[y1:y2, x1:x2]), face_conf
+
+
 def extract_background_evidence(video_path: str, pose_evidence: dict, sample_fps: int = 3) -> dict:
     """Detects + tracks background objects with YOLO-World-S + ByteTrack, then
     suppresses any detection whose box mostly overlaps the subject's own framing
     bbox (from pose_evidence) -- prevents the subject's own chair/clothing from
-    registering as clutter."""
+    registering as clutter. Also computes lighting signals (low_light, overexposed,
+    backlit_face) and cluttered_background off the same decoded frames, at zero extra
+    decode cost, appended as pose_evidence-style "signal_events".
+    """
     import supervision as sv
 
     frame_w, frame_h = pose_evidence.get("frame_size", [0, 0])
+    pose_by_ts = {fr["timestamp_s"]: fr for fr in pose_evidence["frames"]}
+    pose_timestamps = np.array(sorted(pose_by_ts.keys()))
+
+    def nearest_pose_frame(ts: float):
+        if len(pose_timestamps) == 0:
+            return None
+        idx = int(np.argmin(np.abs(pose_timestamps - ts)))
+        return pose_by_ts[pose_timestamps[idx]]
+
     tracker = sv.ByteTrack()
     tracked_frames = []
+    ts_list: list[float] = []
+    frame_luma_series: list[float] = []
+    backlit_series: list[bool] = []
     for ts, frame in _sample_video_frames(video_path, sample_fps):
         if not frame_w:
             frame_h, frame_w = frame.shape[:2]
@@ -168,15 +281,31 @@ def extract_background_evidence(video_path: str, pose_evidence: dict, sample_fps
         ]
         tracked_frames.append({"timestamp_s": round(ts, 3), "detections": frame_dets})
 
+        # --- lighting signals, reusing this same decoded frame ---
+        ts_list.append(round(ts, 3))
+        frame_luma = _frame_luma(frame)
+        frame_luma_series.append(frame_luma)
+        pose_frame = nearest_pose_frame(round(ts, 3))
+        if pose_frame is not None:
+            face_patch_luma, face_conf = _face_patch_luma(frame, pose_frame["keypoints"], frame_w, frame_h)
+            backlit = face_conf < CONF and (
+                frame_luma > BACKLIT_FRAME_LUMA_MIN
+                or (face_patch_luma is not None and frame_luma - face_patch_luma > BACKLIT_CONTRAST_MIN)
+            )
+        else:
+            backlit = False
+        backlit_series.append(backlit)
+
     pose_frames_by_ts = {fr["timestamp_s"]: fr["framing"] for fr in pose_evidence["frames"] if fr["framing"]["bbox"] is not None}
-    pose_timestamps = np.array(sorted(pose_frames_by_ts.keys()))
+    subject_bbox_ts = np.array(sorted(pose_frames_by_ts.keys()))
 
     def nearest_subject_bbox(ts: float):
-        if len(pose_timestamps) == 0:
+        if len(subject_bbox_ts) == 0:
             return None
-        idx = int(np.argmin(np.abs(pose_timestamps - ts)))
-        return pose_frames_by_ts[pose_timestamps[idx]]["bbox"]
+        idx = int(np.argmin(np.abs(subject_bbox_ts - ts)))
+        return pose_frames_by_ts[subject_bbox_ts[idx]]["bbox"]
 
+    clutter_series: list[bool] = []
     for f in tracked_frames:
         subject_bbox = nearest_subject_bbox(f["timestamp_s"])
         kept = []
@@ -185,14 +314,27 @@ def extract_background_evidence(video_path: str, pose_evidence: dict, sample_fps
                 continue
             kept.append(d)
         f["detections"] = kept
+        clutter_series.append(len(kept) >= CLUTTER_MIN_OBJECTS)
 
     track_summaries = _summarize_tracks(tracked_frames, frame_w, frame_h)
+
+    # --- collapse the three per-frame boolean series into events ---
+    ts_arr = np.array(ts_list)
+    min_consec = max(1, round(0.6 * sample_fps))
+    luma_arr = np.array(frame_luma_series)
+    signal_events: list[dict] = []
+    signal_events += events_from_boolean_series("low_light", (luma_arr < LOW_LIGHT_MAX_LUMA).tolist(), ts_arr, min_consec)
+    signal_events += events_from_boolean_series("overexposed", (luma_arr > OVEREXPOSED_MIN_LUMA).tolist(), ts_arr, min_consec)
+    signal_events += events_from_boolean_series("backlit_face", backlit_series, ts_arr, min_consec)
+    signal_events += events_from_boolean_series("cluttered_background", clutter_series, ts_arr, min_consec)
+    signal_events.sort(key=lambda e: (e["start_s"], e["type"]))
 
     return {
         "video": str(video_path).rsplit("/", 1)[-1],
         "fps_sampled": sample_fps,
         "model": "YOLO-World-S",
         "taxonomy": {name: CATEGORY_INFO[name][1] for name in CLASS_NAMES},
+        "signal_events": signal_events,
         "detections": [
             {
                 "track_id": t["track_id"],
