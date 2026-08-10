@@ -14,6 +14,7 @@ import numpy as np
 from interviewlens.common.schemas import (
     AudioMetrics,
     EvidencePackage,
+    SignalType,
     Transcript,
     VisualEvent,
 )
@@ -93,6 +94,109 @@ def assemble_evidence(
             for e in visual_events
         ],
         "long_pauses": audio_metrics.long_pause_timestamps,
+    }
+
+    return EvidencePackage(
+        question=question,
+        transcript=transcript,
+        audio_metrics=audio_metrics,
+        visual_events=visual_events,
+        selected_frames=selected_frames,
+        event_timestamps=event_timestamps,
+        frame_images=frame_images,
+    )
+
+
+# ---------------------------------------------------------------------------
+# Adapter for A/B's fused_evidence.json hand-off format
+# ---------------------------------------------------------------------------
+
+_FLAG_TO_SIGNAL: dict[str, SignalType] = {
+    "headroom_too_loose":    SignalType.HEADROOM_TOO_LOOSE,
+    "off_center":            SignalType.OFF_CENTER,
+    "tilted":                SignalType.TILTED,
+    "background_distracting": SignalType.BACKGROUND_DISTRACTING,
+    # original temporal-model signals, if A ever emits them via flags too
+    "repetitive_hand_movement": SignalType.REPETITIVE_HAND_MOVEMENT,
+    "frequent_posture_shifting": SignalType.FREQUENT_POSTURE_SHIFTING,
+    "hand_to_face_activity":     SignalType.HAND_TO_FACE_ACTIVITY,
+}
+
+
+def from_fused_evidence_json(
+    data: dict,
+    question: str,
+    transcript: Transcript,
+    audio_metrics: AudioMetrics,
+    all_frames: dict[int, np.ndarray] | None = None,
+) -> EvidencePackage:
+    """Convert A/B's fused_evidence.json timeline into an EvidencePackage.
+
+    *data* is the parsed JSON dict produced by A/B's notebook fusion step.
+    The per-timestamp flags are mapped to VisualEvent objects; framing
+    metrics and background detections are carried through in event_timestamps
+    so build_prompt() can include them in the VLM context.
+    """
+    fps_fused: int = int(data.get("fps_fused", 3))
+    step: float = 1.0 / fps_fused
+
+    visual_events: list[VisualEvent] = []
+    framing_summary: list[dict] = []
+    background_objects: list[dict] = []
+
+    for entry in data.get("timeline", []):
+        t: float = float(entry["timestamp_s"])
+
+        # Map each flag string to a VisualEvent
+        for flag in entry.get("flags", []):
+            # Flags like "background_distracting:laptop" carry an object class
+            key, _, detail = flag.partition(":")
+            signal = _FLAG_TO_SIGNAL.get(key)
+            if signal is None:
+                logger.debug("Unknown flag %r — skipping.", flag)
+                continue
+            visual_events.append(
+                VisualEvent(
+                    signal_type=signal,
+                    start_time_s=t,
+                    end_time_s=t + step,
+                    confidence=1.0,
+                )
+            )
+            if signal == SignalType.BACKGROUND_DISTRACTING and detail:
+                background_objects.append({"object": detail, "timestamp_s": t})
+
+        # Carry framing metrics through for the VLM prompt
+        if "pose" in entry and "framing" in entry["pose"]:
+            framing_summary.append({**entry["pose"]["framing"], "timestamp_s": t})
+
+        # Carry non-flag distracting background tracks through too
+        if "background" in entry:
+            for track in entry["background"].get("active_tracks", []):
+                if track.get("tier") == "distracting":
+                    background_objects.append({**track, "timestamp_s": t})
+
+    # Deduplicate background_objects by (object/class, timestamp)
+    seen_bg: set[tuple] = set()
+    unique_bg = []
+    for obj in background_objects:
+        key = (obj.get("object") or obj.get("class", ""), obj["timestamp_s"])
+        if key not in seen_bg:
+            seen_bg.add(key)
+            unique_bg.append(obj)
+
+    selected_frames = select_representative_frames(visual_events, fps_fused)
+    frame_images = _extract_frame_crops(selected_frames, all_frames) if all_frames else []
+
+    event_timestamps = {
+        "visual_events": [
+            {"type": e.signal_type.value, "start": e.start_time_s,
+             "end": e.end_time_s, "confidence": e.confidence}
+            for e in visual_events
+        ],
+        "long_pauses":        audio_metrics.long_pause_timestamps,
+        "framing_summary":    framing_summary,
+        "background_objects": unique_bg,
     }
 
     return EvidencePackage(

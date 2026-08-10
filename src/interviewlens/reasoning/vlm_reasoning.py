@@ -30,6 +30,8 @@ Return STRICT JSON with this shape:
 
 
 def build_prompt(evidence: EvidencePackage) -> str:
+    framing    = evidence.event_timestamps.get("framing_summary", [])
+    background = evidence.event_timestamps.get("background_objects", [])
     return (
         f"Question: {evidence.question}\n\n"
         f"Transcript: {evidence.transcript.text}\n\n"
@@ -37,6 +39,10 @@ def build_prompt(evidence: EvidencePackage) -> str:
         f"fillers={evidence.audio_metrics.filler_word_count}, "
         f"long_pauses={evidence.audio_metrics.long_pause_count}\n\n"
         f"Visual events: {evidence.event_timestamps.get('visual_events', [])}\n\n"
+        f"Framing issues (headroom_pct, centering_offset, roll_deg): "
+        f"{framing if framing else 'none detected'}\n\n"
+        f"Distracting background objects: "
+        f"{background if background else 'none detected'}\n\n"
         f"Selected frame indices: {evidence.selected_frames}\n"
     )
 
@@ -77,7 +83,7 @@ class VLMReasoner:
             self._model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
                 self.model_name,
                 torch_dtype=dtype,
-                device_map="auto" if self._device == "cuda" else None,
+                device_map="auto" if self._device == "cuda" else None
             )
             self._processor = AutoProcessor.from_pretrained(self.model_name)
 
