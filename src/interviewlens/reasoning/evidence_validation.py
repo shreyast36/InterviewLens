@@ -28,6 +28,14 @@ ALLOWED_KEYWORDS = {
     "headroom", "framing", "center", "centering", "tilt", "tilted", "camera",
     # background signals (YOLO-World-S, from A/B branch)
     "background", "distracting", "object", "laptop", "monitor", "screen",
+    # rule-based pose signals (00_master_pipeline.ipynb §5)
+    "face", "touch", "touching", "grooming", "hair", "arm", "arms", "cross",
+    "crossed", "shoulder", "shoulders", "head", "nose", "chin", "down",
+    "looking", "gaze", "lean",
+    "leaning", "sway", "swaying", "nod", "nodding", "fidget", "fidgeting",
+    "restless", "still", "frozen", "sudden", "startle", "jump", "wrist",
+    "unstable", "tracking", "reliable", "transient", "appear", "disappear",
+    "enter", "leave", "brief",
     # general
     "confidence", "signal", "issue",
 }

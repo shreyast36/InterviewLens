@@ -12,6 +12,24 @@
       "fps_sampled": 3
     }
   },
+  "signal_summary": {
+    "per_type": {
+      "body_lean": {
+        "events": 1,
+        "total_s": 17.4
+      },
+      "head_tilt": {
+        "events": 7,
+        "total_s": 11.6
+      },
+      "nodding": {
+        "events": 1,
+        "total_s": 7.2
+      }
+    },
+    "pct_timestamps_flagged": 100.0,
+    "longest_clean_streak_s": 0.0
+  },
   "timeline": [
     {
       "timestamp_s": 0.0,
@@ -54,7 +72,8 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean"
       ]
     },
     {
@@ -62,17 +81,17 @@
       "pose": {
         "framing": {
           "bbox": [
-            1052.99072265625,
-            788.1720581054688,
-            2125.652587890625,
-            1912.1573486328125
+            1052.6649169921875,
+            749.09423828125,
+            2102.00439453125,
+            1916.7415771484375
           ],
-          "headroom_pct": 0.36489447951316833,
+          "headroom_pct": 0.34680289030075073,
           "centering_offset": [
-            -0.17222830653190613,
-            0.25015246868133545
+            -0.17847150564193726,
+            0.23418331146240234
           ],
-          "roll_deg": 168.69009399414062
+          "roll_deg": 159.4439239501953
         }
       },
       "background": {
@@ -98,7 +117,9 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "head_tilt"
       ]
     },
     {
@@ -106,17 +127,17 @@
       "pose": {
         "framing": {
           "bbox": [
-            1057.4403076171875,
-            781.5640869140625,
-            2142.39404296875,
-            1907.0767822265625
+            1054.7144775390625,
+            759.5887451171875,
+            2105.07861328125,
+            1917.55126953125
           ],
-          "headroom_pct": 0.36183521151542664,
+          "headroom_pct": 0.35166144371032715,
           "centering_offset": [
-            -0.166709765791893,
-            0.24474114179611206
+            -0.17713724076747894,
+            0.23941673338413239
           ],
-          "roll_deg": 167.90525817871094
+          "roll_deg": 165.9637908935547
         }
       },
       "background": {
@@ -142,7 +163,9 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "head_tilt"
       ]
     },
     {
@@ -186,7 +209,9 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "head_tilt"
       ]
     },
     {
@@ -194,17 +219,17 @@
       "pose": {
         "framing": {
           "bbox": [
-            1070.5655517578125,
-            796.3963623046875,
-            2159.35009765625,
-            1915.0689697265625
+            1068.8834228515625,
+            832.5076293945312,
+            2154.710205078125,
+            1918.33447265625
           ],
-          "headroom_pct": 0.3687020242214203,
+          "headroom_pct": 0.38542020320892334,
           "centering_offset": [
-            -0.15887616574764252,
-            0.25530803203582764
+            -0.1605224609375,
+            0.2735379934310913
           ],
-          "roll_deg": 171.86990356445312
+          "roll_deg": 169.38035583496094
         }
       },
       "background": {
@@ -230,7 +255,8 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean"
       ]
     },
     {
@@ -238,17 +264,17 @@
       "pose": {
         "framing": {
           "bbox": [
-            1064.65869140625,
-            839.2610473632812,
-            2176.1474609375,
-            1912.1265869140625
+            1065.7022705078125,
+            842.9576416015625,
+            2184.40087890625,
+            1913.939208984375
           ],
-          "headroom_pct": 0.38854679465293884,
+          "headroom_pct": 0.39025816321372986,
           "centering_offset": [
-            -0.15604005753993988,
-            0.2737905979156494
+            -0.15361900627613068,
+            0.27634119987487793
           ],
-          "roll_deg": 174.2893829345703
+          "roll_deg": 173.2901611328125
         }
       },
       "background": {
@@ -274,7 +300,9 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "nodding"
       ]
     },
     {
@@ -318,7 +346,9 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "nodding"
       ]
     },
     {
@@ -326,17 +356,17 @@
       "pose": {
         "framing": {
           "bbox": [
-            1070.996337890625,
-            712.090576171875,
-            2202.349365234375,
-            1910.274658203125
+            1074.1435546875,
+            706.6915893554688,
+            2195.79443359375,
+            1911.2232666015625
           ],
-          "headroom_pct": 0.32967156171798706,
+          "headroom_pct": 0.32717204093933105,
           "centering_offset": [
-            -0.14756622910499573,
-            0.21405798196792603
+            -0.14845365285873413,
+            0.21199758350849152
           ],
-          "roll_deg": 171.46922302246094
+          "roll_deg": 168.6900634765625
         }
       },
       "background": {
@@ -362,7 +392,9 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "nodding"
       ]
     },
     {
@@ -370,17 +402,17 @@
       "pose": {
         "framing": {
           "bbox": [
-            1068.3226318359375,
-            747.0833129882812,
-            2191.492431640625,
-            1905.0416259765625
+            1065.380615234375,
+            734.164794921875,
+            2171.6962890625,
+            1906.2022705078125
           ],
-          "headroom_pct": 0.3458718955516815,
+          "headroom_pct": 0.33989110589027405,
           "centering_offset": [
-            -0.1510898619890213,
-            0.22783565521240234
+            -0.1570112258195877,
+            0.2223922163248062
           ],
-          "roll_deg": 170.53768920898438
+          "roll_deg": 168.6900634765625
         }
       },
       "background": {
@@ -406,7 +438,9 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "nodding"
       ]
     },
     {
@@ -450,7 +484,9 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "nodding"
       ]
     },
     {
@@ -458,17 +494,17 @@
       "pose": {
         "framing": {
           "bbox": [
-            1078.517578125,
-            783.9442749023438,
-            2177.759033203125,
-            1907.505126953125
+            1072.9111328125,
+            818.64453125,
+            2147.380126953125,
+            1914.6029052734375
           ],
-          "headroom_pct": 0.36293715238571167,
+          "headroom_pct": 0.37900209426879883,
           "centering_offset": [
-            -0.15201130509376526,
-            0.2460414171218872
+            -0.16138248145580292,
+            0.26539239287376404
           ],
-          "roll_deg": 167.47122192382812
+          "roll_deg": 167.90521240234375
         }
       },
       "background": {
@@ -494,7 +530,9 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "nodding"
       ]
     },
     {
@@ -502,17 +540,17 @@
       "pose": {
         "framing": {
           "bbox": [
-            1078.2119140625,
-            802.0541381835938,
-            2184.4658203125,
-            1903.539794921875
+            1075.0096435546875,
+            824.36865234375,
+            2150.52783203125,
+            1915.626220703125
           ],
-          "headroom_pct": 0.37132135033607483,
+          "headroom_pct": 0.3816521465778351,
           "centering_offset": [
-            -0.1503443419933319,
-            0.2525898218154907
+            -0.1600162535905838,
+            0.2685161530971527
           ],
-          "roll_deg": 168.11129760742188
+          "roll_deg": 169.3803253173828
         }
       },
       "background": {
@@ -538,7 +576,10 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "head_tilt",
+        "nodding"
       ]
     },
     {
@@ -582,7 +623,10 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "head_tilt",
+        "nodding"
       ]
     },
     {
@@ -590,17 +634,17 @@
       "pose": {
         "framing": {
           "bbox": [
-            1077.25390625,
-            771.12939453125,
-            2171.528564453125,
-            1907.8544921875
+            1078.114013671875,
+            809.5565795898438,
+            2140.93505859375,
+            1914.26220703125
           ],
-          "headroom_pct": 0.3570043444633484,
+          "headroom_pct": 0.37479472160339355,
           "centering_offset": [
-            -0.1539628952741623,
-            0.24027031660079956
+            -0.16170597076416016,
+            0.2610272467136383
           ],
-          "roll_deg": 168.6900634765625
+          "roll_deg": 163.61045837402344
         }
       },
       "background": {
@@ -626,7 +670,10 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "head_tilt",
+        "nodding"
       ]
     },
     {
@@ -634,17 +681,17 @@
       "pose": {
         "framing": {
           "bbox": [
-            1077.1744384765625,
-            772.6976928710938,
-            2167.089599609375,
-            1901.02392578125
+            1080.1898193359375,
+            815.1619262695312,
+            2144.048828125,
+            1920.537353515625
           ],
-          "headroom_pct": 0.3577304184436798,
+          "headroom_pct": 0.3773897886276245,
           "centering_offset": [
-            -0.15513953566551208,
-            0.2378341108560562
+            -0.16035448014736176,
+            0.2665274143218994
           ],
-          "roll_deg": 168.11135864257812
+          "roll_deg": 166.75946044921875
         }
       },
       "background": {
@@ -670,7 +717,10 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "head_tilt",
+        "nodding"
       ]
     },
     {
@@ -714,7 +764,9 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "nodding"
       ]
     },
     {
@@ -722,17 +774,17 @@
       "pose": {
         "framing": {
           "bbox": [
-            1080.960205078125,
-            794.9659423828125,
-            2163.559814453125,
-            1906.30712890625
+            1082.2740478515625,
+            841.2394409179688,
+            2146.962646484375,
+            1921.5853271484375
           ],
-          "headroom_pct": 0.3680397868156433,
+          "headroom_pct": 0.3894627094268799,
           "centering_offset": [
-            -0.1550729125738144,
-            0.2505893409252167
+            -0.15905290842056274,
+            0.27908551692962646
           ],
-          "roll_deg": 165.96376037597656
+          "roll_deg": 169.38031005859375
         }
       },
       "background": {
@@ -758,7 +810,9 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "nodding"
       ]
     },
     {
@@ -766,17 +820,17 @@
       "pose": {
         "framing": {
           "bbox": [
-            1083.50244140625,
-            791.3570556640625,
-            2161.942626953125,
-            1903.6495361328125
+            1084.353515625,
+            839.7560424804688,
+            2155.280517578125,
+            1910.6829833984375
           ],
-          "headroom_pct": 0.36636900901794434,
+          "headroom_pct": 0.38877594470977783,
           "centering_offset": [
-            -0.15483202040195465,
-            0.24768823385238647
+            -0.15634530782699585,
+            0.27335137128829956
           ],
-          "roll_deg": 166.75946044921875
+          "roll_deg": 170.5376739501953
         }
       },
       "background": {
@@ -802,7 +856,10 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "head_tilt",
+        "nodding"
       ]
     },
     {
@@ -846,7 +903,10 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "head_tilt",
+        "nodding"
       ]
     },
     {
@@ -854,17 +914,17 @@
       "pose": {
         "framing": {
           "bbox": [
-            1085.9608154296875,
-            789.4488525390625,
-            2369.85205078125,
-            1915.57373046875
+            1091.4398193359375,
+            791.25244140625,
+            2364.22705078125,
+            1902.7005615234375
           ],
-          "headroom_pct": 0.3654855787754059,
+          "headroom_pct": 0.36632058024406433,
           "centering_offset": [
-            -0.10004869848489761,
-            0.2523252069950104
+            -0.10008671879768372,
+            0.24720051884651184
           ],
-          "roll_deg": 162.64598083496094
+          "roll_deg": 164.05459594726562
         }
       },
       "background": {
@@ -890,7 +950,10 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "head_tilt",
+        "nodding"
       ]
     },
     {
@@ -898,17 +961,17 @@
       "pose": {
         "framing": {
           "bbox": [
-            1083.5369873046875,
-            787.4457397460938,
-            2269.525390625,
-            1912.353271484375
+            1087.7109375,
+            770.1055908203125,
+            2274.734130859375,
+            1901.19580078125
           ],
-          "headroom_pct": 0.36455821990966797,
+          "headroom_pct": 0.3565303683280945,
           "centering_offset": [
-            -0.12680664658546448,
-            0.2499069720506668
+            -0.12436326593160629,
+            0.23671354353427887
           ],
-          "roll_deg": 165.96376037597656
+          "roll_deg": 161.56503295898438
         }
       },
       "background": {
@@ -934,7 +997,10 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "head_tilt",
+        "nodding"
       ]
     },
     {
@@ -978,7 +1044,10 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "head_tilt",
+        "nodding"
       ]
     },
     {
@@ -986,17 +1055,17 @@
       "pose": {
         "framing": {
           "bbox": [
-            1080.68505859375,
-            793.41455078125,
-            2342.790771484375,
-            1914.7066650390625
+            1088.5955810546875,
+            781.830810546875,
+            2413.291015625,
+            1902.7269287109375
           ],
-          "headroom_pct": 0.36732155084609985,
+          "headroom_pct": 0.36195871233940125,
           "centering_offset": [
-            -0.10846983641386032,
-            0.2537597715854645
+            -0.08805033564567566,
+            0.24285075068473816
           ],
-          "roll_deg": 165.06854248046875
+          "roll_deg": 167.90521240234375
         }
       },
       "background": {
@@ -1022,7 +1091,10 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "head_tilt",
+        "nodding"
       ]
     },
     {
@@ -1030,17 +1102,17 @@
       "pose": {
         "framing": {
           "bbox": [
-            1086.0533447265625,
-            785.5391235351562,
-            2351.94287109375,
-            1915.0181884765625
+            1078.2464599609375,
+            754.83154296875,
+            2384.830810546875,
+            1906.1781005859375
           ],
-          "headroom_pct": 0.3636755347251892,
+          "headroom_pct": 0.34945905208587646,
           "centering_offset": [
-            -0.10468851774930954,
-            0.25025802850723267
+            -0.09815699607133865,
+            0.23194897174835205
           ],
-          "roll_deg": 165.9637451171875
+          "roll_deg": 161.5650634765625
         }
       },
       "background": {
@@ -1066,7 +1138,10 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "head_tilt",
+        "nodding"
       ]
     },
     {
@@ -1110,7 +1185,10 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "head_tilt",
+        "nodding"
       ]
     },
     {
@@ -1118,17 +1196,17 @@
       "pose": {
         "framing": {
           "bbox": [
-            1087.4102783203125,
-            777.3505859375,
-            2206.362060546875,
-            1905.948486328125
+            1086.29150390625,
+            788.3095092773438,
+            2194.532470703125,
+            1908.1551513671875
           ],
-          "headroom_pct": 0.3598845303058624,
+          "headroom_pct": 0.36495810747146606,
           "centering_offset": [
-            -0.14224675297737122,
-            0.24226808547973633
+            -0.1456187516450882,
+            0.24836324155330658
           ],
-          "roll_deg": 167.47117614746094
+          "roll_deg": 165.96371459960938
         }
       },
       "background": {
@@ -1154,7 +1232,10 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "head_tilt",
+        "nodding"
       ]
     },
     {
@@ -1162,17 +1243,17 @@
       "pose": {
         "framing": {
           "bbox": [
-            1091.2828369140625,
-            785.7507934570312,
-            2188.230712890625,
-            1907.2938232421875
+            1088.4560546875,
+            827.5146484375,
+            2186.95654296875,
+            1909.78125
           ],
-          "headroom_pct": 0.36377352476119995,
+          "headroom_pct": 0.38310864567756653,
           "centering_offset": [
-            -0.1459599882364273,
-            0.24677994847297668
+            -0.14702796936035156,
+            0.2672666311264038
           ],
-          "roll_deg": 167.47120666503906
+          "roll_deg": 169.3803253173828
         }
       },
       "background": {
@@ -1198,7 +1279,10 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "head_tilt",
+        "nodding"
       ]
     },
     {
@@ -1242,7 +1326,10 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "head_tilt",
+        "nodding"
       ]
     },
     {
@@ -1250,17 +1337,17 @@
       "pose": {
         "framing": {
           "bbox": [
-            1086.0087890625,
-            781.2234497070312,
-            2177.63037109375,
-            1907.4212646484375
+            1092.4508056640625,
+            795.755859375,
+            2154.763427734375,
+            1921.1763916015625
           ],
-          "headroom_pct": 0.36167752742767334,
+          "headroom_pct": 0.3684054911136627,
           "centering_offset": [
-            -0.15009397268295288,
-            0.24474294483661652
+            -0.1543712615966797,
+            0.2578389346599579
           ],
-          "roll_deg": 168.111328125
+          "roll_deg": 168.6900634765625
         }
       },
       "background": {
@@ -1286,7 +1373,9 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "head_tilt"
       ]
     },
     {
@@ -1294,17 +1383,17 @@
       "pose": {
         "framing": {
           "bbox": [
-            1085.0411376953125,
-            774.7850341796875,
-            2167.194580078125,
-            1905.2489013671875
+            1084.1514892578125,
+            807.7593994140625,
+            2173.436767578125,
+            1917.7930908203125
           ],
-          "headroom_pct": 0.3586967885494232,
+          "headroom_pct": 0.3739626705646515,
           "centering_offset": [
-            -0.1530635803937912,
-            0.24075645208358765
+            -0.1516696959733963,
+            0.26182985305786133
           ],
-          "roll_deg": 171.46923828125
+          "roll_deg": 171.02735900878906
         }
       },
       "background": {
@@ -1330,7 +1419,9 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "head_tilt"
       ]
     },
     {
@@ -1374,7 +1465,9 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "head_tilt"
       ]
     },
     {
@@ -1382,59 +1475,15 @@
       "pose": {
         "framing": {
           "bbox": [
-            1081.4832763671875,
-            784.5934448242188,
-            2178.0400390625,
-            1915.265380859375
+            1081.9500732421875,
+            800.5755004882812,
+            2154.659423828125,
+            1920.843505859375
           ],
-          "headroom_pct": 0.3632377088069916,
+          "headroom_pct": 0.37063679099082947,
           "centering_offset": [
-            -0.15116576850414276,
-            0.24993467330932617
-          ],
-          "roll_deg": 165.0685272216797
-        }
-      },
-      "background": {
-        "active_tracks": [
-          {
-            "track_id": 1,
-            "class": "laptop",
-            "tier": "distracting"
-          },
-          {
-            "track_id": 2,
-            "class": "cabinet",
-            "tier": "neutral"
-          },
-          {
-            "track_id": 3,
-            "class": "cabinet",
-            "tier": "neutral"
-          }
-        ]
-      },
-      "flags": [
-        "headroom_too_loose",
-        "off_center",
-        "tilted",
-        "background_distracting:laptop"
-      ]
-    },
-    {
-      "timestamp_s": 10.667,
-      "pose": {
-        "framing": {
-          "bbox": [
-            1077.904296875,
-            776.96435546875,
-            2141.107666015625,
-            1909.2069091796875
-          ],
-          "headroom_pct": 0.35970571637153625,
-          "centering_offset": [
-            -0.16171564161777496,
-            0.2435978651046753
+            -0.15713296830654144,
+            0.25991618633270264
           ],
           "roll_deg": 165.9637451171875
         }
@@ -1462,7 +1511,55 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "head_tilt"
+      ]
+    },
+    {
+      "timestamp_s": 10.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            1078.807373046875,
+            818.8338623046875,
+            2136.8505859375,
+            1924.017822265625
+          ],
+          "headroom_pct": 0.37908974289894104,
+          "centering_offset": [
+            -0.16258907318115234,
+            0.26983869075775146
+          ],
+          "roll_deg": 165.06858825683594
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "laptop",
+            "tier": "distracting"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "cabinet",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_distracting:laptop",
+        "body_lean",
+        "head_tilt"
       ]
     },
     {
@@ -1506,7 +1603,9 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "head_tilt"
       ]
     },
     {
@@ -1514,17 +1613,17 @@
       "pose": {
         "framing": {
           "bbox": [
-            1083.7901611328125,
-            796.9671630859375,
-            2149.96826171875,
-            1910.3212890625
+            1083.4403076171875,
+            827.9830322265625,
+            2161.1025390625,
+            1921.2635498046875
           ],
-          "headroom_pct": 0.368966281414032,
+          "headroom_pct": 0.3833254873752594,
           "centering_offset": [
-            -0.1578754484653473,
-            0.2533743381500244
+            -0.15506693720817566,
+            0.2727993428707123
           ],
-          "roll_deg": 168.11135864257812
+          "roll_deg": 169.9920196533203
         }
       },
       "background": {
@@ -1550,7 +1649,9 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "head_tilt"
       ]
     },
     {
@@ -1558,17 +1659,17 @@
       "pose": {
         "framing": {
           "bbox": [
-            1084.791015625,
-            789.8486938476562,
-            2162.7724609375,
-            1914.2950439453125
+            1085.545166015625,
+            839.9805908203125,
+            2153.735595703125,
+            1923.9571533203125
           ],
-          "headroom_pct": 0.36567068099975586,
+          "headroom_pct": 0.3888798952102661,
           "centering_offset": [
-            -0.15428034961223602,
-            0.2519184350967407
+            -0.15643730759620667,
+            0.2796007990837097
           ],
-          "roll_deg": 165.2564239501953
+          "roll_deg": 169.3803253173828
         }
       },
       "background": {
@@ -1594,7 +1695,9 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "head_tilt"
       ]
     },
     {
@@ -1638,7 +1741,9 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "head_tilt"
       ]
     },
     {
@@ -1646,17 +1751,17 @@
       "pose": {
         "framing": {
           "bbox": [
-            1085.1485595703125,
-            805.180419921875,
-            2138.146484375,
-            1911.55615234375
+            1087.896484375,
+            849.7086791992188,
+            2140.099853515625,
+            1922.44287109375
           ],
-          "headroom_pct": 0.37276870012283325,
+          "headroom_pct": 0.393383651971817,
           "centering_offset": [
-            -0.16060027480125427,
-            0.25774842500686646
+            -0.15937595069408417,
+            0.28340351581573486
           ],
-          "roll_deg": 167.47117614746094
+          "roll_deg": 173.65980529785156
         }
       },
       "background": {
@@ -1682,7 +1787,9 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "head_tilt"
       ]
     },
     {
@@ -1690,17 +1797,17 @@
       "pose": {
         "framing": {
           "bbox": [
-            1081.81494140625,
-            782.91552734375,
-            2247.0869140625,
-            1917.2509765625
+            1079.6761474609375,
+            824.9070434570312,
+            2215.1103515625,
+            1919.2396240234375
           ],
-          "headroom_pct": 0.3624608814716339,
+          "headroom_pct": 0.38190141320228577,
           "centering_offset": [
-            -0.13309846818447113,
-            0.25007709860801697
+            -0.14198264479637146,
+            0.2704383134841919
           ],
-          "roll_deg": 160.34619140625
+          "roll_deg": 167.47120666503906
         }
       },
       "background": {
@@ -1726,7 +1833,9 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "head_tilt"
       ]
     },
     {
@@ -1770,7 +1879,9 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "head_tilt"
       ]
     },
     {
@@ -1778,17 +1889,17 @@
       "pose": {
         "framing": {
           "bbox": [
-            1086.68212890625,
-            790.3849487304688,
-            2270.3466796875,
-            1914.8663330078125
+            1084.0570068359375,
+            780.7310180664062,
+            2258.953369140625,
+            1909.326171875
           ],
-          "headroom_pct": 0.36591896414756775,
+          "headroom_pct": 0.36144953966140747,
           "centering_offset": [
-            -0.12577374279499054,
-            0.25243112444877625
+            -0.12942440807819366,
+            0.24539682269096375
           ],
-          "roll_deg": 162.64596557617188
+          "roll_deg": 165.06858825683594
         }
       },
       "background": {
@@ -1814,7 +1925,9 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "head_tilt"
       ]
     },
     {
@@ -1822,17 +1935,17 @@
       "pose": {
         "framing": {
           "bbox": [
-            1085.7728271484375,
-            788.70751953125,
-            2312.230712890625,
-            1915.8570556640625
+            1080.6148681640625,
+            788.3307495117188,
+            2308.289794921875,
+            1912.7432861328125
           ],
-          "headroom_pct": 0.3651423752307892,
+          "headroom_pct": 0.364967942237854,
           "centering_offset": [
-            -0.11510327458381653,
-            0.2521131634712219
+            -0.11747271567583084,
+            0.2504972219467163
           ],
-          "roll_deg": 162.64596557617188
+          "roll_deg": 166.75946044921875
         }
       },
       "background": {
@@ -1858,7 +1971,9 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "head_tilt"
       ]
     },
     {
@@ -1902,7 +2017,9 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "head_tilt"
       ]
     },
     {
@@ -1910,17 +2027,17 @@
       "pose": {
         "framing": {
           "bbox": [
-            1095.044677734375,
-            786.3599853515625,
-            2367.32373046875,
-            1912.8046875
+            1097.6617431640625,
+            777.822509765625,
+            2372.632568359375,
+            1910.41064453125
           ],
-          "headroom_pct": 0.3640555441379547,
+          "headroom_pct": 0.3601030111312866,
           "centering_offset": [
-            -0.09834156185388565,
-            0.2496132105588913
+            -0.09627749025821686,
+            0.2445523887872696
           ],
-          "roll_deg": 167.47116088867188
+          "roll_deg": 162.89727783203125
         }
       },
       "background": {
@@ -1946,7 +2063,9 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "head_tilt"
       ]
     },
     {
@@ -1954,17 +2073,17 @@
       "pose": {
         "framing": {
           "bbox": [
-            1094.5384521484375,
-            794.47314453125,
-            2330.707763671875,
-            1926.3243408203125
+            1093.926513671875,
+            803.97705078125,
+            2370.142333984375,
+            1912.10595703125
           ],
-          "headroom_pct": 0.3678116500377655,
+          "headroom_pct": 0.37221160531044006,
           "centering_offset": [
-            -0.10800883173942566,
-            0.25962841510772705
+            -0.09789873659610748,
+            0.2574458420276642
           ],
-          "roll_deg": 169.99200439453125
+          "roll_deg": 163.61045837402344
         }
       },
       "background": {
@@ -1990,7 +2109,9 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "head_tilt"
       ]
     },
     {
@@ -2034,7 +2155,9 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "head_tilt"
       ]
     },
     {
@@ -2042,17 +2165,17 @@
       "pose": {
         "framing": {
           "bbox": [
-            1092.8677978515625,
-            794.6400146484375,
-            2172.75439453125,
-            1912.4173583984375
+            1089.7457275390625,
+            812.520263671875,
+            2155.5810546875,
+            1922.08203125
           ],
-          "headroom_pct": 0.3678888976573944,
+          "headroom_pct": 0.37616679072380066,
           "centering_offset": [
-            -0.14957758784294128,
-            0.2532672882080078
+            -0.15486285090446472,
+            0.2660195827484131
           ],
-          "roll_deg": 172.2348175048828
+          "roll_deg": 171.02737426757812
         }
       },
       "background": {
@@ -2078,7 +2201,9 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "head_tilt"
       ]
     },
     {
@@ -2086,17 +2211,17 @@
       "pose": {
         "framing": {
           "bbox": [
-            1090.77197265625,
-            778.016357421875,
-            2180.3974609375,
-            1910.653564453125
+            1091.827392578125,
+            803.646240234375,
+            2163.90771484375,
+            1922.5650634765625
           ],
-          "headroom_pct": 0.36019274592399597,
+          "headroom_pct": 0.3720584511756897,
           "centering_offset": [
-            -0.14813296496868134,
-            0.2447545975446701
+            -0.15215231478214264,
+            0.2621349096298218
           ],
-          "roll_deg": 168.69003295898438
+          "roll_deg": 168.11134338378906
         }
       },
       "background": {
@@ -2122,7 +2247,9 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "head_tilt"
       ]
     },
     {
@@ -2166,7 +2293,9 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "head_tilt"
       ]
     },
     {
@@ -2174,17 +2303,17 @@
       "pose": {
         "framing": {
           "bbox": [
-            1094.6898193359375,
-            806.8173217773438,
-            2183.84228515625,
-            1915.0777587890625
+            1092.903076171875,
+            835.736328125,
+            2176.933837890625,
+            1930.3948974609375
           ],
-          "headroom_pct": 0.37352654337882996,
+          "headroom_pct": 0.3869149684906006,
           "centering_offset": [
-            -0.14621557295322418,
-            0.26013657450675964
+            -0.14847996830940247,
+            0.2806163728237152
           ],
-          "roll_deg": 174.55966186523438
+          "roll_deg": 170.53770446777344
         }
       },
       "background": {
@@ -2210,7 +2339,9 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "head_tilt"
       ]
     },
     {
@@ -2218,17 +2349,17 @@
       "pose": {
         "framing": {
           "bbox": [
-            1095.769775390625,
-            802.1107177734375,
-            2175.028076171875,
-            1915.095703125
+            1095.020263671875,
+            840.8779907226562,
+            2169.5234375,
+            1925.96728515625
           ],
-          "headroom_pct": 0.3713475465774536,
+          "headroom_pct": 0.389295369386673,
           "centering_offset": [
-            -0.14822973310947418,
-            0.25796598196029663
+            -0.14985841512680054,
+            0.28094685077667236
           ],
-          "roll_deg": 170.5376739501953
+          "roll_deg": 173.2901611328125
         }
       },
       "background": {
@@ -2254,7 +2385,9 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "head_tilt"
       ]
     },
     {
@@ -2298,7 +2431,9 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "head_tilt"
       ]
     },
     {
@@ -2306,17 +2441,17 @@
       "pose": {
         "framing": {
           "bbox": [
-            1097.1212158203125,
-            778.37939453125,
-            2145.5576171875,
-            1911.223876953125
+            1095.0499267578125,
+            798.6673583984375,
+            2150.35693359375,
+            1926.3974609375
           ],
-          "headroom_pct": 0.3603608310222626,
+          "headroom_pct": 0.3697534203529358,
           "centering_offset": [
-            -0.15555241703987122,
-            0.2451867014169693
+            -0.15484198927879333,
+            0.2616041302680969
           ],
-          "roll_deg": 169.69512939453125
+          "roll_deg": 165.96377563476562
         }
       },
       "background": {
@@ -2342,7 +2477,9 @@
         "headroom_too_loose",
         "off_center",
         "tilted",
-        "background_distracting:laptop"
+        "background_distracting:laptop",
+        "body_lean",
+        "head_tilt"
       ]
     }
   ]

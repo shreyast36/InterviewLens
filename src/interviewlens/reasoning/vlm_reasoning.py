@@ -32,16 +32,34 @@ Return STRICT JSON with this shape:
 def build_prompt(evidence: EvidencePackage) -> str:
     framing    = evidence.event_timestamps.get("framing_summary", [])
     background = evidence.event_timestamps.get("background_objects", [])
+    summary    = evidence.event_timestamps.get("signal_summary")
+
+    summary_line = ""
+    if summary:
+        counts = ", ".join(
+            f"{sig_type} x{s['events']} ({s['total_s']}s total)"
+            for sig_type, s in summary.get("per_type", {}).items()
+        )
+        summary_line = (
+            f"Signal summary: {counts or 'no recurring signals'}. "
+            f"{summary.get('pct_timestamps_flagged', 0)}% of the clip has at least one flag. "
+            f"Longest clean streak: {summary.get('longest_clean_streak_s', 0)}s.\n\n"
+        )
+
     return (
         f"Question: {evidence.question}\n\n"
         f"Transcript: {evidence.transcript.text}\n\n"
         f"Audio metrics: wpm={evidence.audio_metrics.words_per_minute}, "
         f"fillers={evidence.audio_metrics.filler_word_count}, "
         f"long_pauses={evidence.audio_metrics.long_pause_count}\n\n"
-        f"Visual events: {evidence.event_timestamps.get('visual_events', [])}\n\n"
+        f"{summary_line}"
+        f"Visual events (each already merged into one span per continuous "
+        f"occurrence — do not treat repeated entries as separate incidents): "
+        f"{evidence.event_timestamps.get('visual_events', [])}\n\n"
         f"Framing issues (headroom_pct, centering_offset, roll_deg): "
         f"{framing if framing else 'none detected'}\n\n"
-        f"Distracting background objects: "
+        f"Background objects (tier='distracting': persistent; "
+        f"tier='transient': entered/left mid-clip): "
         f"{background if background else 'none detected'}\n\n"
         f"Selected frame indices: {evidence.selected_frames}\n"
     )

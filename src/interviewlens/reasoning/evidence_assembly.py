@@ -120,7 +120,61 @@ _FLAG_TO_SIGNAL: dict[str, SignalType] = {
     "repetitive_hand_movement": SignalType.REPETITIVE_HAND_MOVEMENT,
     "frequent_posture_shifting": SignalType.FREQUENT_POSTURE_SHIFTING,
     "hand_to_face_activity":     SignalType.HAND_TO_FACE_ACTIVITY,
+    # rule-based pose signals (00_master_pipeline.ipynb §5) — see schemas.py
+    "hands_near_face":    SignalType.HANDS_NEAR_FACE,
+    "self_grooming":      SignalType.SELF_GROOMING,
+    "arms_crossed":       SignalType.ARMS_CROSSED,
+    "hands_not_visible":  SignalType.HANDS_NOT_VISIBLE,
+    "head_drop":          SignalType.HEAD_DROP,
+    "shoulders_raised":   SignalType.SHOULDERS_RAISED,
+    "head_turned_away":   SignalType.HEAD_TURNED_AWAY,
+    "looking_down":       SignalType.LOOKING_DOWN,
+    "head_tilt":          SignalType.HEAD_TILT,
+    "body_lean":          SignalType.BODY_LEAN,
+    "leaning_in":         SignalType.LEANING_IN,
+    "leaning_out":        SignalType.LEANING_OUT,
+    "fidgeting":          SignalType.FIDGETING,
+    "frozen":             SignalType.FROZEN,
+    "sudden_movement":    SignalType.SUDDEN_MOVEMENT,
+    "swaying":            SignalType.SWAYING,
+    "nodding":            SignalType.NODDING,
+    "unstable_tracking":  SignalType.UNSTABLE_TRACKING,
+    "transient_object":   SignalType.TRANSIENT_OBJECT,
 }
+
+
+def _collapse_flag_spans(timeline: list[dict], step: float) -> list[tuple[str, str, float, float]]:
+    """Merge consecutive fused-timeline ticks carrying the same flag into one
+    (key, detail, start_s, end_s) span instead of one entry per tick.
+
+    fused_evidence.json repeats a still-active flag (e.g. a laptop that sits
+    in frame for the whole clip) at every sampled timestamp — reading it
+    naively turns one real event into dozens of near-duplicate VisualEvents
+    (a "laptop detected" observation once per timestamp). This reconstructs
+    the actual event boundaries the notebook's own hysteresis/track-window
+    logic already establishes.
+    """
+    open_spans: dict[tuple[str, str], tuple[float, float]] = {}  # key -> (start, last_seen)
+    closed: list[tuple[str, str, float, float]] = []
+
+    for entry in timeline:
+        t = float(entry["timestamp_s"])
+        active_now: set[tuple[str, str]] = set()
+        for flag in entry.get("flags", []):
+            key, _, detail = flag.partition(":")
+            active_now.add((key, detail))
+            start, _ = open_spans.get((key, detail), (t, t))
+            open_spans[(key, detail)] = (start, t)
+        for span_key in list(open_spans):
+            if span_key not in active_now:
+                start, last = open_spans.pop(span_key)
+                closed.append((*span_key, start, last + step))
+
+    for (key, detail), (start, last) in open_spans.items():
+        closed.append((key, detail, start, last + step))
+
+    closed.sort(key=lambda e: e[2])
+    return closed
 
 
 def from_fused_evidence_json(
@@ -140,50 +194,32 @@ def from_fused_evidence_json(
     fps_fused: int = int(data.get("fps_fused", 3))
     step: float = 1.0 / fps_fused
 
+    unknown_flags: set[str] = set()
     visual_events: list[VisualEvent] = []
-    framing_summary: list[dict] = []
     background_objects: list[dict] = []
+    for key, detail, start, end in _collapse_flag_spans(data.get("timeline", []), step):
+        signal = _FLAG_TO_SIGNAL.get(key)
+        if signal is None:
+            unknown_flags.add(key)
+            continue
+        visual_events.append(
+            VisualEvent(signal_type=signal, start_time_s=start, end_time_s=end, confidence=1.0)
+        )
+        if signal in (SignalType.BACKGROUND_DISTRACTING, SignalType.TRANSIENT_OBJECT) and detail:
+            background_objects.append({
+                "object": detail, "tier": "distracting" if signal == SignalType.BACKGROUND_DISTRACTING else "transient",
+                "start_s": start, "end_s": end,
+            })
+    if unknown_flags:
+        logger.warning("Unmapped flag(s) from fused_evidence.json — add to _FLAG_TO_SIGNAL: %s", sorted(unknown_flags))
 
-    for entry in data.get("timeline", []):
-        t: float = float(entry["timestamp_s"])
-
-        # Map each flag string to a VisualEvent
-        for flag in entry.get("flags", []):
-            # Flags like "background_distracting:laptop" carry an object class
-            key, _, detail = flag.partition(":")
-            signal = _FLAG_TO_SIGNAL.get(key)
-            if signal is None:
-                logger.debug("Unknown flag %r — skipping.", flag)
-                continue
-            visual_events.append(
-                VisualEvent(
-                    signal_type=signal,
-                    start_time_s=t,
-                    end_time_s=t + step,
-                    confidence=1.0,
-                )
-            )
-            if signal == SignalType.BACKGROUND_DISTRACTING and detail:
-                background_objects.append({"object": detail, "timestamp_s": t})
-
-        # Carry framing metrics through for the VLM prompt
-        if "pose" in entry and "framing" in entry["pose"]:
-            framing_summary.append({**entry["pose"]["framing"], "timestamp_s": t})
-
-        # Carry non-flag distracting background tracks through too
-        if "background" in entry:
-            for track in entry["background"].get("active_tracks", []):
-                if track.get("tier") == "distracting":
-                    background_objects.append({**track, "timestamp_s": t})
-
-    # Deduplicate background_objects by (object/class, timestamp)
-    seen_bg: set[tuple] = set()
-    unique_bg = []
-    for obj in background_objects:
-        key = (obj.get("object") or obj.get("class", ""), obj["timestamp_s"])
-        if key not in seen_bg:
-            seen_bg.add(key)
-            unique_bg.append(obj)
+    # Framing metrics, one row per fused timestamp — kept dense (not collapsed
+    # into spans) since these are continuous measurements, not discrete events.
+    framing_summary = [
+        {**entry["pose"]["framing"], "timestamp_s": float(entry["timestamp_s"])}
+        for entry in data.get("timeline", [])
+        if entry.get("pose", {}).get("framing") is not None
+    ]
 
     selected_frames = select_representative_frames(visual_events, fps_fused)
     frame_images = _extract_frame_crops(selected_frames, all_frames) if all_frames else []
@@ -196,7 +232,11 @@ def from_fused_evidence_json(
         ],
         "long_pauses":        audio_metrics.long_pause_timestamps,
         "framing_summary":    framing_summary,
-        "background_objects": unique_bg,
+        "background_objects": background_objects,
+        # Pass A/B's own aggregate straight through when present (added
+        # alongside the rule-based signals) so build_prompt() can cite
+        # counts/durations instead of restating every individual event.
+        "signal_summary":     data.get("signal_summary"),
     }
 
     return EvidencePackage(

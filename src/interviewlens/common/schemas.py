@@ -24,6 +24,31 @@ class SignalType(str, Enum):
     TILTED                   = "tilted"
     # Background signals — derived from YOLO-World-S object detection (A)
     BACKGROUND_DISTRACTING   = "background_distracting"
+    # Rule-based pose signals — geometry over reviewed RTMPose-S keypoints,
+    # 00_master_pipeline.ipynb §5 (architecture block 2.4, no extra model).
+    # Kept granular rather than folded into the three signals above: a coach
+    # (and the VLM) can say something more specific than "posture shifting".
+    HANDS_NEAR_FACE          = "hands_near_face"
+    SELF_GROOMING            = "self_grooming"
+    ARMS_CROSSED             = "arms_crossed"
+    HANDS_NOT_VISIBLE        = "hands_not_visible"
+    HEAD_DROP                = "head_drop"
+    SHOULDERS_RAISED         = "shoulders_raised"
+    HEAD_TURNED_AWAY         = "head_turned_away"
+    LOOKING_DOWN             = "looking_down"
+    HEAD_TILT                = "head_tilt"
+    BODY_LEAN                = "body_lean"
+    LEANING_IN               = "leaning_in"
+    LEANING_OUT              = "leaning_out"
+    FIDGETING                = "fidgeting"
+    FROZEN                   = "frozen"
+    SUDDEN_MOVEMENT          = "sudden_movement"
+    SWAYING                  = "swaying"
+    NODDING                  = "nodding"
+    UNSTABLE_TRACKING        = "unstable_tracking"
+    # Background: object enters/exits mid-clip rather than sitting static —
+    # derived in the fusion stage from YOLO-World-S + ByteTrack track windows.
+    TRANSIENT_OBJECT         = "transient_object"
 
 
 @dataclass
