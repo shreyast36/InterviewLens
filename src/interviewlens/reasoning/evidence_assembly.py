@@ -23,6 +23,12 @@ logger = logging.getLogger(__name__)
 
 MAX_SELECTED_FRAMES = 6  # per architecture diagram: "Selected Frames (6-12)"
 
+# Qwen2.5-VL processes images at (dynamic) native resolution -- passing 6 frames straight
+# from a 4K source OOM'd a 15.5GB GPU (CUDA OOM asking for ~1GB more with none free).
+# 896px on the long side keeps enough detail for pose/framing/background judgments while
+# comfortably fitting alongside the model weights.
+MAX_FRAME_DIM = 896
+
 
 def select_representative_frames(
     visual_events: list[VisualEvent], fps: int, max_frames: int = MAX_SELECTED_FRAMES,
@@ -43,10 +49,13 @@ def _extract_frame_crops(
     frame_indices: list[int],
     all_frames: dict[int, np.ndarray],
 ) -> list:
-    """Convert selected numpy frames (OpenCV BGR) to RGB PIL Images.
+    """Convert selected numpy frames (OpenCV BGR) to RGB PIL Images, downscaled to
+    MAX_FRAME_DIM on the long side.
 
-    The VLM expects standard PIL Images; OpenCV stores channels as BGR,
-    so we reverse the channel axis before wrapping in PIL.
+    The VLM expects standard PIL Images; OpenCV stores channels as BGR, so we
+    reverse the channel axis before wrapping in PIL. Downscaling happens here
+    (not left to callers) so every caller gets OOM-safe images regardless of
+    source video resolution -- see MAX_FRAME_DIM.
     """
     try:
         from PIL import Image
@@ -59,7 +68,9 @@ def _extract_frame_crops(
         frame = all_frames.get(idx)
         if frame is not None:
             rgb = frame[..., ::-1].copy()  # BGR → RGB (copy makes it contiguous)
-            crops.append(Image.fromarray(rgb))
+            img = Image.fromarray(rgb)
+            img.thumbnail((MAX_FRAME_DIM, MAX_FRAME_DIM), Image.LANCZOS)  # in-place, keeps aspect ratio, no-op if already smaller
+            crops.append(img)
         else:
             logger.debug("Frame index %d not found in all_frames, skipping.", idx)
     return crops

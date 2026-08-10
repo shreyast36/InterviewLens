@@ -11,21 +11,52 @@ import json
 import logging
 import re
 
-from interviewlens.common.schemas import EvidencePackage, ReasoningOutput
+from interviewlens.common.schemas import EvidencePackage, ReasoningOutput, SignalType
 
 logger = logging.getLogger(__name__)
 
-SYSTEM_PROMPT = """You are an interview-coaching assistant. You are given
-timestamped visual events, audio delivery metrics, and a transcript from a
-single interview answer. You must ONLY comment on things directly supported
-by the evidence provided — never invent behavior you were not given.
+# Closed vocabulary the VLM is allowed to talk about, generated from the enum so it can
+# never drift out of sync with what evidence_validation.py's ALLOWED_KEYWORDS actually
+# accepts. Interpolated into SYSTEM_PROMPT below.
+_SIGNAL_VOCAB = ", ".join(s.value for s in SignalType)
+
+# The frame images are attached for the VLM to judge *severity/timing* of the listed
+# events -- not as a general scene to caption. A 3B model given real photos will default
+# to describing whatever is visually salient (clothing, food, decor) unless explicitly
+# told not to; earlier testing against a real Qwen2.5-VL-3B run produced observations
+# like "wearing a white towel" / "sandwich and coffee on the counter" that referenced
+# nothing in the evidence and were correctly rejected by evidence_validation.py (0.25
+# reliability, category_check_failed on 5/6 claims).
+#
+# A first fix attempt added a worked "GOOD vs BAD" example sentence pair to this prompt.
+# That made things worse, not better: Qwen2.5-VL-3B just echoed the example verbatim as
+# its actual output (word-for-word, including the sentence explicitly labeled BAD) instead
+# of reasoning about this clip's real evidence -- a known small-model failure mode where a
+# complete, well-formed example in context gets copied rather than used as a pattern. The
+# REQUIRED_FORMAT rule below replaces that: it forces every claim to start with one of the
+# dynamically-listed real signal names, which cannot be satisfied by copying a static
+# example, only by actually reading the evidence for this clip.
+SYSTEM_PROMPT = f"""You are an interview-coaching assistant. You are given
+timestamped visual events, audio delivery metrics, and a transcript from a single
+interview answer, plus a few sample video frames.
+
+The frames are ONLY there to help you judge the severity and timing of the events
+listed in the evidence below -- they are NOT a scene to describe. You MUST NOT mention
+the person's appearance, clothing, hairstyle, facial features, food, drink, furniture,
+or any object/detail visible in the frames that is not explicitly named in the evidence
+text you are given. If nothing in the evidence supports a comment, do not make it.
+
+REQUIRED FORMAT: every string in "observations" must start with "<signal_type>: " using
+one of these exact tokens (choose only ones that actually appear in the evidence given to
+you for THIS clip -- do not use a token just because it's in this list):
+{_SIGNAL_VOCAB}
 
 Return STRICT JSON with this shape:
-{
-  "observations": ["..."],
-  "explanations": ["..."],
-  "suggestions": ["..."]
-}
+{{
+  "observations": ["<signal_type>: what happened and when, using only the evidence given"],
+  "explanations": ["why that matters for the interview, tied to the same signal_type"],
+  "suggestions": ["a concrete suggestion tied to the same signal_type"]
+}}
 """
 
 
@@ -61,7 +92,10 @@ def build_prompt(evidence: EvidencePackage) -> str:
         f"Background objects (tier='distracting': persistent; "
         f"tier='transient': entered/left mid-clip): "
         f"{background if background else 'none detected'}\n\n"
-        f"Selected frame indices: {evidence.selected_frames}\n"
+        f"Selected frame indices: {evidence.selected_frames}\n\n"
+        f"Reminder: only comment on the events/metrics listed above, by their exact "
+        f"names. Do not describe appearance, clothing, food, drink, or surroundings "
+        f"visible in the attached frames unless they appear in the evidence text above."
     )
 
 
@@ -75,7 +109,7 @@ class VLMReasoner:
 
     def __init__(
         self,
-        model_name: str = "Qwen2.5-VL-3B-Instruct",
+        model_name: str = "Qwen/Qwen2.5-VL-3B-Instruct",
         max_tokens: int = 1024,
         temperature: float = 0.2,
     ):

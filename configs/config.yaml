@@ -13,6 +13,9 @@ audio:
   asr_model: whisper-small     # champion; "wav2vec2.0" = challenger
 
 reasoning:
-  vlm_model: Qwen2.5-VL-3B-Instruct
+  # Must be the full HF Hub repo id (org/name) -- "Qwen2.5-VL-3B-Instruct" without the
+  # "Qwen/" prefix 404s on from_pretrained() and silently falls back to mock reasoning
+  # (VLMReasoner._load_model() catches the failure and only logs a warning).
+  vlm_model: Qwen/Qwen2.5-VL-3B-Instruct
   max_output_tokens: 1024
   temperature: 0.2

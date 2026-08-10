@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import re
 
-from interviewlens.common.schemas import EvidencePackage, ReasoningOutput, ValidationResult
+from interviewlens.common.schemas import EvidencePackage, ReasoningOutput, SignalType, ValidationResult
 
 MIN_EVENT_CONFIDENCE = 0.5
 ALLOWED_KEYWORDS = {
@@ -38,12 +38,25 @@ ALLOWED_KEYWORDS = {
     "enter", "leave", "brief",
     # general
     "confidence", "signal", "issue",
-}
+} | {s.value for s in SignalType}  # e.g. "arms_crossed", "headroom_too_loose" -- vlm_reasoning.py's
+# REQUIRED_FORMAT makes the VLM prefix every claim with one of these exact tokens; matching
+# them verbatim is more reliable than hoping the surrounding natural-language description
+# happens to reuse a plain-English keyword above.
+
+
+_ALLOWED_KEYWORD_PATTERN = re.compile(
+    r"\b(" + "|".join(re.escape(kw) for kw in ALLOWED_KEYWORDS) + r")\b"
+)
 
 
 def _mentions_allowed_category(claim: str) -> bool:
-    claim_lower = claim.lower()
-    return any(kw in claim_lower for kw in ALLOWED_KEYWORDS)
+    # Word-boundary match, not substring: a naive `kw in claim_lower` check let "appear"
+    # (added for transient-object language like "the laptop appeared") match inside the
+    # common word "appears" in unrelated sentences ("...and appears tense"), letting an
+    # ungrounded claim slip past the category check. \b prevents that without losing
+    # intended matches -- every keyword with a plural/verb form (arm/arms, cross/crossed,
+    # lean/leaning, ...) is already listed both ways in ALLOWED_KEYWORDS above.
+    return bool(_ALLOWED_KEYWORD_PATTERN.search(claim.lower()))
 
 
 def _timestamps_in_claim(claim: str) -> list[float]:

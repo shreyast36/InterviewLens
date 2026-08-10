@@ -27,7 +27,10 @@ class AudioConfig:
 
 @dataclass
 class ReasoningConfig:
-    vlm_model: str = "Qwen2.5-VL-3B-Instruct"
+    # Full HF Hub repo id (org/name) -- see configs/config.yaml for why the "Qwen/"
+    # prefix is required (from_pretrained() 404s and silently falls back to mock
+    # reasoning without it).
+    vlm_model: str = "Qwen/Qwen2.5-VL-3B-Instruct"
     max_output_tokens: int = 1024
     temperature: float = 0.2
 
