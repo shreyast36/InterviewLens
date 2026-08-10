@@ -1,5 +1,20 @@
 # InterviewLens — Final Project (MSADS Advanced Computer Vision, 31023)
 
+## Start here — activate the environment
+
+Before running **any** Python, pip, or notebook command in this project, activate `cv_env`
+first:
+
+```bash
+source /home/arcanegus/MSADS_/advanced_cv_31023/cv_env/bin/activate
+```
+
+Every notebook must run under the `cv_env` Jupyter kernel (see `## Environment` below) —
+never a system or conda Python, and never a bare `python`/`pip` from a different env. If
+executing a notebook non-interactively, point directly at the env's binaries instead of
+relying on shell activation, e.g.
+`/home/arcanegus/MSADS_/advanced_cv_31023/cv_env/bin/jupyter nbconvert --execute ...`.
+
 ## Goal
 
 Analyze a recorded interview video (video + audio, ~2 min) and produce two independent,
