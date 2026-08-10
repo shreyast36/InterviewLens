@@ -95,6 +95,9 @@ class EvidencePackage:
     visual_events: list[VisualEvent]
     selected_frames: list[int]
     event_timestamps: dict[str, Any] = field(default_factory=dict)
+    # PIL Images corresponding to selected_frames, ready to pass to the VLM.
+    # Empty when running in demo/test mode without real video frames.
+    frame_images: list = field(default_factory=list)
 
 
 @dataclass
