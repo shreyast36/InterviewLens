@@ -7,11 +7,14 @@ want to swap in your own clip instead of the current demo video.
 ## 1. What the pipeline does with the video
 
 - **Notebook 01** (pose estimation) runs pose keypoint extraction + framing
-  metrics on the video and exports `outputs/pose_evidence.json`.
+  metrics on the video and exports `pose_evidence.json`.
 - **Notebook 02** (background analysis) uses that person bounding box to
   suppress the subject and analyzes the remaining background, exporting
-  `outputs/background_evidence.json`.
+  `background_evidence.json`.
 - **Notebook 03** (evidence fusion) combines both into a single timeline.
+
+All three write into the same freshly-allocated `outputs/<video_stem>_<timestamp>/`
+run directory — see `CLAUDE.md` > "Per-run output directory".
 
 Because all three notebooks depend on one shared file, the video is not
 hardcoded per-notebook — it's resolved once via `notebooks/shared_video.py`,
@@ -58,15 +61,20 @@ before any notebook is allowed to run. If the file and hash don't match, the
 notebooks fail loudly on purpose instead of running against out-of-sync data —
 that's intentional, not a bug.
 
-**Step 4 — Run the notebooks in order**
+**Step 4 — Run the notebooks in order, in the same sitting**
 
 ```
-01_pipeline_A_pose_estimation.ipynb      -> outputs/pose_evidence.json
-02_pipeline_B_background_analysis.ipynb  -> outputs/background_evidence.json
-03_evidence_fusion_timeline.ipynb        -> outputs/fused_evidence.json
+01_pipeline_A_pose_estimation.ipynb      -> outputs/<video>_<timestamp>/pose_evidence.json
+02_pipeline_B_background_analysis.ipynb  -> outputs/<video>_<timestamp>/background_evidence.json
+03_evidence_fusion_timeline.ipynb        -> outputs/<video>_<timestamp>/fused_evidence.json
 ```
 
 They must run in this order — 02 and 03 depend on outputs from earlier notebooks.
+Notebook 01 allocates a fresh timestamped run directory and records it in
+`outputs/.current_run`; Notebooks 02 and 03 read that pointer to find the same
+directory. Running Notebook 01 again before 02/03 starts a *new* run — re-run
+02 and 03 afterward too, or they'll be looking for evidence that isn't in the
+now-current run directory.
 
 **Step 5 — Sanity-check the result**
 

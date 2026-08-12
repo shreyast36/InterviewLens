@@ -1,7 +1,0 @@
-Metric,Champion: RTMPose-S,Challenger: SimpleBaseline
-PCK@0.2 (upper body),0.913,0.512
-MPJPE (bbox-normalized),0.1027,0.1478
-OKS AP,0.763,0.033
-OKS AP50,0.908,0.152
-Latency (ms/frame),73.7,34.6
-Size,42.2 MB (ONNX),15.4M params

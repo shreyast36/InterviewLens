@@ -48,7 +48,7 @@ technique or changes a package/API choice.
 - **MPJPE**: mean per-joint position error in pixels (or normalized units), simplest to
   compute by hand — `mean(||pred_xy - gt_xy||)` over visible joints.
 
-### Pose evidence JSON schema (`outputs/pose_evidence.json`)
+### Pose evidence JSON schema (`outputs/<video_stem>_<timestamp>/pose_evidence.json`)
 ```json
 {
   "video": "demo_interview.mp4",
@@ -108,7 +108,8 @@ TAXONOMY = {
 - Map each surviving detection/track to its taxonomy tier for aggregation.
 
 ### Person suppression
-- Load `outputs/pose_evidence.json`'s per-frame `framing.bbox`.
+- Load this run's `pose_evidence.json` (via `current_run_dir()`, see CLAUDE.md >
+  "Per-run output directory") per-frame `framing.bbox`.
 - Drop any Pipeline-B detection whose box overlaps the subject bbox above an IoU/overlap
   threshold (e.g. 0.3) — prevents the subject's own chair/clothing from registering as
   background clutter.
@@ -121,7 +122,7 @@ TAXONOMY = {
   track fragmentation) instead, and note in the notebook that HOTA/IDF1 apply if/when a
   labeled benchmark (e.g. MOT17-style) is added.
 
-### Background evidence JSON schema (`outputs/background_evidence.json`)
+### Background evidence JSON schema (`outputs/<video_stem>_<timestamp>/background_evidence.json`)
 ```json
 {
   "video": "demo_interview.mp4",
@@ -148,7 +149,8 @@ TAXONOMY = {
 - Two source streams sampled at different rates (pose 5 fps, background 2–3 fps) —
   resample onto a common grid rather than forcing one rate onto the other's raw data.
 - Fused schema is the union of both evidence files keyed by `timestamp_s`, plus derived
-  fields (e.g. `flags` list per timestamp). Write to `outputs/fused_evidence.json`.
+  fields (e.g. `flags` list per timestamp). Write to this run's `fused_evidence.json`
+  (same directory `current_run_dir()` resolves for the two evidence files above).
 - Every fused claim must carry a timestamp + the measurement that supports it (persistence
   %, track lifespan, frame area, etc.) — this is the rule the (out-of-scope) Evidence
   Validation layer will enforce later; satisfy it here by construction.

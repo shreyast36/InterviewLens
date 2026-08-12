@@ -43,12 +43,16 @@ supplementary modules) is **not** part of this delivery.
 
 | # | Notebook | Produces |
 |---|----------|----------|
-| 1 | `notebooks/01_pipeline_A_pose_estimation.ipynb` | `outputs/pose_evidence.json` |
-| 2 | `notebooks/02_pipeline_B_background_analysis.ipynb` | `outputs/background_evidence.json` |
-| 3 | `notebooks/03_evidence_fusion_timeline.ipynb` | `outputs/fused_evidence.json` |
+| 1 | `notebooks/01_pipeline_A_pose_estimation.ipynb` | `pose_evidence.json` |
+| 2 | `notebooks/02_pipeline_B_background_analysis.ipynb` | `background_evidence.json` |
+| 3 | `notebooks/03_evidence_fusion_timeline.ipynb` | `fused_evidence.json` |
 
 Notebook 2 depends on Notebook 1's output (person-region suppression). Notebook 3 depends
 on both. Run in numeric order.
+
+All three files (plus every figure/CSV each notebook produces) land in the same **per-run**
+directory, `outputs/<video_stem>_<YYYYmmdd_HHMMSS>/` — see "Per-run output directory"
+below.
 
 ## Champion–challenger models
 
@@ -86,10 +90,16 @@ final_project/
     ├── 01_pipeline_A_pose_estimation.ipynb
     ├── 02_pipeline_B_background_analysis.ipynb
     ├── 03_evidence_fusion_timeline.ipynb
-    ├── shared_video.py      # single-source-of-truth + checksum-verified video loader
+    ├── shared_video.py      # single-source-of-truth video loader + per-run output dir
     ├── data/                # downloaded dataset subsets + demo video
-    ├── outputs/             # evidence JSONs, figures, eval tables
-    └── saved_models/        # fine-tuned challenger weights
+    ├── outputs/
+    │   ├── .current_run             # points to this run's directory, below
+    │   └── <video_stem>_<timestamp>/  # one directory per pipeline run (see below)
+    │       ├── pose_evidence.json
+    │       ├── background_evidence.json
+    │       ├── fused_evidence.json
+    │       └── *.png, *.csv           # figures, eval tables for that run
+    └── saved_models/        # fine-tuned challenger weights (shared across runs)
 ```
 
 ## Demo video
@@ -129,6 +139,33 @@ of whichever notebook has the stale reference.
 and `demo_video.sha256` (`sha256sum notebooks/data/<file>`) once, in that single file,
 then re-run every notebook in order (01 → 02 → 03) so all evidence JSONs are regenerated
 against the same footage. Do not hand-edit `DEMO_VIDEO_PATH` inside a notebook.
+
+### Per-run output directory
+
+Every pipeline run writes into its own `outputs/<video_stem>_<YYYYmmdd_HHMMSS>/`
+directory instead of a single shared `outputs/` — the old layout meant re-running the
+pipeline against a new video (or re-running the same video after a code change) silently
+overwrote the previous run's evidence JSONs, figures, and eval tables, with no record
+that anything had changed underneath you.
+
+`notebooks/shared_video.py` provides two functions, mirroring the checksum-guard
+pattern above:
+
+- **`start_run_dir(video_path, output_root)`** — called once, by **Notebook 1** (or the
+  master notebook), to allocate a fresh timestamped directory and record it in
+  `outputs/.current_run`.
+- **`current_run_dir(output_root)`** — called by **Notebooks 2 and 3** to resolve the
+  *same* directory Notebook 1 just allocated. Raises loudly if Notebook 1 hasn't run yet
+  (no `.current_run` pointer) rather than silently falling back to `outputs/` itself.
+
+Practical effect: `OUTPUT_DIR` is rebound partway through Notebook 1/2/3's setup cell
+(right after the video is loaded) from the static `outputs/` root to that run's
+subdirectory — every `OUTPUT_DIR / "..."` write later in the notebook (evidence JSON,
+EDA plots, training curves, comparison tables, sample-frame images) automatically lands
+in the run directory with no further changes needed downstream. **Run the three
+notebooks in the same sitting, in order (01 → 02 → 03)** — Notebook 1 starts the run,
+Notebooks 2 and 3 join it; running Notebook 1 twice before running 2/3 moves
+`.current_run` to a second, empty directory and 2/3 will not find Notebook 1's output.
 
 ## Background training videos (`final_project/videos/`)
 
