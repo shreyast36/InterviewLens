@@ -1,8 +1,8 @@
 """Champion-only inference: RTMPose-S (pose) + YOLO-World-S (background) + fusion.
 
-Both champion models are pretrained/off-the-shelf (RTMPose-S via `rtmlib`'s bundled ONNX
-weights; YOLO-World-S via the `yolov8s-worldv2.pt` checkpoint already cached in this
-directory) -- neither requires training, unlike the challenger models (SimpleBaseline,
+Both champion models are pretrained/off-the-shelf and their weights are committed in
+this directory (`weights/rtmpose/*.onnx`, `yolov8s-worldv2.pt`) -- neither requires
+training or a network download, unlike the challenger models (SimpleBaseline,
 RT-DETR-R18) that Notebooks 01/02 train from scratch purely for the champion-challenger
 comparison tables. This module lets you produce real evidence JSONs against any video
 without running that training (or the COCO/LVIS EDA that precedes it) -- see
@@ -37,9 +37,25 @@ COCO17_NAMES = [
 UPPER_BODY_IDX = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 UPPER_BODY_NAMES = [COCO17_NAMES[i] for i in UPPER_BODY_IDX]
 
+# rtmlib's Body(mode="lightweight") normally resolves to these same two ONNX files via a
+# network download on first use (cached to ~/.cache/rtmlib). Pointing at the copies
+# committed under weights/rtmpose/ instead makes this repo fully offline -- rtmlib's
+# base loader only downloads when os.path.exists(path) is False, so a valid local path
+# short-circuits it.
+_RTMPOSE_WEIGHTS_DIR = Path(__file__).parent / "weights" / "rtmpose"
+_RTMPOSE_DET_ONNX = _RTMPOSE_WEIGHTS_DIR / "yolox_tiny_8xb8-300e_humanart-6f3252f9.onnx"
+_RTMPOSE_POSE_ONNX = _RTMPOSE_WEIGHTS_DIR / "rtmpose-s_simcc-body7_pt-body7_420e-256x192-acd4a1ef_20230504.onnx"
+
 def load_pose_model() -> RTMLibBody:
     """Loads the champion pose model -- pretrained, no training involved."""
-    return RTMLibBody(mode="lightweight", backend="onnxruntime", device="cpu")
+    return RTMLibBody(
+        det=str(_RTMPOSE_DET_ONNX),
+        det_input_size=(416, 416),
+        pose=str(_RTMPOSE_POSE_ONNX),
+        pose_input_size=(192, 256),
+        backend="onnxruntime",
+        device="cpu",
+    )
 
 
 def rtmpose_predict(model: RTMLibBody, img_bgr: np.ndarray) -> np.ndarray:
