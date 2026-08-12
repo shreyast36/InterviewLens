@@ -1,0 +1,58 @@
+{
+  "video": "test.mp4",
+  "fps_sampled": 3,
+  "model": "YOLO-World-S",
+  "taxonomy": {
+    "bath_towel": "mild",
+    "bed": "mild",
+    "blanket": "mild",
+    "cabinet": "neutral",
+    "chair": "neutral",
+    "computer_keyboard": "distracting",
+    "curtain": "neutral",
+    "drawer": "neutral",
+    "fan": "distracting",
+    "flowerpot": "neutral",
+    "lamp": "neutral",
+    "laptop_computer": "distracting",
+    "mirror": "neutral",
+    "monitor_(computer_equipment) computer_monitor": "distracting",
+    "painting": "neutral",
+    "pillow": "mild",
+    "poster": "neutral",
+    "sofa": "neutral",
+    "speaker_(stero_equipment)": "distracting",
+    "television_set": "distracting",
+    "towel": "mild",
+    "vase": "neutral"
+  },
+  "detections": [
+    {
+      "track_id": 1,
+      "class": "television",
+      "tier": "distracting",
+      "persistence_pct": 1.0,
+      "start_s": 0.0,
+      "end_s": 24.686,
+      "box_area_frac": 0.0567
+    },
+    {
+      "track_id": 2,
+      "class": "chair",
+      "tier": "neutral",
+      "persistence_pct": 0.987,
+      "start_s": 0.0,
+      "end_s": 24.686,
+      "box_area_frac": 0.0458
+    },
+    {
+      "track_id": 5,
+      "class": "pillow",
+      "tier": "mild",
+      "persistence_pct": 1.0,
+      "start_s": 8.006,
+      "end_s": 8.006,
+      "box_area_frac": 0.0435
+    }
+  ]
+}

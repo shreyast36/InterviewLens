@@ -1,0 +1,4759 @@
+{
+  "video": "Video_2.mov",
+  "fps_fused": 3,
+  "duration_s": 26.803,
+  "source_streams": {
+    "pose": {
+      "model": "RTMPose-S",
+      "fps_sampled": 5
+    },
+    "background": {
+      "model": "YOLO-World-S",
+      "fps_sampled": 3
+    }
+  },
+  "signal_summary": {
+    "per_type": {
+      "body_lean": {
+        "events": 1,
+        "total_s": 26.8
+      },
+      "head_tilt": {
+        "events": 5,
+        "total_s": 5.2
+      },
+      "hands_not_visible": {
+        "events": 4,
+        "total_s": 15.0
+      },
+      "frozen": {
+        "events": 2,
+        "total_s": 6.4
+      },
+      "swaying": {
+        "events": 1,
+        "total_s": 20.6
+      },
+      "nodding": {
+        "events": 2,
+        "total_s": 18.0
+      },
+      "head_drop": {
+        "events": 1,
+        "total_s": 1.2
+      },
+      "hands_near_face": {
+        "events": 1,
+        "total_s": 0.8
+      }
+    },
+    "pct_timestamps_flagged": 100.0,
+    "longest_clean_streak_s": 0.0
+  },
+  "timeline": [
+    {
+      "timestamp_s": 0.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            444.27069091796875,
+            297.7250061035156,
+            955.3349609375,
+            727.2364501953125
+          ],
+          "headroom_pct": 0.41350695490837097,
+          "centering_offset": [
+            0.09344196319580078,
+            0.4235575497150421
+          ],
+          "roll_deg": 176.1859130859375
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean"
+      ]
+    },
+    {
+      "timestamp_s": 0.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            438.94232177734375,
+            286.87158203125,
+            927.4100341796875,
+            713.3959350585938
+          ],
+          "headroom_pct": 0.39843276143074036,
+          "centering_offset": [
+            0.0674627274274826,
+            0.3892604410648346
+          ],
+          "roll_deg": 174.92039489746094
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean"
+      ]
+    },
+    {
+      "timestamp_s": 0.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            445.126220703125,
+            286.55609130859375,
+            942.7142944335938,
+            713.0601806640625
+          ],
+          "headroom_pct": 0.3979945778846741,
+          "centering_offset": [
+            0.08425045013427734,
+            0.38835594058036804
+          ],
+          "roll_deg": 180.0
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean"
+      ]
+    },
+    {
+      "timestamp_s": 1.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            439.43896484375,
+            294.0656433105469,
+            940.2431640625,
+            710.8187866210938
+          ],
+          "headroom_pct": 0.4084244966506958,
+          "centering_offset": [
+            0.07787666469812393,
+            0.3956727683544159
+          ],
+          "roll_deg": 180.0
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean"
+      ]
+    },
+    {
+      "timestamp_s": 1.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            450.1166687011719,
+            297.0534362792969,
+            944.6510620117188,
+            706.2632446289062
+          ],
+          "headroom_pct": 0.41257423162460327,
+          "centering_offset": [
+            0.08966226875782013,
+            0.3934953510761261
+          ],
+          "roll_deg": -177.61404418945312
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "head_tilt"
+      ]
+    },
+    {
+      "timestamp_s": 1.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            448.689697265625,
+            296.9069519042969,
+            944.9739379882812,
+            709.3121948242188
+          ],
+          "headroom_pct": 0.4123707711696625,
+          "centering_offset": [
+            0.08879967033863068,
+            0.3975265622138977
+          ],
+          "roll_deg": -177.56333923339844
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "head_tilt"
+      ]
+    },
+    {
+      "timestamp_s": 2.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            453.7208251953125,
+            294.4700012207031,
+            940.568115234375,
+            711.7677001953125
+          ],
+          "headroom_pct": 0.4089861214160919,
+          "centering_offset": [
+            0.08928823471069336,
+            0.3975523114204407
+          ],
+          "roll_deg": -176.4236602783203
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "head_tilt"
+      ]
+    },
+    {
+      "timestamp_s": 2.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            451.4443359375,
+            290.8653259277344,
+            927.8455810546875,
+            709.8897705078125
+          ],
+          "headroom_pct": 0.403979629278183,
+          "centering_offset": [
+            0.07757024466991425,
+            0.3899376690387726
+          ],
+          "roll_deg": -174.05313110351562
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "hands_not_visible"
+      ]
+    },
+    {
+      "timestamp_s": 2.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            456.90447998046875,
+            294.289794921875,
+            931.9911499023438,
+            709.771484375
+          ],
+          "headroom_pct": 0.40873581171035767,
+          "centering_offset": [
+            0.08507470786571503,
+            0.3945295512676239
+          ],
+          "roll_deg": -177.70938110351562
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "hands_not_visible"
+      ]
+    },
+    {
+      "timestamp_s": 3.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            454.383056640625,
+            298.7245788574219,
+            929.2714233398438,
+            712.7297973632812
+          ],
+          "headroom_pct": 0.414895236492157,
+          "centering_offset": [
+            0.08098010718822479,
+            0.4047977030277252
+          ],
+          "roll_deg": -177.75424194335938
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "hands_not_visible"
+      ]
+    },
+    {
+      "timestamp_s": 3.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            454.05682373046875,
+            298.1149597167969,
+            917.6480712890625,
+            708.6754760742188
+          ],
+          "headroom_pct": 0.41404855251312256,
+          "centering_offset": [
+            0.07164440304040909,
+            0.3983200192451477
+          ],
+          "roll_deg": -178.85423278808594
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "hands_not_visible"
+      ]
+    },
+    {
+      "timestamp_s": 3.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            456.9803466796875,
+            300.7955627441406,
+            922.5889282226562,
+            710.3272094726562
+          ],
+          "headroom_pct": 0.4177716076374054,
+          "centering_offset": [
+            0.07778854668140411,
+            0.40433722734451294
+          ],
+          "roll_deg": -178.85421752929688
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "frozen",
+        "hands_not_visible"
+      ]
+    },
+    {
+      "timestamp_s": 4.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            455.4437561035156,
+            304.9095764160156,
+            923.61669921875,
+            710.0919799804688
+          ],
+          "headroom_pct": 0.42348551750183105,
+          "centering_offset": [
+            0.07739095389842987,
+            0.4097244143486023
+          ],
+          "roll_deg": 177.75425720214844
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "frozen",
+        "hands_not_visible"
+      ]
+    },
+    {
+      "timestamp_s": 4.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            457.1911315917969,
+            303.18365478515625,
+            920.7068481445312,
+            712.3678588867188
+          ],
+          "headroom_pct": 0.42108839750289917,
+          "centering_offset": [
+            0.07648277282714844,
+            0.41048821806907654
+          ],
+          "roll_deg": 176.63352966308594
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "frozen",
+        "hands_not_visible"
+      ]
+    },
+    {
+      "timestamp_s": 4.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            458.6145324707031,
+            303.79315185546875,
+            912.1355590820312,
+            711.6236572265625
+          ],
+          "headroom_pct": 0.42193493247032166,
+          "centering_offset": [
+            0.07089853286743164,
+            0.4103011190891266
+          ],
+          "roll_deg": 178.85421752929688
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "frozen",
+        "hands_not_visible"
+      ]
+    },
+    {
+      "timestamp_s": 5.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            458.7733459472656,
+            304.0799560546875,
+            923.06884765625,
+            710.7620849609375
+          ],
+          "headroom_pct": 0.4223332703113556,
+          "centering_offset": [
+            0.07956419140100479,
+            0.4095028340816498
+          ],
+          "roll_deg": -177.70938110351562
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "frozen",
+        "hands_not_visible",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 5.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            462.2549743652344,
+            308.94940185546875,
+            915.568603515625,
+            713.21044921875
+          ],
+          "headroom_pct": 0.42909640073776245,
+          "centering_offset": [
+            0.07642469555139542,
+            0.41966646909713745
+          ],
+          "roll_deg": 180.0
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "frozen",
+        "hands_not_visible",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 5.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            462.1676025390625,
+            309.000732421875,
+            915.6030883789062,
+            713.3704223632812
+          ],
+          "headroom_pct": 0.4291676878929138,
+          "centering_offset": [
+            0.07638339698314667,
+            0.4199599325656891
+          ],
+          "roll_deg": 180.0
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "frozen",
+        "hands_not_visible",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 6.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            459.59405517578125,
+            302.8851013183594,
+            919.1914672851562,
+            709.7138671875
+          ],
+          "headroom_pct": 0.42067375779151917,
+          "centering_offset": [
+            0.07717619091272354,
+            0.4063875079154968
+          ],
+          "roll_deg": -178.87669372558594
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "frozen",
+        "hands_not_visible",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 6.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            459.7647399902344,
+            310.3687744140625,
+            914.69140625,
+            710.15283203125
+          ],
+          "headroom_pct": 0.43106773495674133,
+          "centering_offset": [
+            0.07379388809204102,
+            0.4173911213874817
+          ],
+          "roll_deg": 180.0
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "frozen",
+        "hands_not_visible",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 6.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            457.74493408203125,
+            312.23565673828125,
+            912.08349609375,
+            709.7819213867188
+          ],
+          "headroom_pct": 0.433660626411438,
+          "centering_offset": [
+            0.07017841190099716,
+            0.41946884989738464
+          ],
+          "roll_deg": 180.0
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "frozen",
+        "hands_not_visible",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 7.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            458.1806945800781,
+            308.99090576171875,
+            921.9722900390625,
+            709.2258911132812
+          ],
+          "headroom_pct": 0.42915403842926025,
+          "centering_offset": [
+            0.07824449241161346,
+            0.41418999433517456
+          ],
+          "roll_deg": -178.87669372558594
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "frozen",
+        "hands_not_visible",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 7.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            457.9070129394531,
+            309.4560546875,
+            920.5261840820312,
+            712.327392578125
+          ],
+          "headroom_pct": 0.4298000633716583,
+          "centering_offset": [
+            0.07690095901489258,
+            0.4191436767578125
+          ],
+          "roll_deg": -175.515380859375
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "frozen",
+        "hands_not_visible",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 7.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            460.91558837890625,
+            314.01654052734375,
+            921.2195434570312,
+            712.9466552734375
+          ],
+          "headroom_pct": 0.43613407015800476,
+          "centering_offset": [
+            0.07979307323694229,
+            0.42633768916130066
+          ],
+          "roll_deg": -177.75424194335938
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "frozen",
+        "hands_not_visible",
+        "head_tilt",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 8.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            471.6065368652344,
+            329.0450134277344,
+            916.0174560546875,
+            711.4061279296875
+          ],
+          "headroom_pct": 0.45700696110725403,
+          "centering_offset": [
+            0.084081269800663,
+            0.4450710713863373
+          ],
+          "roll_deg": 177.79737854003906
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "frozen",
+        "hands_not_visible",
+        "head_tilt",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 8.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            470.6783142089844,
+            316.08172607421875,
+            922.0812377929688,
+            728.7448120117188
+          ],
+          "headroom_pct": 0.4390023946762085,
+          "centering_offset": [
+            0.08809337764978409,
+            0.45114797353744507
+          ],
+          "roll_deg": 180.0
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "frozen",
+        "head_tilt",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 8.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            516.0064086914062,
+            324.4930114746094,
+            910.6096801757812,
+            728.4544677734375
+          ],
+          "headroom_pct": 0.45068472623825073,
+          "centering_offset": [
+            0.11454381793737411,
+            0.4624271094799042
+          ],
+          "roll_deg": 180.0
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "head_tilt",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 9.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            540.6837158203125,
+            311.9871520996094,
+            886.3158569335938,
+            731.4722900390625
+          ],
+          "headroom_pct": 0.4333154857158661,
+          "centering_offset": [
+            0.11484336853027344,
+            0.449249267578125
+          ],
+          "roll_deg": 180.0
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "head_tilt",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 9.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            529.4488525390625,
+            313.5387878417969,
+            885.0949096679688,
+            730.7101440429688
+          ],
+          "headroom_pct": 0.4354705512523651,
+          "centering_offset": [
+            0.10511226952075958,
+            0.4503456950187683
+          ],
+          "roll_deg": 178.8308563232422
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "head_tilt",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 9.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            527.6282348632812,
+            315.32843017578125,
+            888.333251953125,
+            730.13916015625
+          ],
+          "headroom_pct": 0.43795615434646606,
+          "centering_offset": [
+            0.10621986538171768,
+            0.4520382285118103
+          ],
+          "roll_deg": 178.85423278808594
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "head_tilt",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 10.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            526.9405517578125,
+            314.8426513671875,
+            892.8472900390625,
+            713.6063232421875
+          ],
+          "headroom_pct": 0.43728145956993103,
+          "centering_offset": [
+            0.10920925438404083,
+            0.4284013509750366
+          ],
+          "roll_deg": -178.876708984375
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 10.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            510.5683288574219,
+            313.2135009765625,
+            894.1871948242188,
+            708.9148559570312
+          ],
+          "headroom_pct": 0.43501874804496765,
+          "centering_offset": [
+            0.09746523201465607,
+            0.4196227192878723
+          ],
+          "roll_deg": -175.42605590820312
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 10.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            513.3385009765625,
+            314.9144287109375,
+            887.0068969726562,
+            718.7173461914062
+          ],
+          "headroom_pct": 0.43738114833831787,
+          "centering_offset": [
+            0.09401988983154297,
+            0.43559977412223816
+          ],
+          "roll_deg": -176.56634521484375
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 11.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            498.9217224121094,
+            318.326904296875,
+            886.2843627929688,
+            713.4059448242188
+          ],
+          "headroom_pct": 0.4421207010746002,
+          "centering_offset": [
+            0.08219222724437714,
+            0.4329623878002167
+          ],
+          "roll_deg": -176.42364501953125
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "hands_not_visible",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 11.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            476.7206726074219,
+            313.706787109375,
+            932.2966918945312,
+            711.3004150390625
+          ],
+          "headroom_pct": 0.4357038736343384,
+          "centering_offset": [
+            0.10079479217529297,
+            0.42362111806869507
+          ],
+          "roll_deg": -176.4964599609375
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "hands_not_visible",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 11.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            477.67889404296875,
+            308.90447998046875,
+            923.9888305664062,
+            713.7357788085938
+          ],
+          "headroom_pct": 0.4290339946746826,
+          "centering_offset": [
+            0.09505291283130646,
+            0.4203336834907532
+          ],
+          "roll_deg": -176.56634521484375
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "hands_not_visible",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 12.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            478.02008056640625,
+            310.2510681152344,
+            924.6734008789062,
+            716.9055786132812
+          ],
+          "headroom_pct": 0.4309042692184448,
+          "centering_offset": [
+            0.09585428237915039,
+            0.4266064167022705
+          ],
+          "roll_deg": -175.51539611816406
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "hands_not_visible",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 12.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            474.3938903808594,
+            309.8225402832031,
+            916.3264770507812,
+            715.3411865234375
+          ],
+          "headroom_pct": 0.43030908703804016,
+          "centering_offset": [
+            0.08650026470422745,
+            0.42383846640586853
+          ],
+          "roll_deg": -175.4260711669922
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "hands_not_visible",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 12.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            468.6151428222656,
+            308.8618469238281,
+            924.4266967773438,
+            714.2145385742188
+          ],
+          "headroom_pct": 0.42897477746009827,
+          "centering_offset": [
+            0.08831395953893661,
+            0.42093947529792786
+          ],
+          "roll_deg": -175.4260711669922
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "hands_not_visible",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 13.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            472.3409423828125,
+            316.7110595703125,
+            922.60107421875,
+            713.6070556640625
+          ],
+          "headroom_pct": 0.4398764669895172,
+          "centering_offset": [
+            0.0897984504699707,
+            0.430997371673584
+          ],
+          "roll_deg": -177.7542724609375
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "frozen",
+        "hands_not_visible",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 13.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            469.2096252441406,
+            318.7120361328125,
+            925.771240234375,
+            712.707763671875
+          ],
+          "headroom_pct": 0.4426555931568146,
+          "centering_offset": [
+            0.08982877433300018,
+            0.4325275123119354
+          ],
+          "roll_deg": -176.69813537597656
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "frozen",
+        "hands_not_visible",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 13.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            472.0268859863281,
+            319.49969482421875,
+            929.435546875,
+            706.2791137695312
+          ],
+          "headroom_pct": 0.4437495768070221,
+          "centering_offset": [
+            0.09489250183105469,
+            0.4246927797794342
+          ],
+          "roll_deg": -176.6981201171875
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "frozen",
+        "hands_not_visible",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 14.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            471.0403747558594,
+            317.26556396484375,
+            925.7191772460938,
+            709.866455078125
+          ],
+          "headroom_pct": 0.44064661860466003,
+          "centering_offset": [
+            0.09121837466955185,
+            0.426572322845459
+          ],
+          "roll_deg": -176.69813537597656
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "frozen",
+        "hands_not_visible",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 14.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            471.57659912109375,
+            310.8029479980469,
+            917.7565307617188,
+            715.0487060546875
+          ],
+          "headroom_pct": 0.43167075514793396,
+          "centering_offset": [
+            0.0854165107011795,
+            0.4247940182685852
+          ],
+          "roll_deg": -175.51539611816406
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "frozen",
+        "hands_not_visible",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 14.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            472.4409484863281,
+            308.6578674316406,
+            917.6483764648438,
+            712.0224609375
+          ],
+          "headroom_pct": 0.42869147658348083,
+          "centering_offset": [
+            0.08600731194019318,
+            0.4176115393638611
+          ],
+          "roll_deg": -175.515380859375
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "frozen",
+        "hands_not_visible",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 15.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            466.6345520019531,
+            323.72503662109375,
+            920.9752807617188,
+            714.1215209960938
+          ],
+          "headroom_pct": 0.4496181011199951,
+          "centering_offset": [
+            0.08407020568847656,
+            0.4414535462856293
+          ],
+          "roll_deg": -176.34776306152344
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "hands_not_visible",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 15.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            470.123046875,
+            338.0780334472656,
+            925.3469848632812,
+            711.2947387695312
+          ],
+          "headroom_pct": 0.46955281496047974,
+          "centering_offset": [
+            0.0902109146118164,
+            0.45746222138404846
+          ],
+          "roll_deg": 180.0
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "hands_not_visible",
+        "head_tilt",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 15.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            474.22308349609375,
+            359.51043701171875,
+            929.1167602539062,
+            714.0599365234375
+          ],
+          "headroom_pct": 0.49932006001472473,
+          "centering_offset": [
+            0.0963592529296875,
+            0.49106988310813904
+          ],
+          "roll_deg": 178.85423278808594
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "hands_not_visible",
+        "head_drop",
+        "head_tilt",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 16.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            310.70867919921875,
+            369.1961669921875,
+            925.1593017578125,
+            730.6376953125
+          ],
+          "headroom_pct": 0.5127724409103394,
+          "centering_offset": [
+            -0.034478187561035156,
+            0.5275470018386841
+          ],
+          "roll_deg": 171.67431640625
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "hands_near_face",
+        "head_drop",
+        "head_tilt",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 16.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            326.1119384765625,
+            369.2079772949219,
+            920.099609375,
+            733.5498657226562
+          ],
+          "headroom_pct": 0.5127888321876526,
+          "centering_offset": [
+            -0.026397228240966797,
+            0.5316080451011658
+          ],
+          "roll_deg": 167.7995147705078
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "hands_near_face",
+        "head_drop",
+        "head_tilt",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 16.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            330.18890380859375,
+            366.6796875,
+            914.1051635742188,
+            733.2737426757812
+          ],
+          "headroom_pct": 0.50927734375,
+          "centering_offset": [
+            -0.027895260602235794,
+            0.5277130007743835
+          ],
+          "roll_deg": 169.82449340820312
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "hands_near_face",
+        "head_drop",
+        "head_tilt",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 17.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            371.91033935546875,
+            344.87628173828125,
+            926.0667724609375,
+            734.1761474609375
+          ],
+          "headroom_pct": 0.47899484634399414,
+          "centering_offset": [
+            0.014044570736587048,
+            0.49868401885032654
+          ],
+          "roll_deg": 176.2686004638672
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 17.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            466.72540283203125,
+            315.65625,
+            920.7982788085938,
+            709.6312255859375
+          ],
+          "headroom_pct": 0.4384114444255829,
+          "centering_offset": [
+            0.08400287479162216,
+            0.42401039600372314
+          ],
+          "roll_deg": 178.8065185546875
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "hands_not_visible",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 17.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            459.9583740234375,
+            309.5487365722656,
+            921.7412109375,
+            710.4371337890625
+          ],
+          "headroom_pct": 0.42992880940437317,
+          "centering_offset": [
+            0.07945279777050018,
+            0.4166469871997833
+          ],
+          "roll_deg": 177.61404418945312
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "hands_not_visible",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 18.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            464.9464111328125,
+            308.3504943847656,
+            923.1223754882812,
+            709.2544555664062
+          ],
+          "headroom_pct": 0.4282645881175995,
+          "centering_offset": [
+            0.08442878723144531,
+            0.4133402407169342
+          ],
+          "roll_deg": 178.83087158203125
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "hands_not_visible",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 18.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            460.5701599121094,
+            307.293212890625,
+            929.1997680664062,
+            707.7584838867188
+          ],
+          "headroom_pct": 0.4267961382865906,
+          "centering_offset": [
+            0.08575773239135742,
+            0.40979403257369995
+          ],
+          "roll_deg": 175.3331298828125
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "hands_not_visible",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 18.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            458.062744140625,
+            302.37554931640625,
+            917.220458984375,
+            709.2027587890625
+          ],
+          "headroom_pct": 0.41996604204177856,
+          "centering_offset": [
+            0.07444000244140625,
+            0.40496987104415894
+          ],
+          "roll_deg": 176.5663604736328
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "hands_not_visible",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 19.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            460.96453857421875,
+            302.50067138671875,
+            902.2367553710938,
+            712.134521484375
+          ],
+          "headroom_pct": 0.4201398193836212,
+          "centering_offset": [
+            0.06500101089477539,
+            0.4092155396938324
+          ],
+          "roll_deg": -177.61404418945312
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "hands_not_visible",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 19.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            468.61602783203125,
+            302.9871520996094,
+            923.7031860351562,
+            709.1946411132812
+          ],
+          "headroom_pct": 0.42081549763679504,
+          "centering_offset": [
+            0.08774938434362411,
+            0.4058080017566681
+          ],
+          "roll_deg": 176.5663604736328
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "hands_not_visible",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 19.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            464.4418029785156,
+            305.07330322265625,
+            925.3488159179688,
+            713.450439453125
+          ],
+          "headroom_pct": 0.42371290922164917,
+          "centering_offset": [
+            0.08577394485473633,
+            0.41461631655693054
+          ],
+          "roll_deg": 177.7093963623047
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "hands_not_visible",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 20.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            457.38446044921875,
+            299.7189025878906,
+            923.0038452148438,
+            711.8782958984375
+          ],
+          "headroom_pct": 0.4162762463092804,
+          "centering_offset": [
+            0.07842836529016495,
+            0.4049960672855377
+          ],
+          "roll_deg": 178.83084106445312
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "hands_not_visible",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 20.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            455.9905700683594,
+            312.98919677734375,
+            928.9613647460938,
+            711.1889038085938
+          ],
+          "headroom_pct": 0.4347072243690491,
+          "centering_offset": [
+            0.08199367672204971,
+            0.4224695861339569
+          ],
+          "roll_deg": 178.85423278808594
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "hands_not_visible",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 20.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            455.64141845703125,
+            305.84466552734375,
+            929.9483642578125,
+            707.4476318359375
+          ],
+          "headroom_pct": 0.42478424310684204,
+          "centering_offset": [
+            0.08249206840991974,
+            0.40735042095184326
+          ],
+          "roll_deg": 178.85423278808594
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "hands_not_visible",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 21.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            457.829345703125,
+            285.3587646484375,
+            957.1444702148438,
+            723.1640625
+          ],
+          "headroom_pct": 0.3963316082954407,
+          "centering_offset": [
+            0.10544834285974503,
+            0.4007261395454407
+          ],
+          "roll_deg": -178.72695922851562
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "hands_not_visible",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 21.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            507.2245788574219,
+            258.26715087890625,
+            1028.870849609375,
+            742.8088989257812
+          ],
+          "headroom_pct": 0.3587043881416321,
+          "centering_offset": [
+            0.20007458329200745,
+            0.39038339257240295
+          ],
+          "roll_deg": -178.5311737060547
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 21.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            513.513427734375,
+            256.4411315917969,
+            1011.649658203125,
+            738.7992553710938
+          ],
+          "headroom_pct": 0.3561682403087616,
+          "centering_offset": [
+            0.1915336549282074,
+            0.3822782635688782
+          ],
+          "roll_deg": 180.0
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 22.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            482.38671875,
+            248.2638702392578,
+            994.0425415039062,
+            740.5713500976562
+          ],
+          "headroom_pct": 0.34481093287467957,
+          "centering_offset": [
+            0.1534603089094162,
+            0.37338224053382874
+          ],
+          "roll_deg": 178.49253845214844
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 22.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            383.33819580078125,
+            249.24468994140625,
+            884.2958374023438,
+            754.7564697265625
+          ],
+          "headroom_pct": 0.34617316722869873,
+          "centering_offset": [
+            -0.009660911746323109,
+            0.3944460451602936
+          ],
+          "roll_deg": -175.1009063720703
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 22.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            394.60400390625,
+            245.37815856933594,
+            875.2789916992188,
+            744.6299438476562
+          ],
+          "headroom_pct": 0.34080299735069275,
+          "centering_offset": [
+            -0.007903861813247204,
+            0.37501126527786255
+          ],
+          "roll_deg": -173.4801788330078
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 23.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            409.14263916015625,
+            241.9303436279297,
+            880.748291015625,
+            750.8257446289062
+          ],
+          "headroom_pct": 0.33601436018943787,
+          "centering_offset": [
+            0.007727241609245539,
+            0.37882792949676514
+          ],
+          "roll_deg": -171.02735900878906
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 23.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            463.8860168457031,
+            251.00357055664062,
+            908.6404418945312,
+            716.6058349609375
+          ],
+          "headroom_pct": 0.3486160635948181,
+          "centering_offset": [
+            0.07228632271289825,
+            0.3439019024372101
+          ],
+          "roll_deg": -177.66268920898438
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 23.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            470.52142333984375,
+            249.54493713378906,
+            934.6875610351562,
+            713.7110595703125
+          ],
+          "headroom_pct": 0.34659019112586975,
+          "centering_offset": [
+            0.09781952202320099,
+            0.3378555178642273
+          ],
+          "roll_deg": -178.8308563232422
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "head_tilt",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 24.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            464.0860290527344,
+            257.58917236328125,
+            950.256591796875,
+            716.3441162109375
+          ],
+          "headroom_pct": 0.35776275396347046,
+          "centering_offset": [
+            0.10495519638061523,
+            0.3526851236820221
+          ],
+          "roll_deg": 178.75460815429688
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "head_tilt",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 24.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            462.73651123046875,
+            261.6796875,
+            931.1698608398438,
+            712.5027465820312
+          ],
+          "headroom_pct": 0.3634440004825592,
+          "centering_offset": [
+            0.08898935467004776,
+            0.3530311584472656
+          ],
+          "roll_deg": 175.23635864257812
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "head_tilt",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 24.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            473.79632568359375,
+            265.9039001464844,
+            949.1257934570312,
+            716.5866088867188
+          ],
+          "headroom_pct": 0.36931097507476807,
+          "centering_offset": [
+            0.11165790259838104,
+            0.36457011103630066
+          ],
+          "roll_deg": 177.6140594482422
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 25.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            458.8840026855469,
+            263.65814208984375,
+            1041.3702392578125,
+            717.2913208007812
+          ],
+          "headroom_pct": 0.3661918640136719,
+          "centering_offset": [
+            0.17207364737987518,
+            0.36242979764938354
+          ],
+          "roll_deg": 180.0
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "head_tilt",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 25.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            456.6838073730469,
+            267.0141906738281,
+            955.8162231445312,
+            713.6063232421875
+          ],
+          "headroom_pct": 0.3708530366420746,
+          "centering_offset": [
+            0.103515625,
+            0.3619728982448578
+          ],
+          "roll_deg": 177.45518493652344
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "hands_not_visible",
+        "head_tilt",
+        "nodding",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 25.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            451.0365905761719,
+            267.3355712890625,
+            930.2528076171875,
+            710.1094970703125
+          ],
+          "headroom_pct": 0.3712994158267975,
+          "centering_offset": [
+            0.07913236320018768,
+            0.3575626015663147
+          ],
+          "roll_deg": 180.0
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "hands_not_visible",
+        "head_tilt",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 26.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            418.9452819824219,
+            261.22540283203125,
+            956.0560913085938,
+            715.7037963867188
+          ],
+          "headroom_pct": 0.3628130555152893,
+          "centering_offset": [
+            0.07421980053186417,
+            0.3568461239337921
+          ],
+          "roll_deg": 178.754638671875
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          },
+          {
+            "track_id": 5,
+            "class": "chair",
+            "tier": "neutral"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "hands_not_visible"
+      ]
+    },
+    {
+      "timestamp_s": 26.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            409.2186584472656,
+            267.56781005859375,
+            968.8118286132812,
+            716.0653076171875
+          ],
+          "headroom_pct": 0.3716219663619995,
+          "centering_offset": [
+            0.07658634334802628,
+            0.3661571145057678
+          ],
+          "roll_deg": 178.8065185546875
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean",
+        "hands_not_visible"
+      ]
+    },
+    {
+      "timestamp_s": 26.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            406.1063232421875,
+            267.7813720703125,
+            971.8831787109375,
+            714.5571899414062
+          ],
+          "headroom_pct": 0.37191855907440186,
+          "centering_offset": [
+            0.0765542984008789,
+            0.3643591105937958
+          ],
+          "roll_deg": 177.61404418945312
+        }
+      },
+      "background": {
+        "active_tracks": [
+          {
+            "track_id": 1,
+            "class": "chair",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 2,
+            "class": "cabinet",
+            "tier": "neutral"
+          },
+          {
+            "track_id": 3,
+            "class": "pillow",
+            "tier": "mild"
+          },
+          {
+            "track_id": 4,
+            "class": "bed",
+            "tier": "mild"
+          }
+        ]
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "background_mild:pillow",
+        "background_mild:bed",
+        "body_lean"
+      ]
+    }
+  ]
+}
