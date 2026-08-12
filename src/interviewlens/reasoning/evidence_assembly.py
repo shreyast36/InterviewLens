@@ -135,13 +135,9 @@ _FLAG_TO_SIGNAL: dict[str, SignalType] = {
     "repetitive_hand_movement": SignalType.REPETITIVE_HAND_MOVEMENT,
     "frequent_posture_shifting": SignalType.FREQUENT_POSTURE_SHIFTING,
     "hand_to_face_activity":     SignalType.HAND_TO_FACE_ACTIVITY,
-    # rule-based pose signals (00_master_pipeline.ipynb §5) — see schemas.py
+    # rule-based pose signals (00_master_pipeline.ipynb §5, ported to
+    # pipeline/notebooks/champion_inference.py for the inference-only path) — see schemas.py
     "hands_near_face":    SignalType.HANDS_NEAR_FACE,
-    # Notebooks 01+03's own hand-to-face detector (pipeline/notebooks/01 §8.1): a
-    # confidence-dip-plus-proximity heuristic on the wrist keypoints, independent of
-    # 00_master_pipeline.ipynb's rule above -- different mechanism, same real-world
-    # event, so it maps to the same SignalType rather than adding a near-duplicate one.
-    "hand_near_face":     SignalType.HANDS_NEAR_FACE,
     "self_grooming":      SignalType.SELF_GROOMING,
     "arms_crossed":       SignalType.ARMS_CROSSED,
     "hands_not_visible":  SignalType.HANDS_NOT_VISIBLE,
