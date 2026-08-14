@@ -49,16 +49,26 @@ def _get_pose_model():
         _det_onnx  = _wdir / "yolox_tiny_8xb8-300e_humanart-6f3252f9.onnx"
         _pose_onnx = _wdir / "rtmpose-s_simcc-body7_pt-body7_420e-256x192-acd4a1ef_20230504.onnx"
 
-        kwargs: dict = dict(backend="onnxruntime", device="cpu")
         if _det_onnx.exists() and _pose_onnx.exists():
             logger.info("Using bundled ONNX weights from %s", _wdir)
-            kwargs["det"]  = str(_det_onnx)
-            kwargs["pose"] = str(_pose_onnx)
+            # MUST supply explicit input sizes when passing custom paths —
+            # rtmlib defaults to (640,640)/(192,256) which mismatches the bundled
+            # YOLOX-tiny (expects 416×416) and causes ONNXRuntimeError INVALID_ARGUMENT.
+            _rtmpose_champion = RTMLibBody(
+                det=str(_det_onnx),
+                det_input_size=(416, 416),
+                pose=str(_pose_onnx),
+                pose_input_size=(256, 192),
+                backend="onnxruntime",
+                device="cpu",
+            )
         else:
             logger.info("Bundled weights not found — rtmlib will download them.")
-            kwargs["mode"] = "lightweight"
-
-        _rtmpose_champion = RTMLibBody(**kwargs)
+            _rtmpose_champion = RTMLibBody(
+                mode="lightweight",
+                backend="onnxruntime",
+                device="cpu",
+            )
     return _rtmpose_champion
 
 
