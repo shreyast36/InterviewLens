@@ -27,10 +27,8 @@ class AudioConfig:
 
 @dataclass
 class ReasoningConfig:
-    # Full HF Hub repo id (org/name) -- see configs/config.yaml for why the "Qwen/"
-    # prefix is required (from_pretrained() 404s and silently falls back to mock
-    # reasoning without it).
-    vlm_model: str = "Qwen/Qwen2.5-VL-3B-Instruct"
+    # Ollama model tag — must be pulled first: ollama pull nemotron-mini
+    llm_model: str = "nemotron-mini"
     max_output_tokens: int = 1024
     temperature: float = 0.2
 

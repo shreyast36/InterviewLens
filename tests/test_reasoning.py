@@ -1,7 +1,7 @@
 from interviewlens.common.schemas import AudioMetrics, Transcript
 from interviewlens.reasoning.evidence_assembly import assemble_evidence
 from interviewlens.reasoning.evidence_validation import validate
-from interviewlens.reasoning.vlm_reasoning import VLMReasoner
+from interviewlens.reasoning.llm_reasoning import LLMReasoner
 
 
 def _sample_evidence():
@@ -13,9 +13,9 @@ def _sample_evidence():
     return assemble_evidence("Tell me about a challenge.", transcript, metrics, [], fps=30)
 
 
-def test_vlm_reasoner_mock_output():
+def test_llm_reasoner_mock_output():
     evidence = _sample_evidence()
-    reasoner = VLMReasoner()
+    reasoner = LLMReasoner()
     output = reasoner.reason(evidence)
     assert output.observations
     assert output.suggestions
@@ -23,7 +23,7 @@ def test_vlm_reasoner_mock_output():
 
 def test_evidence_validation_passes_on_mock():
     evidence = _sample_evidence()
-    reasoner = VLMReasoner()
+    reasoner = LLMReasoner()
     output = reasoner.reason(evidence)
     result = validate(evidence, output)
     assert 0.0 <= result.reliability_score <= 1.0

@@ -13,9 +13,9 @@ audio:
   asr_model: whisper-small     # champion; "wav2vec2.0" = challenger
 
 reasoning:
-  # Must be the full HF Hub repo id (org/name) -- "Qwen2.5-VL-3B-Instruct" without the
-  # "Qwen/" prefix 404s on from_pretrained() and silently falls back to mock reasoning
-  # (VLMReasoner._load_model() catches the failure and only logs a warning).
-  vlm_model: Qwen/Qwen2.5-VL-3B-Instruct
+  # Ollama model tag.  Run `ollama pull nemotron-mini` once to download.
+  # Requires Ollama to be running locally (`ollama serve`).
+  # Falls back to deterministic mock output when the server is unreachable.
+  llm_model: nemotron-mini
   max_output_tokens: 1024
   temperature: 0.2

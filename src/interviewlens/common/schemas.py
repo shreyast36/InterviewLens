@@ -28,7 +28,7 @@ class SignalType(str, Enum):
     # Rule-based pose signals — geometry over reviewed RTMPose-S keypoints,
     # 00_master_pipeline.ipynb §5 (architecture block 2.4, no extra model).
     # Kept granular rather than folded into the three signals above: a coach
-    # (and the VLM) can say something more specific than "posture shifting".
+    # (and the LLM) can say something more specific than "posture shifting".
     HANDS_NEAR_FACE          = "hands_near_face"
     SELF_GROOMING            = "self_grooming"
     ARMS_CROSSED             = "arms_crossed"
@@ -140,8 +140,8 @@ class EvidencePackage:
     visual_events: list[VisualEvent]
     selected_frames: list[int]
     event_timestamps: dict[str, Any] = field(default_factory=dict)
-    # PIL Images corresponding to selected_frames, ready to pass to the VLM.
-    # Empty when running in demo/test mode without real video frames.
+    # PIL Images corresponding to selected_frames (unused by the text-only LLM;
+    # retained for future multimodal upgrade or visualisation).
     frame_images: list = field(default_factory=list)
 
 

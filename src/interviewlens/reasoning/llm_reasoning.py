@@ -1,9 +1,19 @@
-"""5. VISION-LANGUAGE MODEL (evidence-grounded reasoning) — Person C.
+"""5. LLM REASONING (evidence-grounded reasoning) — Person C.
 
-Wraps a VLM (default: Qwen2.5-VL-3B-Instruct) with a strict prompt template
-that forces evidence-grounded, structured JSON output: observations,
-explanations, suggestions. Never let the model free-write prose here —
-downstream evidence validation (6.) depends on the JSON schema.
+Wraps an Ollama-hosted LLM (default: nvidia/nemotron-mini-4b-instruct via the
+"nemotron-mini" Ollama tag) with a strict prompt template that forces
+evidence-grounded, structured JSON output: observations, explanations,
+suggestions.  Never let the model free-write prose here — downstream evidence
+validation (6.) depends on the JSON schema.
+
+Prerequisites:
+    pip install ollama
+    ollama pull nemotron-mini   # downloads ~2.7 GB once
+
+Ollama must be running locally (ollama serve) before the reasoner is called.
+When the ollama package is missing or the server is unreachable, the reasoner
+falls back to deterministic mock output so the rest of the pipeline is
+never blocked.
 """
 from __future__ import annotations
 
@@ -15,27 +25,10 @@ from interviewlens.common.schemas import EvidencePackage, ReasoningOutput, Signa
 
 logger = logging.getLogger(__name__)
 
-# Closed vocabulary the VLM is allowed to talk about, generated from the enum so it can
+# Closed vocabulary the LLM is allowed to talk about, generated from the enum so it can
 # never drift out of sync with what evidence_validation.py's ALLOWED_KEYWORDS actually
 # accepts. Interpolated into SYSTEM_PROMPT below.
 _SIGNAL_VOCAB = ", ".join(s.value for s in SignalType)
-
-# The frame images are attached for the VLM to judge *severity/timing* of the listed
-# events -- not as a general scene to caption. A 3B model given real photos will default
-# to describing whatever is visually salient (clothing, food, decor) unless explicitly
-# told not to; earlier testing against a real Qwen2.5-VL-3B run produced observations
-# like "wearing a white towel" / "sandwich and coffee on the counter" that referenced
-# nothing in the evidence and were correctly rejected by evidence_validation.py (0.25
-# reliability, category_check_failed on 5/6 claims).
-#
-# A first fix attempt added a worked "GOOD vs BAD" example sentence pair to this prompt.
-# That made things worse, not better: Qwen2.5-VL-3B just echoed the example verbatim as
-# its actual output (word-for-word, including the sentence explicitly labeled BAD) instead
-# of reasoning about this clip's real evidence -- a known small-model failure mode where a
-# complete, well-formed example in context gets copied rather than used as a pattern. The
-# REQUIRED_FORMAT rule below replaces that: it forces every claim to start with one of the
-# dynamically-listed real signal names, which cannot be satisfied by copying a static
-# example, only by actually reading the evidence for this clip.
 SYSTEM_PROMPT = f"""You are an interview-coaching assistant. You are given
 timestamped visual events, audio delivery metrics, and a transcript from a single
 interview answer, plus a few sample video frames.
@@ -133,66 +126,56 @@ def build_prompt(evidence: EvidencePackage) -> str:
     )
 
 
-class VLMReasoner:
-    """Wraps Qwen2.5-VL-3B-Instruct for multimodal interview coaching.
+class LLMReasoner:
+    """Ollama LLM reasoner for interview coaching (local inference).
 
-    Model loading is attempted at construction time and falls back silently
-    to mock reasoning when transformers/GPU are unavailable, so the rest of
-    the pipeline is never blocked by VLM hardware requirements.
+    Uses the Ollama Python client to call a locally-hosted LLM
+    (default: nemotron-mini — NVIDIA Nemotron Mini 4B Instruct).
+    All evidence is passed as structured text.
+
+    Falls back to deterministic mock reasoning when the ollama package is
+    not installed or the Ollama server is unreachable, so the pipeline
+    always runs without a running server.
     """
 
     def __init__(
         self,
-        model_name: str = "Qwen/Qwen2.5-VL-3B-Instruct",
+        model_name: str = "nemotron-mini",
         max_tokens: int = 1024,
         temperature: float = 0.2,
     ):
         self.model_name = model_name
         self.max_tokens = max_tokens
         self.temperature = temperature
-        self._model = None
-        self._processor = None
-        self._device = "cpu"
-        self._load_model()
+        self._client = None
+        self._load_client()
 
-    def _load_model(self) -> None:
-        """Load Qwen2.5-VL via transformers.  Logs a warning and leaves
-        self._model = None if the import or weight download fails."""
+    def _load_client(self) -> None:
+        """Probe the Ollama server.  Leaves self._client = None when the
+        ollama package is missing or the server is not reachable."""
         try:
-            import torch
-            from transformers import AutoProcessor, Qwen2_5_VLForConditionalGeneration
-
-            self._device = "cuda" if torch.cuda.is_available() else "cpu"
-            logger.info("Loading %s on %s …", self.model_name, self._device)
-
-            dtype = torch.float16 if self._device == "cuda" else torch.float32
-            self._model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
-                self.model_name,
-                torch_dtype=dtype,
-                device_map="auto" if self._device == "cuda" else None
+            import ollama  # noqa: PLC0415
+            client = ollama.Client()
+            # A lightweight list-models call confirms the server is up.
+            client.list()
+            self._client = client
+            logger.info("Ollama client ready (model=%s).", self.model_name)
+        except ImportError:
+            logger.warning(
+                "ollama package not installed — falling back to mock reasoning. "
+                "Run: pip install ollama"
             )
-            self._processor = AutoProcessor.from_pretrained(self.model_name)
-
-            if self._device == "cpu":
-                self._model = self._model.to(self._device)
-
-            logger.info("VLM loaded successfully.")
         except Exception as exc:  # noqa: BLE001
             logger.warning(
-                "Could not load VLM (%s). Falling back to mock reasoning.", exc
+                "Ollama server unreachable (%s) — falling back to mock reasoning. "
+                "Start it with: ollama serve",
+                exc,
             )
-            self._model = None
-            self._processor = None
 
     def reason(self, evidence: EvidencePackage) -> ReasoningOutput:
-        if self._model is not None and evidence.frame_images:
+        if self._client is not None:
             raw = self._run_inference(evidence)
         else:
-            if self._model is not None and not evidence.frame_images:
-                logger.warning(
-                    "VLM loaded but no frame images in EvidencePackage — "
-                    "falling back to mock reasoning."
-                )
             raw = _mock_reasoning(evidence)
 
         return ReasoningOutput(
@@ -203,50 +186,26 @@ class VLMReasoner:
         )
 
     def _run_inference(self, evidence: EvidencePackage) -> dict:
-        """Run a forward pass through Qwen2.5-VL with frame images + text."""
-        import torch
-
+        """Call the Ollama chat endpoint with text-only evidence."""
         prompt = build_prompt(evidence)
-
-        # Build the multimodal chat message: one image entry per frame, then text.
-        image_content = [
-            {"type": "image", "image": img} for img in evidence.frame_images
-        ]
-        messages = [
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {
-                "role": "user",
-                "content": [*image_content, {"type": "text", "text": prompt}],
-            },
-        ]
-
-        text = self._processor.apply_chat_template(
-            messages, tokenize=False, add_generation_prompt=True
-        )
-        inputs = self._processor(
-            text=[text],
-            images=evidence.frame_images,
-            return_tensors="pt",
-        ).to(self._device)
-
-        with torch.no_grad():
-            output_ids = self._model.generate(
-                **inputs,
-                max_new_tokens=self.max_tokens,
-                temperature=self.temperature,
-                do_sample=self.temperature > 0,
+        try:
+            response = self._client.chat(
+                model=self.model_name,
+                messages=[
+                    {"role": "system", "content": SYSTEM_PROMPT},
+                    {"role": "user",   "content": prompt},
+                ],
+                format="json",
+                options={
+                    "num_predict": self.max_tokens,
+                    "temperature": self.temperature,
+                },
             )
-
-        # Slice off the prompt tokens so we only decode the generated part.
-        generated_ids = [
-            out[len(inp):]
-            for inp, out in zip(inputs.input_ids, output_ids)
-        ]
-        response = self._processor.batch_decode(
-            generated_ids, skip_special_tokens=True
-        )[0]
-
-        return _parse_json_response(response, evidence)
+            raw_text = response["message"]["content"] if isinstance(response, dict) else response.message.content
+            return _parse_json_response(raw_text or "", evidence)
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("Ollama call failed (%s) — falling back to mock.", exc)
+            return _mock_reasoning(evidence)
 
 
 def _coerce_str_list(value, field_name: str) -> list[str]:
@@ -263,18 +222,18 @@ def _coerce_str_list(value, field_name: str) -> list[str]:
         if isinstance(item, str):
             out.append(item)
         elif isinstance(item, dict):
-            logger.warning("VLM returned a dict instead of a string in %r: %r — coercing.", field_name, item)
+            logger.warning("LLM returned a dict instead of a string in %r: %r — coercing.", field_name, item)
             out.append(" ".join(str(v) for v in item.values()))
         else:
-            logger.warning("VLM returned an unexpected %s in %r: %r — coercing.", type(item).__name__, field_name, item)
+            logger.warning("LLM returned an unexpected %s in %r: %r — coercing.", type(item).__name__, field_name, item)
             out.append(str(item))
     return out
 
 
 def _parse_json_response(response: str, evidence: EvidencePackage) -> dict:
-    """Extract the JSON block from the VLM's raw text output.
+    """Extract the JSON block from the LLM's raw text output.
 
-    Handles markdown code fences (```json ... ```) that some checkpoints
+    Handles markdown code fences (```json ... ```) that some models
     emit. Falls back to mock reasoning on any parse error.
     """
     cleaned = re.sub(r"```(?:json)?\s*|\s*```", "", response).strip()
@@ -286,13 +245,13 @@ def _parse_json_response(response: str, evidence: EvidencePackage) -> dict:
             "suggestions":  _coerce_str_list(parsed.get("suggestions", []), "suggestions"),
         }
     except (json.JSONDecodeError, AttributeError):
-        logger.warning("VLM returned non-JSON output; falling back to mock.")
+        logger.warning("LLM returned non-JSON output; falling back to mock.")
         return _mock_reasoning(evidence)
 
 
 def _mock_reasoning(evidence: EvidencePackage) -> dict:
-    """Deterministic, evidence-grounded placeholder so Person D can build
-    the coaching report before the real VLM is wired in."""
+    """Deterministic, evidence-grounded placeholder used when Ollama is
+    unavailable."""
     observations: list[str] = []
     explanations: list[str] = []
     suggestions: list[str] = []
@@ -316,6 +275,6 @@ def _mock_reasoning(evidence: EvidencePackage) -> dict:
 
     return {
         "observations": observations,
-        "explanations": explanations or ["No issues strong enough to explain."],
+        "explanations": explanations or ["No signal-level issues detected in this clip."],
         "suggestions": suggestions or ["Keep up the steady delivery."],
     }

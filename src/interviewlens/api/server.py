@@ -36,7 +36,7 @@ def analyze(req: AnalyzeRequest) -> dict:
 @app.post("/analyze_video")
 async def analyze_video(question: str = Form(...), video: UploadFile = File(...)) -> dict:
     """Real "user uploads a video" path: runs Pipeline A (pose) -> Pipeline B
-    (background) -> A/B fusion -> VLM reasoning -> validation -> coaching report
+    (background) -> A/B fusion -> LLM reasoning -> validation -> coaching report
     against the uploaded file. See orchestration.pipeline.run_pipeline_from_video
     for what's real here vs. still-placeholder (audio is synthetic; there is no
     manual skeleton-review step -- confidence gating substitutes for it).

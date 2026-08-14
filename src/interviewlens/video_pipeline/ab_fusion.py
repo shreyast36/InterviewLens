@@ -6,8 +6,8 @@ pipeline/notebooks/00_master_pipeline.ipynb section 7.
 
 Named ab_fusion, not evidence_assembly, to avoid confusion with the *other* fusion
 stage in the architecture: reasoning/evidence_assembly.py's "4. Multimodal Fusion &
-Evidence Assembly" combines audio + this module's output + the VLM's frame-image
-needs -- a later, different step owned by Person C. This module produces exactly the
+Evidence Assembly" combines audio + this module's output into the EvidencePackage
+passed to the LLM reasoner — a later, different step owned by Person C. This module produces exactly the
 fused_evidence.json shape that reasoning/evidence_assembly.py's
 from_fused_evidence_json() already consumes.
 """
@@ -49,7 +49,7 @@ def fuse_evidence(pose_evidence: dict, background_evidence: dict, audio_evidence
     audio_pipeline/batch_audio_quality.py; pass None or a video with no audio track
     and this simply contributes nothing, no special-casing needed here), and computes
     a signal_summary aggregate (per-type counts/durations, % of timeline flagged,
-    longest clean streak) for the VLM prompt to cite.
+    longest clean streak) for the LLM prompt to cite.
     """
     pose_fps = pose_evidence["fps_sampled"]
     bg_fps = background_evidence["fps_sampled"]

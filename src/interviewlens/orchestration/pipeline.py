@@ -14,7 +14,7 @@ from interviewlens.common.config import AppConfig, load_config
 from interviewlens.common.schemas import CoachingReport, Transcript
 from interviewlens.reasoning.evidence_assembly import assemble_evidence, from_fused_evidence_json
 from interviewlens.reasoning.evidence_validation import validate
-from interviewlens.reasoning.vlm_reasoning import VLMReasoner
+from interviewlens.reasoning.llm_reasoning import LLMReasoner
 from interviewlens.reporting.coaching_report import build_coaching_report
 from interviewlens.video_pipeline.ab_fusion import fuse_evidence
 from interviewlens.video_pipeline.batch_background import extract_background_evidence
@@ -47,7 +47,7 @@ def run_pipeline(question: str, config: AppConfig | None = None) -> CoachingRepo
 
     visual_events = []
     pose_frames = []
-    all_frames: dict[int, object] = {}  # frame_index → raw BGR numpy array for VLM
+    all_frames: dict[int, object] = {}  # frame_index → raw BGR numpy array
     n_frames = config.video.fps * 8  # ~8s synthetic clip
     for frame, timestamp in synthetic_frames(n_frames, fps=config.video.fps):
         frame_idx = int(timestamp * config.video.fps)
@@ -83,9 +83,9 @@ def run_pipeline(question: str, config: AppConfig | None = None) -> CoachingRepo
         all_frames=all_frames,
     )
 
-    # ---- 5. VLM reasoning (Person C) ------------------------------------
-    reasoner = VLMReasoner(
-        model_name=config.reasoning.vlm_model,
+    # ---- 5. LLM reasoning (Person C) ------------------------------------
+    reasoner = LLMReasoner(
+        model_name=config.reasoning.llm_model,
         max_tokens=config.reasoning.max_output_tokens,
         temperature=config.reasoning.temperature,
     )
@@ -115,7 +115,7 @@ def run_pipeline_from_video(
 ) -> CoachingReport:
     """Runs the real pipeline against an uploaded video file: Pipeline A (pose,
     RTMPose-S) -> rule-based signal detection -> Pipeline B (background,
-    YOLO-World-S + ByteTrack) -> A/B evidence fusion -> VLM reasoning -> evidence
+    YOLO-World-S + ByteTrack) -> A/B evidence fusion -> LLM reasoning -> evidence
     validation -> coaching report.
 
     This is the "someone uploads a video" path -- run_pipeline() above stays
@@ -133,7 +133,7 @@ def run_pipeline_from_video(
     uploaded video's actual audio track is analyzed for low_mic_level and
     intermittent_audio (signal-level RMS checks, no ASR) via
     audio_pipeline.batch_audio_quality, and merged into the same fused evidence
-    the VLM sees. A video with no audio track at all is handled gracefully --
+    the LLM sees. A video with no audio track at all is handled gracefully --
     extract_audio_quality_evidence() never raises, it just contributes no signals.
     """
     config = config or load_config()
@@ -166,17 +166,17 @@ def run_pipeline_from_video(
     audio_metrics = compute_metrics(transcript, total_duration_s=duration_s)
 
     # ---- Multimodal fusion & evidence assembly (Person C) -----------------
-    # Two passes: the first tells us which frame indices the VLM wants to see;
-    # the second hands it the actual decoded frames at those indices.
+    # Two passes: the first tells us which frame indices the reasoner wants;
+    # the second decodes the actual frames at those indices.
     probe = from_fused_evidence_json(fused, question=question, transcript=transcript, audio_metrics=audio_metrics)
     all_frames = grab_frames(video_path, probe.selected_frames, fused["fps_fused"])
     evidence = from_fused_evidence_json(
         fused, question=question, transcript=transcript, audio_metrics=audio_metrics, all_frames=all_frames,
     )
 
-    # ---- VLM reasoning (Person C) ------------------------------------------
-    reasoner = VLMReasoner(
-        model_name=config.reasoning.vlm_model,
+    # ---- LLM reasoning (Person C) ------------------------------------------
+    reasoner = LLMReasoner(
+        model_name=config.reasoning.llm_model,
         max_tokens=config.reasoning.max_output_tokens,
         temperature=config.reasoning.temperature,
     )

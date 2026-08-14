@@ -1,6 +1,6 @@
 """7. COACHING REPORT (post-response) — Person D (Platform/Product Engineer).
 
-Combines everything upstream (audio metrics, visual events, VLM reasoning,
+Combines everything upstream (audio metrics, visual events, LLM reasoning,
 validation result) into the final user-facing CoachingReport.
 """
 from __future__ import annotations
@@ -67,10 +67,16 @@ def build_coaching_report(
     ]
     timeline.sort(key=lambda x: x["time_s"])
 
-    strengths = reasoning.observations[:3] if validation.passed else []
-    improvements = reasoning.suggestions[:3] if validation.passed else [
-        "Reasoning output failed validation — see failed_checks for details."
-    ]
+    # Always show the coaching content — reliability_score communicates how much
+    # to trust it.  Only fall back to an error message when reliability is very
+    # low (< 0.3), indicating serious hallucination risk.
+    MIN_SHOW_RELIABILITY = 0.3
+    if validation.reliability_score >= MIN_SHOW_RELIABILITY:
+        strengths    = reasoning.observations[:3]
+        improvements = reasoning.suggestions[:3] or ["Keep up the steady delivery."]
+    else:
+        strengths    = []
+        improvements = ["Reasoning output could not be verified — see failed_checks for details."]
 
     return CoachingReport(
         duration_s=snapshot["response_duration_s"],

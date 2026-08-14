@@ -1,6 +1,6 @@
 """6. EVIDENCE VALIDATION LAYER — Person C.
 
-Runs the VLM's structured output back against the raw evidence to catch
+Runs the LLM's structured output back against the raw evidence to catch
 hallucinations before they reach the user:
 
   1. Allowed-category check    — claims must reference known signal/metric types
@@ -48,10 +48,10 @@ ALLOWED_KEYWORDS = {
     "intermittent", "connection", "cutting", "dropout", "dropping",
     # general
     "confidence", "signal", "issue",
-} | {s.value for s in SignalType}  # e.g. "arms_crossed", "headroom_too_loose" -- vlm_reasoning.py's
-# REQUIRED_FORMAT makes the VLM prefix every claim with one of these exact tokens; matching
-# them verbatim is more reliable than hoping the surrounding natural-language description
-# happens to reuse a plain-English keyword above.
+} | {s.value for s in SignalType}  # e.g. "arms_crossed", "headroom_too_loose"
+# REQUIRED_FORMAT in llm_reasoning.py makes the LLM prefix every claim with one of
+# these exact tokens; matching them verbatim is more reliable than hoping the
+# surrounding natural-language description happens to reuse a plain-English keyword above.
 
 
 _ALLOWED_KEYWORD_PATTERN = re.compile(

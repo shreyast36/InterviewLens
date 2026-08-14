@@ -1,7 +1,7 @@
 """4. MULTIMODAL FUSION & EVIDENCE ASSEMBLY — Person C (ML/Reasoning Engineer).
 
 Aligns visual events and audio metrics by timestamp and packages everything
-the VLM needs into a single EvidencePackage. This is the hand-off point
+the LLM needs into a single EvidencePackage. This is the hand-off point
 between Person A/B's pipelines and Person C's reasoning stage — keep the
 EvidencePackage contract (see common/schemas.py) stable.
 """
@@ -23,19 +23,13 @@ logger = logging.getLogger(__name__)
 
 MAX_SELECTED_FRAMES = 6  # per architecture diagram: "Selected Frames (6-12)"
 
-# Qwen2.5-VL processes images at (dynamic) native resolution -- passing 6 frames straight
-# from a 4K source OOM'd a 15.5GB GPU (CUDA OOM asking for ~1GB more with none free).
-# 896px on the long side keeps enough detail for pose/framing/background judgments while
-# comfortably fitting alongside the model weights.
 MAX_FRAME_DIM = 896
 
 
 def select_representative_frames(
     visual_events: list[VisualEvent], fps: int, max_frames: int = MAX_SELECTED_FRAMES,
 ) -> list[int]:
-    """Pick frame indices around each event's midpoint, capped at max_frames,
-    so the VLM only has to look at a handful of representative images.
-    """
+    """Pick frame indices around each event's midpoint, capped at max_frames."""
     frames: list[int] = []
     for event in visual_events:
         midpoint = (event.start_time_s + event.end_time_s) / 2
@@ -51,11 +45,6 @@ def _extract_frame_crops(
 ) -> list:
     """Convert selected numpy frames (OpenCV BGR) to RGB PIL Images, downscaled to
     MAX_FRAME_DIM on the long side.
-
-    The VLM expects standard PIL Images; OpenCV stores channels as BGR, so we
-    reverse the channel axis before wrapping in PIL. Downscaling happens here
-    (not left to callers) so every caller gets OOM-safe images regardless of
-    source video resolution -- see MAX_FRAME_DIM.
     """
     try:
         from PIL import Image
@@ -84,12 +73,11 @@ def assemble_evidence(
     fps: int = 30,
     all_frames: dict[int, np.ndarray] | None = None,
 ) -> EvidencePackage:
-    """Assemble all pipeline outputs into a single EvidencePackage for the VLM.
+    """Assemble all pipeline outputs into a single EvidencePackage for the LLM reasoner.
 
     Pass *all_frames* (a dict mapping frame_index → BGR numpy array from the
-    video pipeline) to populate frame_images with actual PIL Image crops.
-    When omitted the package still works but frame_images will be empty and
-    the VLM will fall back to text-only / mock reasoning.
+    video pipeline) to populate frame_images with PIL Image crops.
+    When omitted the package still works with text-only / mock reasoning.
     """
     selected_frames = select_representative_frames(visual_events, fps)
     frame_images = _extract_frame_crops(selected_frames, all_frames) if all_frames else []
@@ -129,7 +117,7 @@ _FLAG_TO_SIGNAL: dict[str, SignalType] = {
     "background_distracting": SignalType.BACKGROUND_DISTRACTING,
     # was silently dropped before: fuse_evidence() emits "background_mild:<class>" for
     # any non-neutral tier, but only "background_distracting" had a mapping here --
-    # mild-tier objects (pillow, towel, cup, ...) never reached the VLM.
+    # mild-tier objects (pillow, towel, cup, ...) never reached the LLM.
     "background_mild":       SignalType.BACKGROUND_MILD,
     # original temporal-model signals, if A ever emits them via flags too
     "repetitive_hand_movement": SignalType.REPETITIVE_HAND_MOVEMENT,
@@ -221,7 +209,7 @@ def from_fused_evidence_json(
     *data* is the parsed JSON dict produced by A/B's notebook fusion step.
     The per-timestamp flags are mapped to VisualEvent objects; framing
     metrics and background detections are carried through in event_timestamps
-    so build_prompt() can include them in the VLM context.
+    so build_prompt() can include them in the LLM context.
     """
     fps_fused: int = int(data.get("fps_fused", 3))
     step: float = 1.0 / fps_fused
