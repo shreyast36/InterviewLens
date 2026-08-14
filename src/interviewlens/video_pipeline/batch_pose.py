@@ -58,7 +58,7 @@ def _get_pose_model():
                 det=str(_det_onnx),
                 det_input_size=(416, 416),
                 pose=str(_pose_onnx),
-                pose_input_size=(256, 192),
+                pose_input_size=(192, 256),   # rtmlib convention: (width, height) → tensor [1,3,H,W]=[1,3,256,192]
                 backend="onnxruntime",
                 device="cpu",
             )
