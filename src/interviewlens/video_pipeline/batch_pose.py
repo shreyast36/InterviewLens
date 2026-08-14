@@ -109,54 +109,56 @@ def extract_pose_evidence(video_path: str, sample_fps: int = 5) -> dict:
     """
     model = _get_pose_model()
     cap = cv2.VideoCapture(str(video_path))
-    src_fps = cap.get(cv2.CAP_PROP_FPS)
-    frame_w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-    frame_h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    stride = max(1, round(src_fps / sample_fps))
+    try:
+        src_fps = cap.get(cv2.CAP_PROP_FPS)
+        frame_w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        frame_h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        stride = max(1, round(src_fps / sample_fps))
 
-    frames_out = []
-    frame_idx = 0
-    sample_idx = 0
-    cached_bbox = None
-    while True:
-        # cap.grab() decodes without the BGR-array conversion cap.read() does -- for the
-        # skipped frames that conversion is pure waste. Only cap.retrieve() (the expensive
-        # half) on frames actually sampled. Measured ~4.6x faster decode in the notebook.
-        if frame_idx % stride == 0:
-            ok, frame = cap.read()
-        else:
-            ok = cap.grab()
-        if not ok:
-            break
-        if frame_idx % stride == 0:
-            if cached_bbox is None or sample_idx % DET_REFRESH_EVERY_N_SAMPLES == 0:
-                bboxes = model.det_model(frame)
-                bbox = bboxes[0] if len(bboxes) else None
+        frames_out = []
+        frame_idx = 0
+        sample_idx = 0
+        cached_bbox = None
+        while True:
+            # cap.grab() decodes without the BGR-array conversion cap.read() does -- for the
+            # skipped frames that conversion is pure waste. Only cap.retrieve() (the expensive
+            # half) on frames actually sampled. Measured ~4.6x faster decode in the notebook.
+            if frame_idx % stride == 0:
+                ok, frame = cap.read()
             else:
-                bbox = cached_bbox
+                ok = cap.grab()
+            if not ok:
+                break
+            if frame_idx % stride == 0:
+                if cached_bbox is None or sample_idx % DET_REFRESH_EVERY_N_SAMPLES == 0:
+                    bboxes = model.det_model(frame)
+                    bbox = bboxes[0] if len(bboxes) else None
+                else:
+                    bbox = cached_bbox
 
-            if bbox is None:
-                pred = np.zeros((17, 3), dtype=np.float32)
-                cached_bbox = None
-            else:
-                kpts, scores = model.pose_model(frame, bboxes=[bbox])
-                pred = np.concatenate([kpts[0], scores[0, :, None]], axis=1).astype(np.float32)
-                visible = pred[:, 2] > CONF
-                cached_bbox = (
-                    _pad_bbox([pred[visible, 0].min(), pred[visible, 1].min(),
-                               pred[visible, 0].max(), pred[visible, 1].max()], BBOX_MARGIN, frame_w, frame_h)
-                    if visible.sum() > 0 else None
-                )
+                if bbox is None:
+                    pred = np.zeros((17, 3), dtype=np.float32)
+                    cached_bbox = None
+                else:
+                    kpts, scores = model.pose_model(frame, bboxes=[bbox])
+                    pred = np.concatenate([kpts[0], scores[0, :, None]], axis=1).astype(np.float32)
+                    visible = pred[:, 2] > CONF
+                    cached_bbox = (
+                        _pad_bbox([pred[visible, 0].min(), pred[visible, 1].min(),
+                                   pred[visible, 0].max(), pred[visible, 1].max()], BBOX_MARGIN, frame_w, frame_h)
+                        if visible.sum() > 0 else None
+                    )
 
-            framing = compute_framing(pred, frame_w, frame_h)
-            frames_out.append({
-                "timestamp_s": round(frame_idx / src_fps, 3),
-                "keypoints": [[round(float(x), 2), round(float(y), 2), round(float(c), 3)] for x, y, c in pred[UPPER_BODY_IDX]],
-                "framing": framing,
-            })
-            sample_idx += 1
-        frame_idx += 1
-    cap.release()
+                framing = compute_framing(pred, frame_w, frame_h)
+                frames_out.append({
+                    "timestamp_s": round(frame_idx / src_fps, 3),
+                    "keypoints": [[round(float(x), 2), round(float(y), 2), round(float(c), 3)] for x, y, c in pred[UPPER_BODY_IDX]],
+                    "framing": framing,
+                })
+                sample_idx += 1
+            frame_idx += 1
+    finally:
+        cap.release()
 
     return {
         "video": str(video_path).rsplit("/", 1)[-1],
@@ -393,13 +395,15 @@ def grab_frames(video_path: str, frame_indices: list[int], fps: float) -> dict[i
     function returns from select_representative_frames(), not native video frame
     numbers."""
     cap = cv2.VideoCapture(str(video_path))
-    video_fps = cap.get(cv2.CAP_PROP_FPS)
-    out: dict[int, np.ndarray] = {}
-    for idx in frame_indices:
-        ts = idx / fps
-        cap.set(cv2.CAP_PROP_POS_FRAMES, int(ts * video_fps))
-        ok, frame = cap.read()
-        if ok:
-            out[idx] = frame
-    cap.release()
+    try:
+        video_fps = cap.get(cv2.CAP_PROP_FPS)
+        out: dict[int, np.ndarray] = {}
+        for idx in frame_indices:
+            ts = idx / fps
+            cap.set(cv2.CAP_PROP_POS_FRAMES, int(ts * video_fps))
+            ok, frame = cap.read()
+            if ok:
+                out[idx] = frame
+    finally:
+        cap.release()
     return out

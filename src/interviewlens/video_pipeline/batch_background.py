@@ -157,22 +157,24 @@ def _yolo_world_predict(img_bgr: np.ndarray, conf: float = 0.15) -> list[dict]:
 
 def _sample_video_frames(video_path: str, sample_fps: int):
     cap = cv2.VideoCapture(str(video_path))
-    src_fps = cap.get(cv2.CAP_PROP_FPS)
-    stride = max(1, round(src_fps / sample_fps))
-    frame_idx = 0
-    while True:
-        # See batch_pose.extract_pose_evidence for why grab()-without-retrieve() on
-        # skipped frames is worth doing -- same trick, same ~4.6x faster decode.
-        if frame_idx % stride == 0:
-            ok, frame = cap.read()
-        else:
-            ok = cap.grab()
-        if not ok:
-            break
-        if frame_idx % stride == 0:
-            yield frame_idx / src_fps, frame
-        frame_idx += 1
-    cap.release()
+    try:
+        src_fps = cap.get(cv2.CAP_PROP_FPS)
+        stride = max(1, round(src_fps / sample_fps))
+        frame_idx = 0
+        while True:
+            # See batch_pose.extract_pose_evidence for why grab()-without-retrieve() on
+            # skipped frames is worth doing -- same trick, same ~4.6x faster decode.
+            if frame_idx % stride == 0:
+                ok, frame = cap.read()
+            else:
+                ok = cap.grab()
+            if not ok:
+                break
+            if frame_idx % stride == 0:
+                yield frame_idx / src_fps, frame
+            frame_idx += 1
+    finally:
+        cap.release()
 
 
 def _summarize_tracks(tracked_frames: list[dict], frame_w: int, frame_h: int) -> list[dict]:

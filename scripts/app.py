@@ -635,8 +635,15 @@ def _run_video(question: str, video_bytes: bytes, suffix: str) -> tuple[dict, di
             status.update(label="✅ Analysis complete!", state="complete", expanded=False)
         return asdict(report), {}
     finally:
+        # Force Python to drop any lingering cv2 references before deleting.
+        import gc; gc.collect()
         if tmp_path and os.path.exists(tmp_path):
-            os.unlink(tmp_path)
+            try:
+                os.unlink(tmp_path)
+            except PermissionError:
+                # Windows may hold the file briefly after VideoCapture.release().
+                # The OS will clean it from %TEMP% on its own — swallow the error.
+                pass
 
 
 # ══════════════════════════════════════════════════════════════════════════════
