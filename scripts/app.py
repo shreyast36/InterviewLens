@@ -670,14 +670,14 @@ def _dashboard(data: dict, extra: dict) -> None:
     g1, g2, g3 = st.columns(3)
     with g1:
         st.plotly_chart(_gauge(reliability, "AI Reliability Score"),
-                        use_container_width=True)
+                        width="stretch")
     with g2:
         st.plotly_chart(_gauge(tracking, "Pose Tracking Quality"),
-                        use_container_width=True)
+                        width="stretch")
     with g3:
         fig_d = _donut(timeline)
         if fig_d:
-            st.plotly_chart(fig_d, use_container_width=True)
+            st.plotly_chart(fig_d, width="stretch")
         else:
             st.markdown(
                 '<p style="color:#334155;font-size:.85rem;padding-top:2rem;'
@@ -689,7 +689,7 @@ def _dashboard(data: dict, extra: dict) -> None:
     st.markdown(_sec("⏱", "Signal Timeline"), unsafe_allow_html=True)
     fig_t = _timeline(timeline, duration_s)
     if fig_t:
-        st.plotly_chart(fig_t, use_container_width=True)
+        st.plotly_chart(fig_t, width="stretch")
     else:
         st.markdown(
             '<p style="color:#334155;font-size:.85rem">No signals to display.</p>',
@@ -721,7 +721,7 @@ def _dashboard(data: dict, extra: dict) -> None:
     with left_f:
         st.markdown(_badge(reliability), unsafe_allow_html=True)
     with right_f:
-        if st.button("🔄  New Analysis", use_container_width=False):
+        if st.button("🔄  New Analysis", width="content"):
             for k in ("report", "extra"):
                 st.session_state.pop(k, None)
             st.rerun()
@@ -776,7 +776,7 @@ with st.sidebar:
         )
 
     st.markdown("<br>", unsafe_allow_html=True)
-    run_btn = st.button("▶  Run Analysis", type="primary", use_container_width=True)
+    run_btn = st.button("▶  Run Analysis", type="primary", width="stretch")
     st.divider()
 
     # Ollama status
