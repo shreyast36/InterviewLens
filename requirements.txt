@@ -27,7 +27,7 @@
 # ── Core pipeline ─────────────────────────────────────────────────────────────
 numpy>=1.24
 opencv-python>=4.8          # frame decoding; if ultralytics installed first you
-                             # may have opencv-contrib-python instead — both work
+                            # may have opencv-contrib-python instead — both work
 scipy>=1.10                  # rolling statistics in batch_pose.py signal rules
 pandas>=1.5                  # signal event aggregation (detect_signal_events)
 matplotlib>=3.7              # chart helpers
@@ -40,12 +40,12 @@ pydantic>=2.0
 
 # ── Audio pipeline ────────────────────────────────────────────────────────────
 sounddevice>=0.4             # live microphone capture (AudioStream) — optional;
-                             # NOT required for video-upload or demo-mode paths
-                             # (capture.py guards the import with try/except)
+                            # NOT required for video-upload or demo-mode paths
+                            # (capture.py guards the import with try/except)
 
 # ── LLM reasoning — Ollama client ─────────────────────────────────────────────
 ollama>=0.3                  # Python client for Ollama server
-                             # MODEL: run `ollama pull nemotron-mini` once
+                            # MODEL: run `ollama pull nemotron-mini` once
 
 # ── Streamlit dashboard ───────────────────────────────────────────────────────
 streamlit>=1.35
@@ -55,9 +55,9 @@ Pillow>=10.0                 # PIL image handling in evidence_assembly.py
 # ── Video pipeline — real inference (run_pipeline_from_video) ─────────────────
 onnxruntime>=1.17            # ONNX runtime for RTMPose-S inference
 rtmlib>=0.0.16               # RTMPose-S Body wrapper
-                             # MODEL: bundled ONNX files in pipeline/notebooks/weights/
+                            # MODEL: bundled ONNX files in pipeline/notebooks/weights/
 ultralytics>=8.4             # YOLO-World-S background detection
-                             # MODEL: pipeline/notebooks/yolov8s-worldv2.pt (bundled)
+                            # MODEL: pipeline/notebooks/yolov8s-worldv2.pt (bundled)
 supervision>=0.25            # ByteTrack multi-object tracker (used by batch_background.py)
 
 # ── Sample video generation ───────────────────────────────────────────────────
@@ -70,7 +70,7 @@ pytest>=7.4
 
 # ── Optional / future model backends ─────────────────────────────────────────
 # torch>=2.1               # if you want local GPU inference beyond onnxruntime
-# transformers>=4.40       # HuggingFace model hub (no longer needed — using Ollama)
-# faster-whisper           # real ASR on the uploaded audio track (Person B scope)
-# mediapipe                # alternative pose backend
-# webrtcvad                # voice activity detection
+#transformers>=4.40       # HuggingFace model hub (no longer needed — using Ollama)
+faster-whisper           # real ASR on the uploaded audio track (Person B scope)
+mediapipe                # alternative pose backend
+webrtcvad                # voice activity detection

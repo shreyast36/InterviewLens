@@ -5,6 +5,7 @@ Run from the repo root:
 """
 from __future__ import annotations
 
+import html
 import os
 import sys
 import tempfile
@@ -518,7 +519,7 @@ def _sec(icon: str, title: str) -> str:
 
 
 def _ccard(text: str, kind: str) -> str:
-    return f'<div class="ccard ccard-{kind}">{text}</div>'
+    return f'<div class="ccard ccard-{kind}">{html.escape(str(text))}</div>'
 
 
 def _col_title(icon: str, text: str, kind: str) -> str:
@@ -537,105 +538,46 @@ def _badge(score: float) -> str:
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# PIPELINE RUNNERS
+# CACHED MODEL LOADERS
 # ══════════════════════════════════════════════════════════════════════════════
-def _run_demo(question: str) -> tuple[dict, dict]:
-    from interviewlens.audio_pipeline.asr import build_asr_model
-    from interviewlens.audio_pipeline.capture import synthetic_audio
-    from interviewlens.audio_pipeline.delivery_analytics import compute_metrics
-    from interviewlens.audio_pipeline.postprocessing import normalize_disfluencies
-    from interviewlens.audio_pipeline.preprocessing import preprocess
-    from interviewlens.common.config import load_config
-    from interviewlens.common.schemas import Transcript
-    from interviewlens.reasoning.evidence_assembly import assemble_evidence
-    from interviewlens.reasoning.evidence_validation import validate
-    from interviewlens.reasoning.llm_reasoning import LLMReasoner
-    from interviewlens.reporting.coaching_report import build_coaching_report
-    from interviewlens.video_pipeline.capture import synthetic_frames
-    from interviewlens.video_pipeline.keypoint_processor import (
-        normalize_frame, valid_tracking_pct,
-    )
-    from interviewlens.video_pipeline.pose_estimation import build_pose_estimator
-    from interviewlens.video_pipeline.signal_detection import build_signal_detector
-    from interviewlens.video_pipeline.temporal_sequence import RollingWindowBuilder
-
-    cfg = load_config()
-
-    with st.status("🚀 Running InterviewLens pipeline…", expanded=True) as status:
-        st.write("📐 **Stage 1 / 5** — Video pipeline: pose estimation & signal detection")
-        pe = build_pose_estimator(cfg.video.pose_model)
-        sd = build_signal_detector("champion")
-        wb = RollingWindowBuilder(fps=cfg.video.fps,
-                                  window_seconds=cfg.video.window_seconds,
-                                  stride_seconds=cfg.video.stride_seconds)
-        visual_events, pose_frames, all_frames = [], [], {}
-        for frame, ts in synthetic_frames(cfg.video.fps * 8, fps=cfg.video.fps):
-            fi = int(ts * cfg.video.fps)
-            all_frames[fi] = frame
-            pf = normalize_frame(pe.estimate(frame, fi, ts))
-            pose_frames.append(pf)
-            w = wb.push(pf)
-            if w:
-                visual_events.extend(sd.detect(w))
-        tracking_pct = valid_tracking_pct(pose_frames)
-
-        st.write("🎙️ **Stage 2 / 5** — Audio pipeline: transcription & delivery metrics")
-        asr = build_asr_model(cfg.audio.asr_model)
-        raw_audio = synthetic_audio(duration_s=8.0, sample_rate=cfg.audio.sample_rate)
-        segs = preprocess(raw_audio, cfg.audio.sample_rate)
-        trans_list = [asr.transcribe(seg) for seg in segs]
-        transcript = normalize_disfluencies(Transcript(
-            text=" ".join(t.text for t in trans_list),
-            words=[w for t in trans_list for w in t.words],
-        ))
-        audio_metrics = compute_metrics(transcript, total_duration_s=8.0)
-
-        st.write("🧩 **Stage 3 / 5** — Fusing modalities into evidence package")
-        evidence = assemble_evidence(
-            question=question, transcript=transcript,
-            audio_metrics=audio_metrics, visual_events=visual_events,
-            fps=cfg.video.fps, all_frames=all_frames,
-        )
-
-        st.write("🤖 **Stage 4 / 5** — LLM reasoning via Ollama Nemotron")
-        reasoner = LLMReasoner(
-            model_name=cfg.reasoning.llm_model,
-            max_tokens=cfg.reasoning.max_output_tokens,
-            temperature=cfg.reasoning.temperature,
-        )
-        reasoning_output = reasoner.reason(evidence)
-
-        st.write("📊 **Stage 5 / 5** — Building coaching report")
-        validation = validate(evidence, reasoning_output)
-        report = build_coaching_report(
-            duration_s=8.0, valid_tracking_pct=tracking_pct,
-            audio_metrics=audio_metrics, visual_events=visual_events,
-            reasoning=reasoning_output, validation=validation,
-        )
-        status.update(label="✅ Analysis complete!", state="complete", expanded=False)
-
-    return asdict(report), {
-        "observations": reasoning_output.observations,
-        "explanations": reasoning_output.explanations,
-        "suggestions":  reasoning_output.suggestions,
-        "transcript":   transcript.text,
-    }
+# Heavy model objects are cached per Streamlit session so repeated analyses in
+# the same session don't reload weights from disk (RTMPose / YOLO-World are
+# already module-level cached inside their own subsystems; ASR and the LLM
+# client were not, so every "Run Analysis" click reloaded Whisper).
+@st.cache_resource(show_spinner=False)
+def _get_asr_model(model_name: str):
+    from interviewlens.audio_pipeline.asr import build_asr_model  # noqa: PLC0415
+    return build_asr_model(model_name)
 
 
+@st.cache_resource(show_spinner=False)
+def _get_reasoner(model_name: str, max_tokens: int, temperature: float):
+    from interviewlens.reasoning.llm_reasoning import LLMReasoner  # noqa: PLC0415
+    return LLMReasoner(model_name=model_name, max_tokens=max_tokens, temperature=temperature)
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# PIPELINE RUNNER
+# ══════════════════════════════════════════════════════════════════════════════
 def _run_video(question: str, video_bytes: bytes, suffix: str) -> tuple[dict, dict]:
-    """Run the real pipeline on an uploaded video with per-stage status updates."""
+    """Run the real pipeline on an uploaded video with per-stage status updates.
+
+    Every stage operates on the uploaded video's real data — pose from its
+    actual frames, background from its actual frames, transcript and speaking
+    metrics from its actual audio track (decoded via ffmpeg, transcribed via
+    faster-whisper). No synthetic placeholders anywhere in this path.
+    """
     import gc
-    from interviewlens.audio_pipeline.asr import build_asr_model
-    from interviewlens.audio_pipeline.capture import synthetic_audio
+    from interviewlens.audio_pipeline.batch_audio_quality import (
+        extract_audio_quality_evidence, extract_audio_samples,
+    )
     from interviewlens.audio_pipeline.delivery_analytics import compute_metrics
     from interviewlens.audio_pipeline.postprocessing import normalize_disfluencies
     from interviewlens.audio_pipeline.preprocessing import preprocess
-    from interviewlens.audio_pipeline.batch_audio_quality import extract_audio_quality_evidence
     from interviewlens.common.config import load_config
     from interviewlens.common.schemas import Transcript
     from interviewlens.reasoning.evidence_assembly import from_fused_evidence_json
     from interviewlens.reasoning.evidence_validation import validate
-    from interviewlens.reasoning.llm_reasoning import LLMReasoner
     from interviewlens.reporting.coaching_report import build_coaching_report
     from interviewlens.video_pipeline.ab_fusion import fuse_evidence
     from interviewlens.video_pipeline.batch_background import extract_background_evidence
@@ -678,14 +620,17 @@ def _run_video(question: str, video_bytes: bytes, suffix: str) -> tuple[dict, di
             duration_s = float(fused.get("duration_s") or 1.0)
             st.write(f"   ✔ {len(fused.get('timeline', []))} fused timestamps, {duration_s:.1f}s")
 
-            st.write("📝 **Stage 5 / 6** — Evidence assembly & LLM reasoning…")
-            asr = build_asr_model(cfg.audio.asr_model)
-            raw_audio  = synthetic_audio(duration_s=duration_s, sample_rate=cfg.audio.sample_rate)
-            trans_list = [asr.transcribe(seg) for seg in preprocess(raw_audio, cfg.audio.sample_rate)]
+            st.write("📝 **Stage 5 / 6** — Transcribing real audio (faster-whisper) & LLM reasoning…")
+            asr = _get_asr_model(cfg.audio.asr_model)
+            raw_audio  = extract_audio_samples(tmp_path, sample_rate=cfg.audio.sample_rate)
+            segs       = preprocess(raw_audio, cfg.audio.sample_rate) if raw_audio is not None and len(raw_audio) else []
+            trans_list = [asr.transcribe(seg) for seg in segs]
             transcript = normalize_disfluencies(Transcript(
-                text=" ".join(t.text for t in trans_list),
+                text=" ".join(t.text for t in trans_list if t.text),
                 words=[w for t in trans_list for w in t.words],
             ))
+            if not segs:
+                st.write("   ⚠ no usable audio track found — transcript will be empty")
             audio_metrics = compute_metrics(transcript, total_duration_s=duration_s)
             probe      = from_fused_evidence_json(fused, question=question,
                                                    transcript=transcript, audio_metrics=audio_metrics)
@@ -693,10 +638,8 @@ def _run_video(question: str, video_bytes: bytes, suffix: str) -> tuple[dict, di
             evidence   = from_fused_evidence_json(fused, question=question,
                                                    transcript=transcript, audio_metrics=audio_metrics,
                                                    all_frames=all_frames)
-            reasoner = LLMReasoner(
-                model_name=cfg.reasoning.llm_model,
-                max_tokens=cfg.reasoning.max_output_tokens,
-                temperature=cfg.reasoning.temperature,
+            reasoner = _get_reasoner(
+                cfg.reasoning.llm_model, cfg.reasoning.max_output_tokens, cfg.reasoning.temperature,
             )
             reasoning_output = reasoner.reason(evidence)
 
@@ -731,6 +674,7 @@ def _run_video(question: str, video_bytes: bytes, suffix: str) -> tuple[dict, di
 def _build_pdf(data: dict, extra: dict) -> bytes:
     """Generate a professional PDF coaching report and return the raw bytes."""
     from datetime import datetime
+    import unicodedata
     from fpdf import FPDF  # noqa: PLC0415
 
     observations = extra.get("observations") or data.get("strengths") or []
@@ -759,9 +703,32 @@ def _build_pdf(data: dict, extra: dict) -> bytes:
         if score >= 0.50: return C_AMBER
         return C_RED
 
+    def _pdf_safe_text(text: object) -> str:
+        """Normalize text for Helvetica/core PDF fonts that do not support full Unicode."""
+        safe = str(text)
+        replacements = {
+            "\u2013": "-",
+            "\u2014": "-",
+            "\u2018": "'",
+            "\u2019": "'",
+            "\u201c": '"',
+            "\u201d": '"',
+            "\u2026": "...",
+            "\u00b7": "-",
+            "\u2022": "-",
+            "\u00d7": "x",
+            "\u00a0": " ",
+        }
+        for old, new in replacements.items():
+            safe = safe.replace(old, new)
+        return unicodedata.normalize("NFKD", safe).encode("latin-1", "ignore").decode("latin-1")
+
     class Report(FPDF):
         def header(self):
             pass  # custom header drawn per-page below
+
+        def normalize_text(self, text):
+            return super().normalize_text(_pdf_safe_text(text))
 
         def footer(self):
             self.set_y(-14)
@@ -928,15 +895,17 @@ def _build_pdf(data: dict, extra: dict) -> bytes:
         for item in items:
             if pdf.get_y() > pdf.h - 30:
                 pdf.add_page()
-            # bullet strip
-            pdf.set_fill_color(*accent)
-            pdf.rect(12, pdf.get_y(), 2, 0, style="F")  # thin left bar
+            y_start = pdf.get_y()
             pdf.set_font("Helvetica", "", 9)
             pdf.set_text_color(*C_TEXT)
             pdf.set_x(16)
             # wrap long items
-            safe = item.replace("\u2014", "-").replace("\u2019", "'").replace("\u2018", "'")
-            pdf.multi_cell(W - 28, 5.5, f"{bullet}  {safe}", align="L")
+            pdf.multi_cell(W - 28, 5.5, f"{bullet}  {item}", align="L")
+            y_end = pdf.get_y()
+            # accent bar to the left, sized to the wrapped text block's height
+            pdf.set_draw_color(*accent)
+            pdf.set_line_width(0.8)
+            pdf.line(13, y_start + 0.5, 13, y_end - 0.5)
             pdf.ln(1)
         pdf.ln(2)
 
@@ -948,7 +917,7 @@ def _build_pdf(data: dict, extra: dict) -> bytes:
     if transcript:
         if pdf.get_y() > pdf.h - 60:
             pdf.add_page()
-        _section_header("Transcript (Synthetic Placeholder)", C_MUTED)
+        _section_header("Transcript", C_MUTED)
         pdf.set_font("Helvetica", "I", 8.5)
         pdf.set_text_color(*C_MUTED)
         pdf.set_x(12)
@@ -1045,7 +1014,10 @@ def _dashboard(data: dict, extra: dict) -> None:
     with left_f:
         st.markdown(_badge(reliability), unsafe_allow_html=True)
     with mid_f:
-        pdf_bytes = _build_pdf(data, extra)
+        pdf_bytes = st.session_state.get("pdf_bytes")
+        if pdf_bytes is None:
+            pdf_bytes = _build_pdf(data, extra)
+            st.session_state["pdf_bytes"] = pdf_bytes
         st.download_button(
             label="⬇️  Download PDF Report",
             data=pdf_bytes,
@@ -1055,7 +1027,7 @@ def _dashboard(data: dict, extra: dict) -> None:
         )
     with right_f:
         if st.button("🔄  New Analysis", width="content"):
-            for k in ("report", "extra"):
+            for k in ("report", "extra", "pdf_bytes"):
                 st.session_state.pop(k, None)
             st.rerun()
 
@@ -1063,7 +1035,7 @@ def _dashboard(data: dict, extra: dict) -> None:
         with st.expander("📝 Transcript"):
             st.markdown(
                 f'<p style="color:#64748b;font-size:.87rem;line-height:1.8;'
-                f'font-family:Inter,sans-serif">{transcript}</p>',
+                f'font-family:Inter,sans-serif">{html.escape(transcript)}</p>',
                 unsafe_allow_html=True,
             )
     with st.expander("🗂 Raw report JSON"):
@@ -1095,21 +1067,20 @@ with st.sidebar:
         help="The question the candidate is answering.",
     )
 
-    mode = st.radio(
-        "Input mode",
-        ["🧪 Demo (synthetic)", "🎬 Upload video"],
-        index=0,
+    _MAX_UPLOAD_MB = 500
+    uploaded_file = st.file_uploader(
+        "Video file", type=["mp4", "mov", "avi", "webm", "mkv"],
+        help=f"Max {_MAX_UPLOAD_MB} MB. Analyzed with the real pipeline "
+             "(RTMPose-S, YOLO-World-S, faster-whisper) — no synthetic data.",
     )
-
-    uploaded_file = None
-    if mode == "🎬 Upload video":
-        uploaded_file = st.file_uploader(
-            "Video file", type=["mp4", "mov", "avi", "webm", "mkv"],
-            help="Max 500 MB. Real pipeline requires onnxruntime.",
-        )
+    if uploaded_file is not None and uploaded_file.size > _MAX_UPLOAD_MB * 1024 * 1024:
+        st.error(f"File is {uploaded_file.size / (1024 * 1024):.0f} MB — "
+                 f"max is {_MAX_UPLOAD_MB} MB.")
+        uploaded_file = None
 
     st.markdown("<br>", unsafe_allow_html=True)
-    run_btn = st.button("▶  Run Analysis", type="primary", width="stretch")
+    run_btn = st.button("▶  Run Analysis", type="primary", width="stretch",
+                        disabled=uploaded_file is None)
     st.divider()
 
     # Ollama status
@@ -1155,20 +1126,18 @@ if run_btn:
     if not question.strip():
         st.warning("Please enter an interview question.")
         st.stop()
+    if uploaded_file is None:
+        st.warning("Please upload a video file.")
+        st.stop()
     try:
-        if mode == "🧪 Demo (synthetic)":
-            rd, extra = _run_demo(question.strip())
-        else:
-            if uploaded_file is None:
-                st.warning("Please upload a video file.")
-                st.stop()
-            rd, extra = _run_video(
-                question.strip(),
-                uploaded_file.read(),
-                Path(uploaded_file.name).suffix.lower(),
-            )
+        rd, extra = _run_video(
+            question.strip(),
+            uploaded_file.read(),
+            Path(uploaded_file.name).suffix.lower(),
+        )
         st.session_state["report"] = rd
         st.session_state["extra"]  = {**extra, "question": question.strip()}
+        st.session_state.pop("pdf_bytes", None)
     except Exception as exc:
         st.error(f"**Pipeline error:** {exc}")
         st.stop()

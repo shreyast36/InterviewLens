@@ -1,7 +1,7 @@
 """3.2 SPEECH RECOGNITION — Person B.
 
-Champion model: Whisper-small
-Challenger model: Wav2Vec 2.0
+Champion model: Whisper-small (faster-whisper, real inference)
+Challenger model: Wav2Vec 2.0 (not wired up yet)
 
 Both implementations expose `ASRModel.transcribe(segment) -> Transcript`
 (with word-level timestamps) so downstream post-processing never has to
@@ -22,17 +22,52 @@ class ASRModel(abc.ABC):
 
 
 class WhisperSmallASR(ASRModel):
-    """Champion. TODO(Person B): load faster-whisper / openai-whisper 'small'."""
+    """Champion. Real speech-to-text via faster-whisper on the interview
+    response's actual audio track."""
+
+    _MODEL_SIZE = "small"
 
     def __init__(self, model_path: str | None = None, device: str = "cpu"):
         self.model_path = model_path
         self.device = device
         self._model = None
 
-    def transcribe(self, segment: SpeechSegment) -> Transcript:
+    def _get_model(self):
         if self._model is None:
-            return _mock_transcript(segment)
-        raise NotImplementedError("Wire up real Whisper-small inference here")
+            try:
+                from faster_whisper import WhisperModel  # noqa: PLC0415
+            except ImportError as exc:
+                raise RuntimeError(
+                    "faster-whisper is required for transcription. "
+                    "Install it with: uv pip install faster-whisper"
+                ) from exc
+            compute_type = "int8" if self.device == "cpu" else "float16"
+            self._model = WhisperModel(
+                self.model_path or self._MODEL_SIZE,
+                device=self.device,
+                compute_type=compute_type,
+            )
+        return self._model
+
+    def transcribe(self, segment: SpeechSegment) -> Transcript:
+        model = self._get_model()
+        segments, _info = model.transcribe(
+            segment.audio, language="en", word_timestamps=True,
+        )
+        words: list[WordTiming] = []
+        text_parts: list[str] = []
+        for seg in segments:
+            seg_text = seg.text.strip()
+            if seg_text:
+                text_parts.append(seg_text)
+            for w in seg.words or []:
+                words.append(WordTiming(
+                    word=w.word.strip(),
+                    start_time_s=segment.start_time_s + w.start,
+                    end_time_s=segment.start_time_s + w.end,
+                    confidence=float(w.probability),
+                ))
+        return Transcript(text=" ".join(text_parts), words=words)
 
 
 class Wav2Vec2ASR(ASRModel):
@@ -41,12 +76,12 @@ class Wav2Vec2ASR(ASRModel):
     def __init__(self, model_path: str | None = None, device: str = "cpu"):
         self.model_path = model_path
         self.device = device
-        self._model = None
 
     def transcribe(self, segment: SpeechSegment) -> Transcript:
-        if self._model is None:
-            return _mock_transcript(segment)
-        raise NotImplementedError("Wire up real Wav2Vec2 inference here")
+        raise NotImplementedError(
+            "Wav2Vec2 challenger ASR is not wired up. "
+            "Use asr_model='whisper-small' (champion) instead."
+        )
 
 
 def build_asr_model(model_name: str) -> ASRModel:
@@ -55,25 +90,3 @@ def build_asr_model(model_name: str) -> ASRModel:
     if model_name in ("wav2vec2.0", "wav2vec2", "challenger"):
         return Wav2Vec2ASR()
     raise ValueError(f"Unknown asr_model: {model_name}")
-
-
-_MOCK_SENTENCE = "I worked on a project where we had to".split()
-
-
-def _mock_transcript(segment: SpeechSegment) -> Transcript:
-    """Evenly spaces mock words across the segment's duration so the rest
-    of the pipeline (word-level alignment, filler detection, WPM) has
-    something realistic to operate on before real ASR is wired in."""
-    duration = segment.end_time_s - segment.start_time_s
-    n = len(_MOCK_SENTENCE)
-    step = duration / max(n, 1)
-    words = [
-        WordTiming(
-            word=w,
-            start_time_s=segment.start_time_s + i * step,
-            end_time_s=segment.start_time_s + (i + 1) * step,
-            confidence=0.9,
-        )
-        for i, w in enumerate(_MOCK_SENTENCE)
-    ]
-    return Transcript(text=" ".join(_MOCK_SENTENCE), words=words)

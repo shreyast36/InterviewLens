@@ -1,10 +1,12 @@
 """Batch audio-quality signal detection for uploaded videos — Person B.
 
-Lightweight, signal-level audio-quality checks -- NOT ASR/transcription (that stays
-Person B's separate, still-synthetic subsystem in asr.py / delivery_analytics.py, and
-is out of scope here; see orchestration/pipeline.py::run_pipeline_from_video). This
-module answers a narrower question: "is the interviewee's audio usable at all?" --
-too quiet, or cutting in and out -- using plain RMS-energy analysis, no model.
+Lightweight, signal-level audio-quality checks -- NOT ASR/transcription (that's a
+separate concern in asr.py / delivery_analytics.py; see
+orchestration/pipeline.py::run_pipeline_from_video, which now reuses
+`extract_audio_samples` from this module as the real audio source for ASR too).
+This module answers a narrower question: "is the interviewee's audio usable at
+all?" -- too quiet, or cutting in and out -- using plain RMS-energy analysis, no
+model.
 
 Extracts the uploaded video's real audio track via ffmpeg/ffprobe (external system
 binaries, not Python packages -- both are already present on this machine; deployment
@@ -51,7 +53,13 @@ def _has_audio_stream(video_path: str) -> bool:
     return bool(result.stdout.strip())
 
 
-def _extract_audio_samples(video_path: str, sample_rate: int = SAMPLE_RATE) -> np.ndarray | None:
+def extract_audio_samples(video_path: str, sample_rate: int = SAMPLE_RATE) -> np.ndarray | None:
+    """Decodes the video's real audio track to mono float32 PCM via ffmpeg.
+
+    Public so other subsystems (ASR) can reuse the same real audio instead
+    of falling back to synthetic placeholders. Returns None if the video has
+    no audio track, ffmpeg is unavailable, or decoding fails.
+    """
     if shutil.which("ffmpeg") is None:
         logger.warning("ffmpeg not found on PATH -- skipping audio quality analysis.")
         return None
@@ -101,7 +109,7 @@ def extract_audio_quality_evidence(video_path: str) -> dict:
     if not _has_audio_stream(video_path):
         return dict(_EMPTY_RESULT)
 
-    samples = _extract_audio_samples(video_path)
+    samples = extract_audio_samples(video_path)
     if samples is None or len(samples) == 0:
         return dict(_EMPTY_RESULT)
 

@@ -5,7 +5,9 @@ integration contract test for the whole team.
 from __future__ import annotations
 
 from interviewlens.audio_pipeline.asr import build_asr_model
-from interviewlens.audio_pipeline.batch_audio_quality import extract_audio_quality_evidence
+from interviewlens.audio_pipeline.batch_audio_quality import (
+    extract_audio_quality_evidence, extract_audio_samples,
+)
 from interviewlens.audio_pipeline.capture import synthetic_audio
 from interviewlens.audio_pipeline.delivery_analytics import compute_metrics
 from interviewlens.audio_pipeline.postprocessing import normalize_disfluencies
@@ -127,14 +129,14 @@ def run_pipeline_from_video(
     the unstable_tracking rule in detect_signal_events() -- is the automated
     substitute for that human review.
 
-    Transcript/WPM/filler-word audio metrics are still the synthetic placeholder
-    from Person B's subsystem (real ASR on the uploaded video's audio track is a
-    separate, larger piece of scope). Audio *quality* is real, though: the
-    uploaded video's actual audio track is analyzed for low_mic_level and
-    intermittent_audio (signal-level RMS checks, no ASR) via
-    audio_pipeline.batch_audio_quality, and merged into the same fused evidence
-    the LLM sees. A video with no audio track at all is handled gracefully --
-    extract_audio_quality_evidence() never raises, it just contributes no signals.
+    Transcript/WPM/filler-word audio metrics come from real ASR (faster-whisper)
+    run on the uploaded video's actual audio track, decoded via
+    audio_pipeline.batch_audio_quality.extract_audio_samples (ffmpeg). Audio
+    *quality* signals (low_mic_level, intermittent_audio) are computed from the
+    same real track via audio_pipeline.batch_audio_quality, and merged into the
+    same fused evidence the LLM sees. A video with no audio track at all is
+    handled gracefully -- both extract_audio_samples() and
+    extract_audio_quality_evidence() return empty results instead of raising.
     """
     config = config or load_config()
 
@@ -159,14 +161,14 @@ def run_pipeline_from_video(
     fused = fuse_evidence(pose_evidence, background_evidence, audio_quality_evidence)
     duration_s = float(fused.get("duration_s") or 1.0)  # guard against 0 / None
 
-    # ---- Audio (Person B, synthetic placeholder -- see docstring) --------
+    # ---- Audio (real ASR on the uploaded video's actual track) ------------
     asr_model = build_asr_model(config.audio.asr_model)
-    raw_audio = synthetic_audio(duration_s=duration_s, sample_rate=config.audio.sample_rate)
-    segments = preprocess(raw_audio, config.audio.sample_rate)
+    raw_audio = extract_audio_samples(video_path, sample_rate=config.audio.sample_rate)
+    segments = preprocess(raw_audio, config.audio.sample_rate) if raw_audio is not None and len(raw_audio) else []
     transcripts = [asr_model.transcribe(seg) for seg in segments]
     combined_words = [w for t in transcripts for w in t.words]
     transcript = normalize_disfluencies(
-        Transcript(text=" ".join(t.text for t in transcripts), words=combined_words)
+        Transcript(text=" ".join(t.text for t in transcripts if t.text), words=combined_words)
     )
     audio_metrics = compute_metrics(transcript, total_duration_s=duration_s)
 
