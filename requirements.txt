@@ -1,30 +1,75 @@
+# ══════════════════════════════════════════════════════════════════════════════
+# InterviewLens — Python dependencies
+#
+# Install everything:
+#   pip install -r requirements.txt
+#   pip install -e .
+#
+# AI MODEL DOWNLOADS (one-time, done separately — not pip-installable):
+#
+#   1. Ollama LLM — NVIDIA Nemotron Mini 4B (~2.7 GB)
+#      Install Ollama: https://ollama.com
+#      Then run:  ollama pull nemotron-mini
+#
+#   2. RTMPose-S ONNX detector + pose weights (~42 MB total)
+#      Already bundled in the repo:
+#        pipeline/notebooks/weights/rtmpose/yolox_tiny_8xb8-300e_humanart-6f3252f9.onnx
+#        pipeline/notebooks/weights/rtmpose/rtmpose-s_simcc-body7_pt-body7_420e-256x192-acd4a1ef_20230504.onnx
+#      batch_pose.py loads these automatically; rtmlib will download them on
+#      first use as fallback if the bundled files are missing.
+#
+#   3. YOLO-World-S weights (~25 MB)
+#      Already bundled in the repo: pipeline/notebooks/yolov8s-worldv2.pt
+#      batch_background.py searches for this file automatically.
+# ══════════════════════════════════════════════════════════════════════════════
+
+
+# ── Core pipeline ─────────────────────────────────────────────────────────────
 numpy>=1.24
-opencv-python>=4.8
-sounddevice>=0.4
-matplotlib>=3.7
-pyyaml>=6.0
+opencv-python>=4.8          # frame decoding; if ultralytics installed first you
+                             # may have opencv-contrib-python instead — both work
+scipy>=1.10                  # rolling statistics in batch_pose.py signal rules
+pandas>=1.5                  # signal event aggregation (detect_signal_events)
+matplotlib>=3.7              # chart helpers
+pyyaml>=6.0                  # configs/config.yaml loader
+
+# ── API server ────────────────────────────────────────────────────────────────
 fastapi>=0.110
 uvicorn>=0.29
 pydantic>=2.0
-pytest>=7.4
-ollama>=0.3
 
-# Streamlit UI
+# ── Audio pipeline ────────────────────────────────────────────────────────────
+sounddevice>=0.4             # live microphone capture (AudioStream) — optional;
+                             # NOT required for video-upload or demo-mode paths
+                             # (capture.py guards the import with try/except)
+
+# ── LLM reasoning — Ollama client ─────────────────────────────────────────────
+ollama>=0.3                  # Python client for Ollama server
+                             # MODEL: run `ollama pull nemotron-mini` once
+
+# ── Streamlit dashboard ───────────────────────────────────────────────────────
 streamlit>=1.35
 plotly>=5.0
-Pillow>=10.0
+Pillow>=10.0                 # PIL image handling in evidence_assembly.py
 
-# Sample video generation
-moviepy>=2.0
-pyttsx3>=2.90
+# ── Video pipeline — real inference (run_pipeline_from_video) ─────────────────
+onnxruntime>=1.17            # ONNX runtime for RTMPose-S inference
+rtmlib>=0.0.16               # RTMPose-S Body wrapper
+                             # MODEL: bundled ONNX files in pipeline/notebooks/weights/
+ultralytics>=8.4             # YOLO-World-S background detection
+                             # MODEL: pipeline/notebooks/yolov8s-worldv2.pt (bundled)
+supervision>=0.25            # ByteTrack multi-object tracker (used by batch_background.py)
 
-# Model backends — install whichever your subsystem needs
-onnxruntime>=1.17        # required for run_pipeline_from_video (RTMPose + YOLO)
-rtmlib>=0.0.16           # RTMPose-S pose estimation
-ultralytics>=8.4         # YOLO-World-S background detection
-supervision>=0.25        # ByteTrack object tracker used by batch_background.py
-# torch>=2.1
-# transformers>=4.40
-# faster-whisper
-# mediapipe
-# webrtcvad
+# ── Sample video generation ───────────────────────────────────────────────────
+moviepy>=2.0                 # combine silent video + TTS audio track
+pyttsx3>=2.90                # Windows SAPI TTS speech synthesis
+
+# ── Testing ───────────────────────────────────────────────────────────────────
+pytest>=7.4
+
+# ── Optional / future model backends ─────────────────────────────────────────
+# torch>=2.1               # if you want local GPU inference beyond onnxruntime
+# transformers>=4.40       # HuggingFace model hub (no longer needed — using Ollama)
+# faster-whisper           # real ASR on the uploaded audio track (Person B scope)
+# mediapipe                # alternative pose backend
+# webrtcvad                # voice activity detection
