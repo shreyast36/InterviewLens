@@ -1,0 +1,2597 @@
+{
+  "video": "test_2.mp4",
+  "fps_fused": 3,
+  "duration_s": 29.2,
+  "source_streams": {
+    "pose": {
+      "model": "RTMPose-S",
+      "fps_sampled": 5
+    },
+    "background": {
+      "model": "YOLO-World-S",
+      "fps_sampled": 3
+    }
+  },
+  "signal_summary": {
+    "per_type": {
+      "body_lean": {
+        "events": 1,
+        "total_s": 29.2
+      },
+      "head_tilt": {
+        "events": 9,
+        "total_s": 8.4
+      },
+      "frozen": {
+        "events": 3,
+        "total_s": 1.8
+      },
+      "swaying": {
+        "events": 1,
+        "total_s": 5.2
+      },
+      "nodding": {
+        "events": 1,
+        "total_s": 9.8
+      }
+    },
+    "pct_timestamps_flagged": 100.0,
+    "longest_clean_streak_s": 0.0
+  },
+  "timeline": [
+    {
+      "timestamp_s": 0.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            497.574951171875,
+            375.83111572265625,
+            1397.47998046875,
+            1070.24609375
+          ],
+          "headroom_pct": 0.3479917645454407,
+          "centering_offset": [
+            -0.012992222793400288,
+            0.33896031975746155
+          ],
+          "roll_deg": 180.0
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean"
+      ]
+    },
+    {
+      "timestamp_s": 0.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            493.4826354980469,
+            376.05682373046875,
+            1392.5057373046875,
+            1070.5963134765625
+          ],
+          "headroom_pct": 0.3482007682323456,
+          "centering_offset": [
+            -0.017714373767375946,
+            0.33949360251426697
+          ],
+          "roll_deg": 180.0
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "head_tilt"
+      ]
+    },
+    {
+      "timestamp_s": 0.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            493.8677978515625,
+            361.30584716796875,
+            1393.787109375,
+            1064.6910400390625
+          ],
+          "headroom_pct": 0.334542453289032,
+          "centering_offset": [
+            -0.01684640161693096,
+            0.3203674256801605
+          ],
+          "roll_deg": 180.0
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "head_tilt"
+      ]
+    },
+    {
+      "timestamp_s": 1.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            483.0224304199219,
+            354.798828125,
+            1398.61083984375,
+            1064.557373046875
+          ],
+          "headroom_pct": 0.32851743698120117,
+          "centering_offset": [
+            -0.019982656463980675,
+            0.3142186999320984
+          ],
+          "roll_deg": 180.0
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "head_tilt"
+      ]
+    },
+    {
+      "timestamp_s": 1.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            483.40045166015625,
+            341.4008483886719,
+            1386.9744873046875,
+            1065.6396484375
+          ],
+          "headroom_pct": 0.31611189246177673,
+          "centering_offset": [
+            -0.02584635466337204,
+            0.3028152883052826
+          ],
+          "roll_deg": -176.4236602783203
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "frozen",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 1.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            486.3182373046875,
+            348.32891845703125,
+            1391.7757568359375,
+            1065.0037841796875
+          ],
+          "headroom_pct": 0.3225267827510834,
+          "centering_offset": [
+            -0.021826045587658882,
+            0.3086414337158203
+          ],
+          "roll_deg": -174.4724578857422
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "frozen",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 2.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            486.94537353515625,
+            377.3619079589844,
+            1390.6531982421875,
+            1063.899658203125
+          ],
+          "headroom_pct": 0.34940916299819946,
+          "centering_offset": [
+            -0.02208404615521431,
+            0.3345014750957489
+          ],
+          "roll_deg": -176.53176879882812
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 2.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            481.9872741699219,
+            375.83135986328125,
+            1391.9373779296875,
+            1067.111328125
+          ],
+          "headroom_pct": 0.3479920029640198,
+          "centering_offset": [
+            -0.023997562006115913,
+            0.33605799078941345
+          ],
+          "roll_deg": -174.64414978027344
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "frozen",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 2.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            481.32501220703125,
+            373.00732421875,
+            1396.1375732421875,
+            1068.120849609375
+          ],
+          "headroom_pct": 0.3453771471977234,
+          "centering_offset": [
+            -0.022154871374368668,
+            0.3343779444694519
+          ],
+          "roll_deg": -174.6441650390625
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "frozen",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 3.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            479.7996826171875,
+            361.6912536621094,
+            1399.067138671875,
+            1065.50537109375
+          ],
+          "headroom_pct": 0.33489930629730225,
+          "centering_offset": [
+            -0.02142352983355522,
+            0.32147839665412903
+          ],
+          "roll_deg": -176.30859375
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "frozen",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 3.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            477.2986145019531,
+            358.62396240234375,
+            1416.2376708984375,
+            1116.562744140625
+          ],
+          "headroom_pct": 0.33205923438072205,
+          "centering_offset": [
+            -0.013783200643956661,
+            0.36591365933418274
+          ],
+          "roll_deg": -176.05479431152344
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "frozen",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 3.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            457.3819580078125,
+            373.6765441894531,
+            1431.7869873046875,
+            1012.222900390625
+          ],
+          "headroom_pct": 0.34599679708480835,
+          "centering_offset": [
+            -0.01605784147977829,
+            0.2832401990890503
+          ],
+          "roll_deg": -173.6597900390625
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 4.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            499.7880554199219,
+            350.0397033691406,
+            1405.1845703125,
+            1088.5592041015625
+          ],
+          "headroom_pct": 0.32411083579063416,
+          "centering_offset": [
+            -0.00782674178481102,
+            0.33203598856925964
+          ],
+          "roll_deg": -174.4724578857422
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "head_tilt",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 4.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            534.3831787109375,
+            348.1302795410156,
+            1404.9178466796875,
+            1119.2733154296875
+          ],
+          "headroom_pct": 0.3223428428173065,
+          "centering_offset": [
+            0.010052617639303207,
+            0.3587070107460022
+          ],
+          "roll_deg": -176.4236602783203
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "head_tilt",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 4.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            530.637451171875,
+            342.898193359375,
+            1415.7967529296875,
+            1114.39892578125
+          ],
+          "headroom_pct": 0.3174983263015747,
+          "centering_offset": [
+            0.013767814263701439,
+            0.34934917092323303
+          ],
+          "roll_deg": -176.4236602783203
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "head_tilt",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 5.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            515.614501953125,
+            346.04559326171875,
+            1424.223876953125,
+            1087.0836181640625
+          ],
+          "headroom_pct": 0.3204125761985779,
+          "centering_offset": [
+            0.010332489386200905,
+            0.3269714415073395
+          ],
+          "roll_deg": 174.28939819335938
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "head_tilt",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 5.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            521.9568481445312,
+            373.9104309082031,
+            1433.940673828125,
+            1091.02587890625
+          ],
+          "headroom_pct": 0.34621337056159973,
+          "centering_offset": [
+            0.01869659498333931,
+            0.356422483921051
+          ],
+          "roll_deg": 170.21759033203125
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "head_tilt",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 5.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            519.5196533203125,
+            371.26763916015625,
+            1433.4263916015625,
+            1095.422607421875
+          ],
+          "headroom_pct": 0.34376633167266846,
+          "centering_offset": [
+            0.017159398645162582,
+            0.3580464720726013
+          ],
+          "roll_deg": 172.14666748046875
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 6.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            520.3764038085938,
+            374.6173095703125,
+            1427.62744140625,
+            1098.0718994140625
+          ],
+          "headroom_pct": 0.3468678891658783,
+          "centering_offset": [
+            0.014585367403924465,
+            0.36360111832618713
+          ],
+          "roll_deg": 173.88449096679688
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 6.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            513.2267456054688,
+            372.9770812988281,
+            1429.2939453125,
+            1107.376953125
+          ],
+          "headroom_pct": 0.34534916281700134,
+          "centering_offset": [
+            0.011729557998478413,
+            0.37069815397262573
+          ],
+          "roll_deg": 174.09384155273438
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "head_tilt",
+        "swaying"
+      ]
+    },
+    {
+      "timestamp_s": 6.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            515.449951171875,
+            360.0536193847656,
+            1437.117919921875,
+            1093.1177978515625
+          ],
+          "headroom_pct": 0.3333829939365387,
+          "centering_offset": [
+            0.016962433233857155,
+            0.34552904963493347
+          ],
+          "roll_deg": 172.87496948242188
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "head_tilt"
+      ]
+    },
+    {
+      "timestamp_s": 7.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            520.6179809570312,
+            361.8935852050781,
+            1437.6734619140625,
+            1102.3031005859375
+          ],
+          "headroom_pct": 0.3350866436958313,
+          "centering_offset": [
+            0.019943492487072945,
+            0.3557376563549042
+          ],
+          "roll_deg": 180.0
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "head_tilt"
+      ]
+    },
+    {
+      "timestamp_s": 7.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            478.3924865722656,
+            368.04638671875,
+            1472.8936767578125,
+            1027.0045166015625
+          ],
+          "headroom_pct": 0.3407836854457855,
+          "centering_offset": [
+            0.01629486121237278,
+            0.29171380400657654
+          ],
+          "roll_deg": -176.05479431152344
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean"
+      ]
+    },
+    {
+      "timestamp_s": 7.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            500.0958251953125,
+            363.37933349609375,
+            1456.227294921875,
+            1028.34326171875
+          ],
+          "headroom_pct": 0.3364623486995697,
+          "centering_offset": [
+            0.018918292596936226,
+            0.2886320948600769
+          ],
+          "roll_deg": -176.05479431152344
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean"
+      ]
+    },
+    {
+      "timestamp_s": 8.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            519.1754760742188,
+            343.9470520019531,
+            1442.8712158203125,
+            1095.79248046875
+          ],
+          "headroom_pct": 0.31846949458122253,
+          "centering_offset": [
+            0.021899286657571793,
+            0.3330921232700348
+          ],
+          "roll_deg": -176.30860900878906
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean"
+      ]
+    },
+    {
+      "timestamp_s": 8.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            519.9793701171875,
+            351.5889892578125,
+            1442.9713134765625,
+            1099.2840576171875
+          ],
+          "headroom_pct": 0.32554537057876587,
+          "centering_offset": [
+            0.022370148450136185,
+            0.3434009552001953
+          ],
+          "roll_deg": -178.09083557128906
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean"
+      ]
+    },
+    {
+      "timestamp_s": 8.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            518.41650390625,
+            350.82171630859375,
+            1444.2152099609375,
+            1092.901611328125
+          ],
+          "headroom_pct": 0.3248349130153656,
+          "centering_offset": [
+            0.022204017266631126,
+            0.3367809057235718
+          ],
+          "roll_deg": -172.40536499023438
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean"
+      ]
+    },
+    {
+      "timestamp_s": 9.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            496.3360290527344,
+            351.4464111328125,
+            1451.40283203125,
+            1020.7760620117188
+          ],
+          "headroom_pct": 0.3254133462905884,
+          "centering_offset": [
+            0.014447339810431004,
+            0.2705762982368469
+          ],
+          "roll_deg": -172.1466827392578
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean"
+      ]
+    },
+    {
+      "timestamp_s": 9.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            510.5887145996094,
+            349.53759765625,
+            1438.023681640625,
+            1089.2327880859375
+          ],
+          "headroom_pct": 0.3236459195613861,
+          "centering_offset": [
+            0.014902305789291859,
+            0.33219480514526367
+          ],
+          "roll_deg": -176.05479431152344
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean"
+      ]
+    },
+    {
+      "timestamp_s": 9.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            507.0880432128906,
+            344.5544128417969,
+            1442.1834716796875,
+            1086.693603515625
+          ],
+          "headroom_pct": 0.31903186440467834,
+          "centering_offset": [
+            0.015245565213263035,
+            0.325229674577713
+          ],
+          "roll_deg": -176.05479431152344
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "head_tilt"
+      ]
+    },
+    {
+      "timestamp_s": 10.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            505.4144592285156,
+            352.5138244628906,
+            1457.603271484375,
+            1037.6253662109375
+          ],
+          "headroom_pct": 0.3264016807079315,
+          "centering_offset": [
+            0.022405052557587624,
+            0.28716588020324707
+          ],
+          "roll_deg": 177.95457458496094
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "head_tilt"
+      ]
+    },
+    {
+      "timestamp_s": 10.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            510.0525817871094,
+            346.3102111816406,
+            1446.2529296875,
+            1079.155517578125
+          ],
+          "headroom_pct": 0.3206576108932495,
+          "centering_offset": [
+            0.018909135833382607,
+            0.31987565755844116
+          ],
+          "roll_deg": 170.2175750732422
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "head_tilt"
+      ]
+    },
+    {
+      "timestamp_s": 10.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            503.50384521484375,
+            347.9280090332031,
+            1450.253173828125,
+            1083.450439453125
+          ],
+          "headroom_pct": 0.32215556502342224,
+          "centering_offset": [
+            0.017581813037395477,
+            0.3253503739833832
+          ],
+          "roll_deg": 168.31063842773438
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "head_tilt"
+      ]
+    },
+    {
+      "timestamp_s": 11.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            508.76007080078125,
+            350.04718017578125,
+            1454.08544921875,
+            1081.67822265625
+          ],
+          "headroom_pct": 0.3241177499294281,
+          "centering_offset": [
+            0.022315343841910362,
+            0.32567161321640015
+          ],
+          "roll_deg": 169.04591369628906
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "head_tilt"
+      ]
+    },
+    {
+      "timestamp_s": 11.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            500.0416564941406,
+            366.5084533691406,
+            1448.216796875,
+            1040.3179931640625
+          ],
+          "headroom_pct": 0.33935967087745667,
+          "centering_offset": [
+            0.014717928133904934,
+            0.30261704325675964
+          ],
+          "roll_deg": 169.50851440429688
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "head_tilt"
+      ]
+    },
+    {
+      "timestamp_s": 11.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            499.28680419921875,
+            381.9566955566406,
+            1450.31787109375,
+            1029.46728515625
+          ],
+          "headroom_pct": 0.3536635935306549,
+          "centering_offset": [
+            0.015419133938848972,
+            0.30687403678894043
+          ],
+          "roll_deg": 167.9052276611328
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "head_tilt",
+        "nodding"
+      ]
+    },
+    {
+      "timestamp_s": 12.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            507.98876953125,
+            339.85284423828125,
+            1432.0072021484375,
+            1100.8092041015625
+          ],
+          "headroom_pct": 0.3146785497665405,
+          "centering_offset": [
+            0.010414568707346916,
+            0.3339464068412781
+          ],
+          "roll_deg": 174.47244262695312
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "nodding"
+      ]
+    },
+    {
+      "timestamp_s": 12.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            500.47802734375,
+            338.2890625,
+            1428.5855712890625,
+            1097.6497802734375
+          ],
+          "headroom_pct": 0.31323060393333435,
+          "centering_offset": [
+            0.004720624070614576,
+            0.32957300543785095
+          ],
+          "roll_deg": 176.30860900878906
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "nodding"
+      ]
+    },
+    {
+      "timestamp_s": 12.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            491.6391296386719,
+            342.3976135253906,
+            1426.53076171875,
+            1053.554443359375
+          ],
+          "headroom_pct": 0.31703484058380127,
+          "centering_offset": [
+            -0.0009531656978651881,
+            0.29254817962646484
+          ],
+          "roll_deg": 175.9143829345703
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "nodding"
+      ]
+    },
+    {
+      "timestamp_s": 13.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            496.7852783203125,
+            356.2181396484375,
+            1420.000244140625,
+            1078.898681640625
+          ],
+          "headroom_pct": 0.329831600189209,
+          "centering_offset": [
+            -0.0016742070438340306,
+            0.3288118839263916
+          ],
+          "roll_deg": 177.95458984375
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "nodding"
+      ]
+    },
+    {
+      "timestamp_s": 13.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            498.9626159667969,
+            364.5293884277344,
+            1428.777587890625,
+            1079.1805419921875
+          ],
+          "headroom_pct": 0.33752721548080444,
+          "centering_offset": [
+            0.004031372256577015,
+            0.3367684781551361
+          ],
+          "roll_deg": 176.0548095703125
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "nodding"
+      ]
+    },
+    {
+      "timestamp_s": 13.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            494.0107727050781,
+            363.47100830078125,
+            1427.6739501953125,
+            1080.1834716796875
+          ],
+          "headroom_pct": 0.33654722571372986,
+          "centering_offset": [
+            0.0008774439338594675,
+            0.3367171585559845
+          ],
+          "roll_deg": 178.02503967285156
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "nodding"
+      ]
+    },
+    {
+      "timestamp_s": 14.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            475.9642639160156,
+            350.1812438964844,
+            1430.250244140625,
+            1068.7025146484375
+          ],
+          "headroom_pct": 0.32424190640449524,
+          "centering_offset": [
+            -0.007179959677159786,
+            0.3137812912464142
+          ],
+          "roll_deg": -176.05479431152344
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "nodding"
+      ]
+    },
+    {
+      "timestamp_s": 14.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            480.2033386230469,
+            345.43792724609375,
+            1429.9832763671875,
+            1077.4818115234375
+          ],
+          "headroom_pct": 0.3198499381542206,
+          "centering_offset": [
+            -0.005111122038215399,
+            0.3175182342529297
+          ],
+          "roll_deg": -176.1859130859375
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "nodding"
+      ]
+    },
+    {
+      "timestamp_s": 14.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            470.52197265625,
+            345.0274658203125,
+            1435.5794677734375,
+            1040.4940185546875
+          ],
+          "headroom_pct": 0.3194698691368103,
+          "centering_offset": [
+            -0.007238833233714104,
+            0.282890260219574
+          ],
+          "roll_deg": -173.88449096679688
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "head_tilt",
+        "nodding"
+      ]
+    },
+    {
+      "timestamp_s": 15.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            472.32928466796875,
+            383.4026184082031,
+            1441.1251220703125,
+            1050.7059326171875
+          ],
+          "headroom_pct": 0.35500243306159973,
+          "centering_offset": [
+            -0.0034091949928551912,
+            0.32787826657295227
+          ],
+          "roll_deg": -173.4180450439453
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "head_tilt",
+        "nodding"
+      ]
+    },
+    {
+      "timestamp_s": 15.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            473.68157958984375,
+            379.73944091796875,
+            1440.010009765625,
+            1051.9678955078125
+          ],
+          "headroom_pct": 0.35161060094833374,
+          "centering_offset": [
+            -0.0032855987083166838,
+            0.32565489411354065
+          ],
+          "roll_deg": -169.1144561767578
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "head_tilt",
+        "nodding"
+      ]
+    },
+    {
+      "timestamp_s": 15.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            478.6376647949219,
+            370.28497314453125,
+            1442.3031005859375,
+            1042.8004150390625
+          ],
+          "headroom_pct": 0.3428564667701721,
+          "centering_offset": [
+            0.0004899978521279991,
+            0.30841246247291565
+          ],
+          "roll_deg": -173.4180450439453
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "head_tilt",
+        "nodding"
+      ]
+    },
+    {
+      "timestamp_s": 16.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            488.7958068847656,
+            350.5054016113281,
+            1436.5970458984375,
+            1069.3885498046875
+          ],
+          "headroom_pct": 0.3245420455932617,
+          "centering_offset": [
+            0.0028087615501135588,
+            0.3147166073322296
+          ],
+          "roll_deg": -173.88449096679688
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "nodding"
+      ]
+    },
+    {
+      "timestamp_s": 16.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            489.8202819824219,
+            354.0891418457031,
+            1438.96826171875,
+            1074.9610595703125
+          ],
+          "headroom_pct": 0.3278603255748749,
+          "centering_offset": [
+            0.00457738246768713,
+            0.32319459319114685
+          ],
+          "roll_deg": -171.86988830566406
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "nodding"
+      ]
+    },
+    {
+      "timestamp_s": 16.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            495.2870178222656,
+            354.3030700683594,
+            1433.4564208984375,
+            1078.367431640625
+          ],
+          "headroom_pct": 0.3280583918094635,
+          "centering_offset": [
+            0.004553858656436205,
+            0.3265467882156372
+          ],
+          "roll_deg": -171.86988830566406
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "nodding"
+      ]
+    },
+    {
+      "timestamp_s": 17.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            491.4537658691406,
+            355.68634033203125,
+            1440.1416015625,
+            1065.2091064453125
+          ],
+          "headroom_pct": 0.3293392062187195,
+          "centering_offset": [
+            0.006039238069206476,
+            0.3156439960002899
+          ],
+          "roll_deg": -173.8844757080078
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "nodding"
+      ]
+    },
+    {
+      "timestamp_s": 17.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            490.52294921875,
+            370.51593017578125,
+            1434.6502685546875,
+            1065.9842529296875
+          ],
+          "headroom_pct": 0.34307029843330383,
+          "centering_offset": [
+            0.0026943841949105263,
+            0.33009281754493713
+          ],
+          "roll_deg": -174.09384155273438
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "nodding"
+      ]
+    },
+    {
+      "timestamp_s": 17.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            489.3135681152344,
+            383.17974853515625,
+            1446.189453125,
+            1056.536865234375
+          ],
+          "headroom_pct": 0.35479605197906494,
+          "centering_offset": [
+            0.008074506185948849,
+            0.33307087421417236
+          ],
+          "roll_deg": -175.9143524169922
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "nodding"
+      ]
+    },
+    {
+      "timestamp_s": 18.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            476.228515625,
+            406.47686767578125,
+            1454.5621337890625,
+            1045.99365234375
+          ],
+          "headroom_pct": 0.3763674795627594,
+          "centering_offset": [
+            0.005620129872113466,
+            0.34488004446029663
+          ],
+          "roll_deg": 180.0
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "nodding"
+      ]
+    },
+    {
+      "timestamp_s": 18.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            459.5032958984375,
+            397.7531433105469,
+            1478.1846923828125,
+            1034.9708251953125
+          ],
+          "headroom_pct": 0.3682899475097656,
+          "centering_offset": [
+            0.009212493896484375,
+            0.32659628987312317
+          ],
+          "roll_deg": -177.79739379882812
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "nodding"
+      ]
+    },
+    {
+      "timestamp_s": 18.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            466.11395263671875,
+            390.6768798828125,
+            1481.57080078125,
+            1020.96044921875
+          ],
+          "headroom_pct": 0.36173784732818604,
+          "centering_offset": [
+            0.014419173821806908,
+            0.30707159638404846
+          ],
+          "roll_deg": -177.79737854003906
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "nodding"
+      ]
+    },
+    {
+      "timestamp_s": 19.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            493.2795715332031,
+            371.3461608886719,
+            1427.3330078125,
+            1083.964599609375
+          ],
+          "headroom_pct": 0.34383904933929443,
+          "centering_offset": [
+            0.0003190358402207494,
+            0.3475099802017212
+          ],
+          "roll_deg": -177.87889099121094
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "nodding"
+      ]
+    },
+    {
+      "timestamp_s": 19.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            499.02618408203125,
+            388.3210754394531,
+            1439.5556640625,
+            1082.804931640625
+          ],
+          "headroom_pct": 0.35955655574798584,
+          "centering_offset": [
+            0.009678014554083347,
+            0.36215367913246155
+          ],
+          "roll_deg": -175.7635955810547
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "nodding"
+      ]
+    },
+    {
+      "timestamp_s": 19.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            497.134521484375,
+            389.4580078125,
+            1439.7078857421875,
+            1095.43408203125
+          ],
+          "headroom_pct": 0.3606092631816864,
+          "centering_offset": [
+            0.008772087283432484,
+            0.37490007281303406
+          ],
+          "roll_deg": -176.18589782714844
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "nodding"
+      ]
+    },
+    {
+      "timestamp_s": 20.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            492.57672119140625,
+            353.439208984375,
+            1450.26416015625,
+            1075.6951904296875
+          ],
+          "headroom_pct": 0.32725852727890015,
+          "centering_offset": [
+            0.011896261014044285,
+            0.32327258586883545
+          ],
+          "roll_deg": -171.57302856445312
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "nodding"
+      ]
+    },
+    {
+      "timestamp_s": 20.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            489.4075927734375,
+            349.3592529296875,
+            1446.2398681640625,
+            1074.1087646484375
+          ],
+          "headroom_pct": 0.3234807848930359,
+          "centering_offset": [
+            0.00814971886575222,
+            0.31802594661712646
+          ],
+          "roll_deg": -169.50852966308594
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "head_tilt",
+        "nodding"
+      ]
+    },
+    {
+      "timestamp_s": 20.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            484.28131103515625,
+            350.6195373535156,
+            1445.1715087890625,
+            1076.873779296875
+          ],
+          "headroom_pct": 0.3246477246284485,
+          "centering_offset": [
+            0.0049233753234148026,
+            0.32175305485725403
+          ],
+          "roll_deg": -168.31063842773438
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "head_tilt",
+        "nodding"
+      ]
+    },
+    {
+      "timestamp_s": 21.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            487.7780456542969,
+            351.7891540527344,
+            1446.6629638671875,
+            1082.742431640625
+          ],
+          "headroom_pct": 0.32573071122169495,
+          "centering_offset": [
+            0.007521375082433224,
+            0.3282700181007385
+          ],
+          "roll_deg": -169.87533569335938
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "head_tilt",
+        "nodding"
+      ]
+    },
+    {
+      "timestamp_s": 21.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            485.8631896972656,
+            362.14422607421875,
+            1467.0966796875,
+            1085.595947265625
+          ],
+          "headroom_pct": 0.3353187143802643,
+          "centering_offset": [
+            0.017166582867503166,
+            0.34050020575523376
+          ],
+          "roll_deg": -171.57301330566406
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "nodding"
+      ]
+    },
+    {
+      "timestamp_s": 21.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            485.5311584472656,
+            377.4898376464844,
+            1472.4617919921875,
+            1080.6248779296875
+          ],
+          "headroom_pct": 0.34952762722969055,
+          "centering_offset": [
+            0.019787978380918503,
+            0.35010623931884766
+          ],
+          "roll_deg": -171.25384521484375
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "nodding"
+      ]
+    },
+    {
+      "timestamp_s": 22.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            495.190673828125,
+            384.7037048339844,
+            1448.6669921875,
+            1058.712890625
+          ],
+          "headroom_pct": 0.35620713233947754,
+          "centering_offset": [
+            0.012425867840647697,
+            0.33649688959121704
+          ],
+          "roll_deg": -177.87889099121094
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean"
+      ]
+    },
+    {
+      "timestamp_s": 22.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            499.7548828125,
+            389.4173278808594,
+            1445.849365234375,
+            1063.458984375
+          ],
+          "headroom_pct": 0.36057159304618835,
+          "centering_offset": [
+            0.013335545547306538,
+            0.34525588154792786
+          ],
+          "roll_deg": -177.87889099121094
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean"
+      ]
+    },
+    {
+      "timestamp_s": 22.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            503.620361328125,
+            395.35565185546875,
+            1445.20947265625,
+            1066.1873779296875
+          ],
+          "headroom_pct": 0.36607006192207336,
+          "centering_offset": [
+            0.015015538781881332,
+            0.35328051447868347
+          ],
+          "roll_deg": 180.0
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "head_tilt"
+      ]
+    },
+    {
+      "timestamp_s": 23.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            499.70587158203125,
+            387.1192932128906,
+            1443.2860107421875,
+            1074.813232421875
+          ],
+          "headroom_pct": 0.3584437966346741,
+          "centering_offset": [
+            0.011974970810115337,
+            0.35364121198654175
+          ],
+          "roll_deg": 177.95457458496094
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "head_tilt"
+      ]
+    },
+    {
+      "timestamp_s": 23.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            502.71197509765625,
+            368.5123596191406,
+            1441.7882080078125,
+            1072.819580078125
+          ],
+          "headroom_pct": 0.3412151336669922,
+          "centering_offset": [
+            0.012760544195771217,
+            0.334566593170166
+          ],
+          "roll_deg": 180.0
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "head_tilt"
+      ]
+    },
+    {
+      "timestamp_s": 23.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            499.2431335449219,
+            358.89019775390625,
+            1458.02685546875,
+            1068.9517822265625
+          ],
+          "headroom_pct": 0.3323057293891907,
+          "centering_offset": [
+            0.019411468878388405,
+            0.3220759630203247
+          ],
+          "roll_deg": 180.0
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "head_tilt"
+      ]
+    },
+    {
+      "timestamp_s": 24.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            494.95111083984375,
+            369.0279235839844,
+            1437.500244140625,
+            1074.9371337890625
+          ],
+          "headroom_pct": 0.3416925072669983,
+          "centering_offset": [
+            0.006485112477093935,
+            0.33700472116470337
+          ],
+          "roll_deg": -177.95457458496094
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "head_tilt"
+      ]
+    },
+    {
+      "timestamp_s": 24.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            497.11181640625,
+            378.0047607421875,
+            1447.417236328125,
+            1076.98974609375
+          ],
+          "headroom_pct": 0.3500044047832489,
+          "centering_offset": [
+            0.012775548733770847,
+            0.3472171425819397
+          ],
+          "roll_deg": 178.02505493164062
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "frozen",
+        "head_tilt"
+      ]
+    },
+    {
+      "timestamp_s": 24.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            497.0234680175781,
+            378.7177429199219,
+            1441.7823486328125,
+            1080.4266357421875
+          ],
+          "headroom_pct": 0.35066458582878113,
+          "centering_offset": [
+            0.009794680401682854,
+            0.3510596454143524
+          ],
+          "roll_deg": 180.0
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "frozen",
+        "head_tilt"
+      ]
+    },
+    {
+      "timestamp_s": 25.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            504.10906982421875,
+            374.5171813964844,
+            1456.4677734375,
+            1079.1077880859375
+          ],
+          "headroom_pct": 0.3467751741409302,
+          "centering_offset": [
+            0.021133804693818092,
+            0.34594908356666565
+          ],
+          "roll_deg": 167.9052276611328
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "head_tilt"
+      ]
+    },
+    {
+      "timestamp_s": 25.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            508.87274169921875,
+            342.4568176269531,
+            1461.7630615234375,
+            1085.6376953125
+          ],
+          "headroom_pct": 0.31708964705467224,
+          "centering_offset": [
+            0.02637278288602829,
+            0.3223097026348114
+          ],
+          "roll_deg": 166.4295654296875
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "head_tilt"
+      ]
+    },
+    {
+      "timestamp_s": 25.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            502.109619140625,
+            344.4461975097656,
+            1438.084228515625,
+            1083.5689697265625
+          ],
+          "headroom_pct": 0.3189316689968109,
+          "centering_offset": [
+            0.010517628863453865,
+            0.32223623991012573
+          ],
+          "roll_deg": 170.5376739501953
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean",
+        "head_tilt"
+      ]
+    },
+    {
+      "timestamp_s": 26.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            501.6928405761719,
+            363.3981018066406,
+            1443.3072509765625,
+            1090.4674072265625
+          ],
+          "headroom_pct": 0.33647972345352173,
+          "centering_offset": [
+            0.013020897284150124,
+            0.3461717367172241
+          ],
+          "roll_deg": 176.05479431152344
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean"
+      ]
+    },
+    {
+      "timestamp_s": 26.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            508.5924987792969,
+            353.85418701171875,
+            1435.8087158203125,
+            1100.8826904296875
+          ],
+          "headroom_pct": 0.3276427686214447,
+          "centering_offset": [
+            0.012708981521427631,
+            0.3469785451889038
+          ],
+          "roll_deg": 178.09083557128906
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean"
+      ]
+    },
+    {
+      "timestamp_s": 26.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            509.1934509277344,
+            356.20538330078125,
+            1437.53759765625,
+            1101.86328125
+          ],
+          "headroom_pct": 0.32981979846954346,
+          "centering_offset": [
+            0.013922437094151974,
+            0.3500635325908661
+          ],
+          "roll_deg": -176.0548095703125
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean"
+      ]
+    },
+    {
+      "timestamp_s": 27.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            510.1936950683594,
+            361.5442810058594,
+            1439.23486328125,
+            1094.7957763671875
+          ],
+          "headroom_pct": 0.33476322889328003,
+          "centering_offset": [
+            0.015327390283346176,
+            0.3484630584716797
+          ],
+          "roll_deg": -178.02503967285156
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean"
+      ]
+    },
+    {
+      "timestamp_s": 27.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            510.9376220703125,
+            361.9380798339844,
+            1438.9075927734375,
+            1091.6239013671875
+          ],
+          "headroom_pct": 0.3351278603076935,
+          "centering_offset": [
+            0.015544382855296135,
+            0.34589076042175293
+          ],
+          "roll_deg": -178.02503967285156
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean"
+      ]
+    },
+    {
+      "timestamp_s": 27.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            513.1524047851562,
+            361.70709228515625,
+            1440.3192138671875,
+            1089.053466796875
+          ],
+          "headroom_pct": 0.334913969039917,
+          "centering_offset": [
+            0.01743316650390625,
+            0.34329676628112793
+          ],
+          "roll_deg": -177.95458984375
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean"
+      ]
+    },
+    {
+      "timestamp_s": 28.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            513.7061157226562,
+            361.6432800292969,
+            1441.030517578125,
+            1075.88037109375
+          ],
+          "headroom_pct": 0.3348549008369446,
+          "centering_offset": [
+            0.018091965466737747,
+            0.3310404419898987
+          ],
+          "roll_deg": -177.95458984375
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean"
+      ]
+    },
+    {
+      "timestamp_s": 28.333,
+      "pose": {
+        "framing": {
+          "bbox": [
+            511.63287353515625,
+            365.26837158203125,
+            1438.1038818359375,
+            1086.7330322265625
+          ],
+          "headroom_pct": 0.33821144700050354,
+          "centering_offset": [
+            0.01548792514950037,
+            0.3444457948207855
+          ],
+          "roll_deg": -178.02503967285156
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean"
+      ]
+    },
+    {
+      "timestamp_s": 28.667,
+      "pose": {
+        "framing": {
+          "bbox": [
+            510.20660400390625,
+            371.1982421875,
+            1438.4654541015625,
+            1087.39794921875
+          ],
+          "headroom_pct": 0.3437020778656006,
+          "centering_offset": [
+            0.014933395199477673,
+            0.3505520224571228
+          ],
+          "roll_deg": 180.0
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean"
+      ]
+    },
+    {
+      "timestamp_s": 29.0,
+      "pose": {
+        "framing": {
+          "bbox": [
+            517.3529052734375,
+            367.6778259277344,
+            1443.7537841796875,
+            1088.659423828125
+          ],
+          "headroom_pct": 0.340442419052124,
+          "centering_offset": [
+            0.021409733220934868,
+            0.34846043586730957
+          ],
+          "roll_deg": -177.95460510253906
+        }
+      },
+      "background": {
+        "active_tracks": []
+      },
+      "flags": [
+        "headroom_too_loose",
+        "off_center",
+        "tilted",
+        "body_lean"
+      ]
+    }
+  ]
+}
