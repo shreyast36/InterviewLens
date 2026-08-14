@@ -623,27 +623,106 @@ def _run_demo(question: str) -> tuple[dict, dict]:
 
 
 def _run_video(question: str, video_bytes: bytes, suffix: str) -> tuple[dict, dict]:
-    from interviewlens.orchestration.pipeline import run_pipeline_from_video
+    """Run the real pipeline on an uploaded video with per-stage status updates."""
+    import gc
+    from interviewlens.audio_pipeline.asr import build_asr_model
+    from interviewlens.audio_pipeline.capture import synthetic_audio
+    from interviewlens.audio_pipeline.delivery_analytics import compute_metrics
+    from interviewlens.audio_pipeline.postprocessing import normalize_disfluencies
+    from interviewlens.audio_pipeline.preprocessing import preprocess
+    from interviewlens.audio_pipeline.batch_audio_quality import extract_audio_quality_evidence
+    from interviewlens.common.config import load_config
+    from interviewlens.common.schemas import Transcript
+    from interviewlens.reasoning.evidence_assembly import from_fused_evidence_json
+    from interviewlens.reasoning.evidence_validation import validate
+    from interviewlens.reasoning.llm_reasoning import LLMReasoner
+    from interviewlens.reporting.coaching_report import build_coaching_report
+    from interviewlens.video_pipeline.ab_fusion import fuse_evidence
+    from interviewlens.video_pipeline.batch_background import extract_background_evidence
+    from interviewlens.video_pipeline.batch_pose import (
+        detect_signal_events, extract_pose_evidence,
+        grab_frames, valid_tracking_pct as batch_valid_tracking_pct,
+    )
+
+    cfg = load_config()
     tmp_path: str | None = None
     try:
         with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as tmp:
             tmp.write(video_bytes)
             tmp_path = tmp.name
+
         with st.status("🚀 Analysing uploaded video…", expanded=True) as status:
-            st.write("Running full pipeline: pose → background → audio → LLM…")
-            report = run_pipeline_from_video(tmp_path, question)
+
+            st.write("📐 **Stage 1 / 6** — Pose estimation (RTMPose-S)…")
+            pose_evidence = extract_pose_evidence(tmp_path, sample_fps=5)
+            if not pose_evidence.get("frames"):
+                raise ValueError(
+                    "No frames decoded — check the file is a valid MP4/MOV/AVI/WebM."
+                )
+            pose_evidence["signal_events"] = detect_signal_events(pose_evidence)
+            tracking_pct = batch_valid_tracking_pct(pose_evidence)
+            st.write(f"   ✔ {len(pose_evidence['frames'])} pose frames, "
+                     f"{len(pose_evidence['signal_events'])} signal events")
+
+            st.write("🖼️ **Stage 2 / 6** — Background detection (YOLO-World-S + ByteTrack)…")
+            background_evidence = extract_background_evidence(tmp_path, pose_evidence, sample_fps=3)
+            st.write(f"   ✔ {len(background_evidence.get('detections', []))} background tracks")
+
+            st.write("🔊 **Stage 3 / 6** — Audio quality analysis…")
+            audio_quality_evidence = extract_audio_quality_evidence(tmp_path)
+            st.write(f"   ✔ audio: {'present' if audio_quality_evidence.get('has_audio') else 'none'}, "
+                     f"{len(audio_quality_evidence.get('signal_events', []))} quality events")
+
+            st.write("🧩 **Stage 4 / 6** — A/B evidence fusion…")
+            fused      = fuse_evidence(pose_evidence, background_evidence, audio_quality_evidence)
+            duration_s = float(fused.get("duration_s") or 1.0)
+            st.write(f"   ✔ {len(fused.get('timeline', []))} fused timestamps, {duration_s:.1f}s")
+
+            st.write("📝 **Stage 5 / 6** — Evidence assembly & LLM reasoning…")
+            asr = build_asr_model(cfg.audio.asr_model)
+            raw_audio  = synthetic_audio(duration_s=duration_s, sample_rate=cfg.audio.sample_rate)
+            trans_list = [asr.transcribe(seg) for seg in preprocess(raw_audio, cfg.audio.sample_rate)]
+            transcript = normalize_disfluencies(Transcript(
+                text=" ".join(t.text for t in trans_list),
+                words=[w for t in trans_list for w in t.words],
+            ))
+            audio_metrics = compute_metrics(transcript, total_duration_s=duration_s)
+            probe      = from_fused_evidence_json(fused, question=question,
+                                                   transcript=transcript, audio_metrics=audio_metrics)
+            all_frames = grab_frames(tmp_path, probe.selected_frames, fused["fps_fused"])
+            evidence   = from_fused_evidence_json(fused, question=question,
+                                                   transcript=transcript, audio_metrics=audio_metrics,
+                                                   all_frames=all_frames)
+            reasoner = LLMReasoner(
+                model_name=cfg.reasoning.llm_model,
+                max_tokens=cfg.reasoning.max_output_tokens,
+                temperature=cfg.reasoning.temperature,
+            )
+            reasoning_output = reasoner.reason(evidence)
+
+            st.write("📊 **Stage 6 / 6** — Building coaching report…")
+            validation = validate(evidence, reasoning_output)
+            report     = build_coaching_report(
+                duration_s=duration_s, valid_tracking_pct=tracking_pct,
+                audio_metrics=audio_metrics, visual_events=evidence.visual_events,
+                reasoning=reasoning_output, validation=validation,
+            )
             status.update(label="✅ Analysis complete!", state="complete", expanded=False)
-        return asdict(report), {}
+
+        return asdict(report), {
+            "observations": reasoning_output.observations,
+            "explanations": reasoning_output.explanations,
+            "suggestions":  reasoning_output.suggestions,
+            "transcript":   transcript.text,
+        }
+
     finally:
-        # Force Python to drop any lingering cv2 references before deleting.
-        import gc; gc.collect()
+        gc.collect()
         if tmp_path and os.path.exists(tmp_path):
             try:
                 os.unlink(tmp_path)
             except PermissionError:
-                # Windows may hold the file briefly after VideoCapture.release().
-                # The OS will clean it from %TEMP% on its own — swallow the error.
-                pass
+                pass  # Windows holds the handle briefly — OS cleans %TEMP% automatically
 
 
 # ══════════════════════════════════════════════════════════════════════════════

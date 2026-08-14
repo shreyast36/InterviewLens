@@ -140,6 +140,11 @@ def run_pipeline_from_video(
 
     # ---- Pipeline A: pose + rule-based signals ---------------------------
     pose_evidence = extract_pose_evidence(video_path, sample_fps=pose_sample_fps)
+    if not pose_evidence.get("frames"):
+        raise ValueError(
+            "No frames could be extracted from the video. "
+            "Check that the file is a valid video with a readable video track."
+        )
     pose_evidence["signal_events"] = detect_signal_events(pose_evidence)
     tracking_pct = batch_valid_tracking_pct(pose_evidence)
 
@@ -152,7 +157,7 @@ def run_pipeline_from_video(
 
     # ---- A/B fusion --------------------------------------------------------
     fused = fuse_evidence(pose_evidence, background_evidence, audio_quality_evidence)
-    duration_s = fused["duration_s"]
+    duration_s = float(fused.get("duration_s") or 1.0)  # guard against 0 / None
 
     # ---- Audio (Person B, synthetic placeholder -- see docstring) --------
     asr_model = build_asr_model(config.audio.asr_model)

@@ -53,7 +53,17 @@ def fuse_evidence(pose_evidence: dict, background_evidence: dict, audio_evidence
     """
     pose_fps = pose_evidence["fps_sampled"]
     bg_fps = background_evidence["fps_sampled"]
-    video_duration_s = pose_evidence["frames"][-1]["timestamp_s"] if pose_evidence["frames"] else 0.0
+    frames = pose_evidence.get("frames", [])
+    if not frames:
+        # No pose frames — return a minimal fused result so downstream stages
+        # can still produce a (signal-free) coaching report.
+        return {
+            "duration_s": 0.0,
+            "fps_fused": min(pose_fps, bg_fps),
+            "timeline": [],
+            "signal_summary": {"per_type": {}, "pct_timestamps_flagged": 0, "longest_clean_streak_s": 0},
+        }
+    video_duration_s = frames[-1]["timestamp_s"]
 
     fusion_fps = min(pose_fps, bg_fps)
     fusion_grid = np.round(np.arange(0.0, video_duration_s + 1e-6, 1.0 / fusion_fps), 3)
