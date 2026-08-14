@@ -38,9 +38,27 @@ _rtmpose_champion = None  # lazy-loaded singleton -- one load per process, not p
 def _get_pose_model():
     global _rtmpose_champion
     if _rtmpose_champion is None:
+        import pathlib
         from rtmlib import Body as RTMLibBody
         logger.info("Loading RTMPose-S (champion) …")
-        _rtmpose_champion = RTMLibBody(mode="lightweight", backend="onnxruntime", device="cpu")
+
+        # Use the bundled ONNX weights when available (pipeline/notebooks/weights/).
+        # rtmlib will fall back to downloading from its CDN if these paths don't exist.
+        _repo_root = pathlib.Path(__file__).parent.parent.parent.parent
+        _wdir      = _repo_root / "pipeline" / "notebooks" / "weights" / "rtmpose"
+        _det_onnx  = _wdir / "yolox_tiny_8xb8-300e_humanart-6f3252f9.onnx"
+        _pose_onnx = _wdir / "rtmpose-s_simcc-body7_pt-body7_420e-256x192-acd4a1ef_20230504.onnx"
+
+        kwargs: dict = dict(backend="onnxruntime", device="cpu")
+        if _det_onnx.exists() and _pose_onnx.exists():
+            logger.info("Using bundled ONNX weights from %s", _wdir)
+            kwargs["det"]  = str(_det_onnx)
+            kwargs["pose"] = str(_pose_onnx)
+        else:
+            logger.info("Bundled weights not found — rtmlib will download them.")
+            kwargs["mode"] = "lightweight"
+
+        _rtmpose_champion = RTMLibBody(**kwargs)
     return _rtmpose_champion
 
 

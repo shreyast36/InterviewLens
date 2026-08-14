@@ -108,13 +108,29 @@ SUPPRESSION_THRESHOLD = 0.3
 
 _yolo_world = None  # lazy-loaded singleton -- one load per process, not per request
 
+# Search order for the YOLO-World-S weights file.
+_YOLO_CANDIDATES = [
+    "yolov8s-worldv2.pt",                                       # cwd (e.g. repo root)
+    "pipeline/notebooks/yolov8s-worldv2.pt",                    # repo sub-folder
+    str(__import__("pathlib").Path(__file__).parent.parent.parent.parent
+        / "pipeline" / "notebooks" / "yolov8s-worldv2.pt"),     # absolute from src/
+]
+
 
 def _get_background_model():
     global _yolo_world
     if _yolo_world is None:
+        import pathlib
         from ultralytics import YOLO
         logger.info("Loading YOLO-World-S (champion) …")
-        model = YOLO("yolov8s-worldv2.pt")
+        # Resolve the weights file from the search list
+        weights = "yolov8s-worldv2.pt"   # fallback: ultralytics will download it
+        for candidate in _YOLO_CANDIDATES:
+            if pathlib.Path(candidate).exists():
+                weights = candidate
+                break
+        logger.info("Using YOLO-World weights: %s", weights)
+        model = YOLO(weights)
         # Warm up BEFORE set_classes(): ultralytics' AutoBackend.warmup() assumes the
         # native 80-class (COCO) head regardless of vocabulary, which crashes deep in
         # torchvision.ops.nms on this build if set_classes() already shrank the head to

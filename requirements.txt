@@ -19,7 +19,9 @@ moviepy>=2.0
 pyttsx3>=2.90
 
 # Model backends — install whichever your subsystem needs
-# onnxruntime>=1.17        # required for run_pipeline_from_video (RTMPose + YOLO)
+onnxruntime>=1.17        # required for run_pipeline_from_video (RTMPose + YOLO)
+rtmlib>=0.0.16           # RTMPose-S pose estimation
+ultralytics>=8.4         # YOLO-World-S background detection
 # torch>=2.1
 # transformers>=4.40
 # faster-whisper
