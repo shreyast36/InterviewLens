@@ -726,6 +726,244 @@ def _run_video(question: str, video_bytes: bytes, suffix: str) -> tuple[dict, di
 
 
 # ══════════════════════════════════════════════════════════════════════════════
+# PDF REPORT GENERATOR
+# ══════════════════════════════════════════════════════════════════════════════
+def _build_pdf(data: dict, extra: dict) -> bytes:
+    """Generate a professional PDF coaching report and return the raw bytes."""
+    from datetime import datetime
+    from fpdf import FPDF  # noqa: PLC0415
+
+    observations = extra.get("observations") or data.get("strengths") or []
+    suggestions  = extra.get("suggestions")  or data.get("improvements") or []
+    strengths    = data.get("strengths") or []
+    transcript   = extra.get("transcript", "")
+    reliability  = float(data["reliability_score"])
+    timeline     = data.get("timeline", [])
+    question     = extra.get("question", "")
+
+    # ── Colours (RGB) ────────────────────────────────────────────────────────
+    C_BG_DARK   = (5,   12,  24)
+    C_CYAN      = (34,  211, 238)
+    C_INDIGO    = (129, 140, 248)
+    C_ORANGE    = (249, 115, 22)
+    C_TEXT      = (30,  41,  59)
+    C_MUTED     = (100, 116, 139)
+    C_WHITE     = (255, 255, 255)
+    C_LIGHT_BG  = (241, 245, 249)
+    C_GREEN     = (34,  197, 94)
+    C_AMBER     = (234, 179, 8)
+    C_RED       = (239, 68,  68)
+
+    def rel_color(score: float):
+        if score >= 0.75: return C_GREEN
+        if score >= 0.50: return C_AMBER
+        return C_RED
+
+    class Report(FPDF):
+        def header(self):
+            pass  # custom header drawn per-page below
+
+        def footer(self):
+            self.set_y(-14)
+            self.set_font("Helvetica", "I", 8)
+            self.set_text_color(*C_MUTED)
+            self.cell(0, 6, f"InterviewLens Coaching Report  ·  Page {self.page_no()}",
+                      align="C")
+
+    pdf = Report(orientation="P", unit="mm", format="A4")
+    pdf.set_auto_page_break(auto=True, margin=18)
+    pdf.add_page()
+    W = pdf.w
+
+    # ── Hero banner ──────────────────────────────────────────────────────────
+    pdf.set_fill_color(*C_BG_DARK)
+    pdf.rect(0, 0, W, 36, style="F")
+
+    pdf.set_font("Helvetica", "B", 22)
+    pdf.set_text_color(*C_CYAN)
+    pdf.set_xy(12, 8)
+    pdf.cell(0, 10, "InterviewLens", ln=False)
+
+    pdf.set_font("Helvetica", "", 9)
+    pdf.set_text_color(*C_INDIGO)
+    pdf.set_xy(12, 22)
+    pdf.cell(0, 6, "AI-Powered Interview Coaching Report", ln=False)
+
+    date_str = datetime.now().strftime("%d %b %Y  %H:%M")
+    pdf.set_font("Helvetica", "", 8)
+    pdf.set_text_color(*C_MUTED)
+    pdf.set_xy(W - 52, 8)
+    pdf.cell(40, 6, date_str, align="R")
+    pdf.ln(28)
+
+    # ── Accent line ───────────────────────────────────────────────────────────
+    pdf.set_draw_color(*C_CYAN)
+    pdf.set_line_width(0.6)
+    pdf.line(12, pdf.get_y(), W - 12, pdf.get_y())
+    pdf.ln(4)
+
+    # ── Question ─────────────────────────────────────────────────────────────
+    if question:
+        pdf.set_font("Helvetica", "B", 9)
+        pdf.set_text_color(*C_MUTED)
+        pdf.cell(0, 5, "INTERVIEW QUESTION", ln=True)
+        pdf.set_font("Helvetica", "I", 10)
+        pdf.set_text_color(*C_TEXT)
+        pdf.multi_cell(W - 24, 6, f'"{question}"', align="L")
+        pdf.ln(3)
+
+    # ── Metrics row ───────────────────────────────────────────────────────────
+    def _section_header(title: str, color=C_INDIGO):
+        pdf.set_fill_color(*C_LIGHT_BG)
+        pdf.rect(12, pdf.get_y(), W - 24, 7, style="F")
+        pdf.set_font("Helvetica", "B", 9)
+        pdf.set_text_color(*color)
+        pdf.set_x(14)
+        pdf.cell(0, 7, title.upper(), ln=True)
+        pdf.ln(1)
+
+    _section_header("Performance Metrics", C_INDIGO)
+
+    metrics = [
+        ("Speaking Rate",  f"{data['speaking_rate_wpm']:.0f} wpm",  "target 120–160"),
+        ("Filler Words",   str(data["filler_word_count"]),           "aim for < 5"),
+        ("Long Pauses",    str(data["long_pause_count"]),            "> 1.5 s each"),
+        ("Signals Flagged",str(data["detected_signals"]),            "body language"),
+        ("Duration",       f"{float(data['duration_s']):.0f}s",     "response length"),
+    ]
+    col_w = (W - 24) / len(metrics)
+    start_x = 12
+    row_y = pdf.get_y()
+
+    for i, (label, value, sub) in enumerate(metrics):
+        x = start_x + i * col_w
+        # card background
+        pdf.set_fill_color(245, 247, 250)
+        pdf.rect(x + 1, row_y, col_w - 2, 20, style="F")
+        # value
+        pdf.set_font("Helvetica", "B", 14)
+        pdf.set_text_color(*C_BG_DARK)
+        pdf.set_xy(x, row_y + 2)
+        pdf.cell(col_w - 2, 8, value, align="C")
+        # label
+        pdf.set_font("Helvetica", "", 7)
+        pdf.set_text_color(*C_MUTED)
+        pdf.set_xy(x, row_y + 10)
+        pdf.cell(col_w - 2, 5, label.upper(), align="C")
+        # sub
+        pdf.set_font("Helvetica", "I", 6.5)
+        pdf.set_text_color(*C_INDIGO)
+        pdf.set_xy(x, row_y + 15)
+        pdf.cell(col_w - 2, 4, sub, align="C")
+
+    pdf.set_y(row_y + 24)
+    pdf.ln(2)
+
+    # ── Reliability + tracking ────────────────────────────────────────────────
+    _section_header("Quality Scores", C_CYAN)
+    row_y2 = pdf.get_y()
+    half = (W - 24) / 2
+
+    for i, (label, score) in enumerate([
+        ("AI Reliability Score", reliability),
+        ("Pose Tracking Quality", float(data["valid_tracking_pct"]) / 100.0),
+    ]):
+        x = 12 + i * half
+        pct = round(score * 100, 1)
+        bar_color = rel_color(score)
+        # label
+        pdf.set_font("Helvetica", "", 9)
+        pdf.set_text_color(*C_TEXT)
+        pdf.set_xy(x + 1, row_y2)
+        pdf.cell(half - 4, 6, label)
+        # track
+        bar_y = row_y2 + 7
+        pdf.set_fill_color(220, 226, 232)
+        pdf.rect(x + 1, bar_y, half - 8, 4, style="F")
+        pdf.set_fill_color(*bar_color)
+        pdf.rect(x + 1, bar_y, (half - 8) * score, 4, style="F")
+        # pct
+        pdf.set_font("Helvetica", "B", 9)
+        pdf.set_text_color(*bar_color)
+        pdf.set_xy(x + half - 16, row_y2)
+        pdf.cell(14, 6, f"{pct:.0f}%", align="R")
+
+    pdf.set_y(row_y2 + 16)
+    pdf.ln(2)
+
+    # ── Signal timeline (text list) ───────────────────────────────────────────
+    if timeline:
+        _section_header("Signal Events Timeline", C_ORANGE)
+        counts: dict[str, int] = {}
+        for ev in timeline:
+            counts[ev["label"]] = counts.get(ev["label"], 0) + 1
+        col_per_row = 3
+        items = [(lbl.replace("_", " ").title(), cnt) for lbl, cnt in
+                 sorted(counts.items(), key=lambda x: -x[1])]
+        cell_w = (W - 24) / col_per_row
+        for row_start in range(0, len(items), col_per_row):
+            row_items = items[row_start:row_start + col_per_row]
+            row_y3 = pdf.get_y()
+            for j, (lbl, cnt) in enumerate(row_items):
+                x = 12 + j * cell_w
+                pdf.set_fill_color(254, 243, 199) if cnt > 3 else pdf.set_fill_color(241, 245, 249)
+                pdf.rect(x + 1, row_y3, cell_w - 2, 7, style="F")
+                pdf.set_font("Helvetica", "", 8)
+                pdf.set_text_color(*C_TEXT)
+                pdf.set_xy(x + 2, row_y3)
+                pdf.cell(cell_w - 10, 7, lbl)
+                pdf.set_font("Helvetica", "B", 8)
+                pdf.set_text_color(*C_ORANGE)
+                pdf.set_xy(x + cell_w - 12, row_y3)
+                pdf.cell(10, 7, f"×{cnt}", align="R")
+            pdf.set_y(row_y3 + 9)
+        pdf.ln(3)
+
+    # ── Coaching sections (helper) ────────────────────────────────────────────
+    def _coaching_section(title: str, items: list[str], accent: tuple,
+                           bullet: str = "•"):
+        if not items:
+            return
+        _section_header(title, accent)
+        for item in items:
+            if pdf.get_y() > pdf.h - 30:
+                pdf.add_page()
+            # bullet strip
+            pdf.set_fill_color(*accent)
+            pdf.rect(12, pdf.get_y(), 2, 0, style="F")  # thin left bar
+            pdf.set_font("Helvetica", "", 9)
+            pdf.set_text_color(*C_TEXT)
+            pdf.set_x(16)
+            # wrap long items
+            safe = item.replace("\u2014", "-").replace("\u2019", "'").replace("\u2018", "'")
+            pdf.multi_cell(W - 28, 5.5, f"{bullet}  {safe}", align="L")
+            pdf.ln(1)
+        pdf.ln(2)
+
+    _coaching_section("Observations",     observations, C_INDIGO)
+    _coaching_section("Areas to Improve", suggestions,  C_ORANGE)
+    _coaching_section("Strengths",        strengths,    C_CYAN)
+
+    # ── Transcript ────────────────────────────────────────────────────────────
+    if transcript:
+        if pdf.get_y() > pdf.h - 60:
+            pdf.add_page()
+        _section_header("Transcript (Synthetic Placeholder)", C_MUTED)
+        pdf.set_font("Helvetica", "I", 8.5)
+        pdf.set_text_color(*C_MUTED)
+        pdf.set_x(12)
+        pdf.multi_cell(W - 24, 5, transcript)
+        pdf.ln(2)
+
+    # ── Footer accent line ─────────────────────────────────────────────────────
+    pdf.set_draw_color(*C_INDIGO)
+    pdf.set_line_width(0.4)
+    pdf.line(12, pdf.get_y() + 2, W - 12, pdf.get_y() + 2)
+
+    return bytes(pdf.output())
+
+
+# ══════════════════════════════════════════════════════════════════════════════
 # DASHBOARD
 # ══════════════════════════════════════════════════════════════════════════════
 def _dashboard(data: dict, extra: dict) -> None:
@@ -803,9 +1041,18 @@ def _dashboard(data: dict, extra: dict) -> None:
 
     # ── Footer ────────────────────────────────────────────────────────────────
     st.markdown("<hr class='glow-divider'>", unsafe_allow_html=True)
-    left_f, right_f = st.columns([1, 1])
+    left_f, mid_f, right_f = st.columns([2, 2, 1])
     with left_f:
         st.markdown(_badge(reliability), unsafe_allow_html=True)
+    with mid_f:
+        pdf_bytes = _build_pdf(data, extra)
+        st.download_button(
+            label="⬇️  Download PDF Report",
+            data=pdf_bytes,
+            file_name="interviewlens_report.pdf",
+            mime="application/pdf",
+            use_container_width=False,
+        )
     with right_f:
         if st.button("🔄  New Analysis", width="content"):
             for k in ("report", "extra"):
@@ -921,7 +1168,7 @@ if run_btn:
                 Path(uploaded_file.name).suffix.lower(),
             )
         st.session_state["report"] = rd
-        st.session_state["extra"]  = extra
+        st.session_state["extra"]  = {**extra, "question": question.strip()}
     except Exception as exc:
         st.error(f"**Pipeline error:** {exc}")
         st.stop()

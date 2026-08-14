@@ -63,6 +63,7 @@ supervision>=0.25            # ByteTrack multi-object tracker (used by batch_bac
 # ── Sample video generation ───────────────────────────────────────────────────
 moviepy>=2.0                 # combine silent video + TTS audio track
 pyttsx3>=2.90                # Windows SAPI TTS speech synthesis
+fpdf2>=2.7                   # PDF report generation (download button in Streamlit)
 
 # ── Testing ───────────────────────────────────────────────────────────────────
 pytest>=7.4

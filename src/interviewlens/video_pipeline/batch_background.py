@@ -264,8 +264,11 @@ def extract_background_evidence(video_path: str, pose_evidence: dict, sample_fps
     backlit_face) and cluttered_background off the same decoded frames, at zero extra
     decode cost, appended as pose_evidence-style "signal_events".
     """
+    import warnings
     import supervision as sv
-
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", FutureWarning)
+        tracker = sv.ByteTrack()
     frame_w, frame_h = pose_evidence.get("frame_size", [0, 0])
     pose_by_ts = {fr["timestamp_s"]: fr for fr in pose_evidence["frames"]}
     pose_timestamps = np.array(sorted(pose_by_ts.keys()))
@@ -276,7 +279,6 @@ def extract_background_evidence(video_path: str, pose_evidence: dict, sample_fps
         idx = int(np.argmin(np.abs(pose_timestamps - ts)))
         return pose_by_ts[pose_timestamps[idx]]
 
-    tracker = sv.ByteTrack()
     tracked_frames = []
     ts_list: list[float] = []
     frame_luma_series: list[float] = []
