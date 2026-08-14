@@ -35,11 +35,24 @@ def detect_speech_segments(
     sample_rate: int,
     frame_ms: int = 30,
     energy_threshold: float = 0.01,
+    min_silence_ms: float = 300,
+    min_speech_ms: float = 150,
 ) -> list[SpeechSegment]:
-    """Very small energy-based VAD placeholder.
-    TODO(Person B): replace with webrtcvad / silero-vad for production."""
+    """Small energy-based VAD placeholder.
+    TODO(Person B): replace with webrtcvad / silero-vad for production.
+
+    Real (noisy) audio has energy flickering above/below `energy_threshold`
+    every frame, so a naive frame-by-frame toggle fragments a single spoken
+    phrase into dozens of 30-200ms segments. Each of those pays faster-whisper's
+    fixed per-call overhead (~1-2s on CPU) independent of segment length, and
+    Whisper tends to hallucinate stock phrases ("Thank you.") on near-silent
+    clips -- on a 29s test clip this produced 69 segments and ~90s of transcribe
+    time. Two passes fix it: (1) bridge silence gaps shorter than
+    `min_silence_ms` so brief pauses within a sentence don't split it, then
+    (2) drop whatever is still shorter than `min_speech_ms` as noise.
+    """
     frame_len = max(1, int(sample_rate * frame_ms / 1000))
-    segments: list[SpeechSegment] = []
+    raw_runs: list[tuple[int, int]] = []
     in_speech = False
     seg_start = 0
 
@@ -52,20 +65,33 @@ def detect_speech_segments(
             seg_start = i
             in_speech = True
         elif not is_speech and in_speech:
-            segments.append(SpeechSegment(
-                audio=audio[seg_start:i],
-                start_time_s=seg_start / sample_rate,
-                end_time_s=i / sample_rate,
-            ))
+            raw_runs.append((seg_start, i))
             in_speech = False
 
     if in_speech:
-        segments.append(SpeechSegment(
-            audio=audio[seg_start:],
-            start_time_s=seg_start / sample_rate,
-            end_time_s=len(audio) / sample_rate,
-        ))
-    return segments
+        raw_runs.append((seg_start, len(audio)))
+
+    if not raw_runs:
+        return []
+
+    min_silence_samples = int(sample_rate * min_silence_ms / 1000)
+    merged_runs: list[list[int]] = [list(raw_runs[0])]
+    for start, end in raw_runs[1:]:
+        if start - merged_runs[-1][1] <= min_silence_samples:
+            merged_runs[-1][1] = end
+        else:
+            merged_runs.append([start, end])
+
+    min_speech_samples = int(sample_rate * min_speech_ms / 1000)
+    return [
+        SpeechSegment(
+            audio=audio[start:end],
+            start_time_s=start / sample_rate,
+            end_time_s=end / sample_rate,
+        )
+        for start, end in merged_runs
+        if end - start >= min_speech_samples
+    ]
 
 
 def preprocess(audio: np.ndarray, sample_rate: int) -> list[SpeechSegment]:

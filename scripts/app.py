@@ -36,18 +36,18 @@ st.markdown("""
 
 html, body, [data-testid="stAppViewContainer"] {
     font-family: 'Inter', system-ui, sans-serif;
-    background: #050c18;
-    color: #e2e8f0;
+    background: #ffffff;
+    color: #1e293b;
 }
 
 [data-testid="stAppViewContainer"]::before {
     content: "";
     position: fixed; inset: 0; z-index: -1;
     background:
-        radial-gradient(ellipse 80% 60% at 10%  15%, rgba(34,211,238,.07)  0%, transparent 60%),
-        radial-gradient(ellipse 60% 50% at 90%  85%, rgba(129,140,248,.07) 0%, transparent 55%),
-        radial-gradient(ellipse 50% 40% at 50%  50%, rgba(236,72,153,.04)  0%, transparent 50%),
-        #050c18;
+        radial-gradient(ellipse 80% 60% at 10%  15%, rgba(34,211,238,.06)  0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 90%  85%, rgba(129,140,248,.06) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 40% at 50%  50%, rgba(236,72,153,.03)  0%, transparent 50%),
+        #ffffff;
 }
 
 [data-testid="stHeader"]  { background: transparent !important; }
@@ -56,8 +56,8 @@ html, body, [data-testid="stAppViewContainer"] {
 
 /* ─── sidebar ───────────────────────────────────────────────────────────────── */
 [data-testid="stSidebar"] > div:first-child {
-    background: rgba(5,12,24,.95);
-    border-right: 1px solid rgba(34,211,238,.08);
+    background: rgba(255,255,255,.95);
+    border-right: 1px solid rgba(15,23,42,.08);
     backdrop-filter: blur(20px);
 }
 [data-testid="stSidebar"] * { font-family: 'Inter', sans-serif !important; }
@@ -101,7 +101,7 @@ html, body, [data-testid="stAppViewContainer"] {
 }
 .il-card {
     position: relative;
-    background: rgba(255,255,255,.03);
+    background: rgba(15,23,42,.03);
     border-radius: 16px;
     padding: 1.4rem 1rem 1.1rem;
     text-align: center;
@@ -131,7 +131,7 @@ html, body, [data-testid="stAppViewContainer"] {
 .il-val {
     font-family: 'Space Grotesk', sans-serif;
     font-size: 2.1rem; font-weight: 700;
-    background: linear-gradient(135deg, #e2e8f0, #22d3ee);
+    background: linear-gradient(135deg, #1e293b, #0891b2);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     line-height: 1.1; display: block;
 }
@@ -170,23 +170,23 @@ html, body, [data-testid="stAppViewContainer"] {
     border-radius: 12px;
     padding: .95rem 1.15rem .95rem 1.4rem;
     margin-bottom: .55rem;
-    font-size: .84rem; color: #94a3b8;
+    font-size: .84rem; color: #475569;
     line-height: 1.65;
     overflow: hidden;
     animation: slide-in .35s ease both;
     transition: transform .2s, color .2s;
     backdrop-filter: blur(8px);
 }
-.ccard:hover { transform: translateX(3px); color: #cbd5e1; }
+.ccard:hover { transform: translateX(3px); color: #1e293b; }
 .ccard::before {
     content: ""; position: absolute; left: 0; top: 0;
     width: 3px; height: 100%; border-radius: 0 2px 2px 0;
 }
-.ccard-obs { background: rgba(129,140,248,.06); }
+.ccard-obs { background: rgba(129,140,248,.08); }
 .ccard-obs::before { background: linear-gradient(180deg, #818cf8, #a78bfa); }
-.ccard-imp { background: rgba(249,115,22,.06);  }
+.ccard-imp { background: rgba(249,115,22,.08);  }
 .ccard-imp::before { background: linear-gradient(180deg, #f97316, #fb923c); }
-.ccard-str { background: rgba(34,211,238,.06);  }
+.ccard-str { background: rgba(34,211,238,.08);  }
 .ccard-str::before { background: linear-gradient(180deg, #22d3ee, #67e8f9); }
 
 .ccard-col-title {
@@ -208,7 +208,7 @@ html, body, [data-testid="stAppViewContainer"] {
 }
 .feat::before {
     content: ""; position: absolute; inset: 0; border-radius: 18px; padding: 1px;
-    background: linear-gradient(135deg, rgba(255,255,255,.12), rgba(255,255,255,.03));
+    background: linear-gradient(135deg, rgba(15,23,42,.10), rgba(15,23,42,.02));
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;
 }
@@ -217,25 +217,17 @@ html, body, [data-testid="stAppViewContainer"] {
 .feat-bg2 { background: linear-gradient(135deg, rgba(236,72,153,.08), rgba(244,114,182,.04)); }
 .feat-bg3 { background: linear-gradient(135deg, rgba(251,191,36,.08), rgba(245,158,11,.04)); }
 .feat:hover { transform: translateY(-5px) scale(1.01);
-              box-shadow: 0 20px 50px rgba(0,0,0,.4); }
+              box-shadow: 0 20px 50px rgba(15,23,42,.12); }
 .feat-icon  { font-size: 2rem; margin-bottom: .7rem; }
 .feat-title { font-family: 'Space Grotesk', sans-serif; font-size: .92rem;
-              font-weight: 600; color: #e2e8f0; margin-bottom: .4rem; }
+              font-weight: 600; color: #1e293b; margin-bottom: .4rem; }
 .feat-body  { font-size: .78rem; color: #64748b; line-height: 1.6; }
 
-/* ─── badge ──────────────────────────────────────────────────────────────────── */
-.rbadge {
+/* ─── reliability label (plain text, no chip/pill) ──────────────────────────── */
+.rlabel {
     display: inline-flex; align-items: center; gap: .45rem;
-    padding: .28rem 1rem .28rem .65rem;
-    border-radius: 999px; font-size: .73rem; font-weight: 600;
-    letter-spacing: .04em;
+    font-size: .78rem; font-weight: 600; letter-spacing: .02em;
 }
-.rbadge-hi  { background: rgba(34,211,238,.1);  color: #22d3ee;
-              border: 1px solid rgba(34,211,238,.25); }
-.rbadge-med { background: rgba(234,179,8,.1);   color: #eab308;
-              border: 1px solid rgba(234,179,8,.25);  }
-.rbadge-lo  { background: rgba(239,68,68,.1);   color: #ef4444;
-              border: 1px solid rgba(239,68,68,.25);  }
 @keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:.3} }
 .rdot { width:7px; height:7px; border-radius:50%;
         display:inline-block; animation: pulse-dot 2s infinite; }
@@ -256,9 +248,9 @@ html, body, [data-testid="stAppViewContainer"] {
     box-shadow: 0 8px 28px rgba(34,211,238,.35) !important;
 }
 .stButton > button[kind="secondary"] {
-    background: rgba(255,255,255,.04) !important;
-    border: 1px solid rgba(255,255,255,.1) !important;
-    color: #64748b !important; border-radius: 10px !important;
+    background: rgba(15,23,42,.03) !important;
+    border: 1px solid rgba(15,23,42,.1) !important;
+    color: #475569 !important; border-radius: 10px !important;
     font-family: 'Inter', sans-serif !important;
 }
 
@@ -266,14 +258,14 @@ html, body, [data-testid="stAppViewContainer"] {
 .sb-label {
     font-size: .58rem; font-weight: 700; text-transform: uppercase;
     letter-spacing: .13em; color: #334155; margin-bottom: .7rem;
-    padding-bottom: .5rem; border-bottom: 1px solid rgba(255,255,255,.05);
+    padding-bottom: .5rem; border-bottom: 1px solid rgba(15,23,42,.08);
 }
 
 /* ─── ollama box ─────────────────────────────────────────────────────────────── */
 .ollama-box {
     border-radius: 12px; padding: .7rem .9rem;
-    background: rgba(255,255,255,.025);
-    border: 1px solid rgba(255,255,255,.06);
+    background: rgba(15,23,42,.025);
+    border: 1px solid rgba(15,23,42,.08);
     margin-top: .2rem;
 }
 .ollama-key { font-size: .56rem; text-transform: uppercase;
@@ -376,10 +368,46 @@ def _ollama_status() -> tuple[bool, str]:
         return False, "ollama serve  (server offline)"
 
 
+def _clean_items(items: list) -> list[str]:
+    """Drop None/blank entries before rendering as coaching cards. Belt-and-suspenders
+    on top of llm_reasoning._coerce_str_list's own null-filtering -- this is the last
+    line of defense against a stray None (or empty string) ever reaching the UI as a
+    literal '<div class="ccard">None</div>' card."""
+    return [str(x).strip() for x in (items or []) if x is not None and str(x).strip()]
+
+
+def _grab_event_frames(video_path: str, timeline: list[dict]) -> list[bytes | None]:
+    """Grab one JPEG-encoded frame per timeline entry, at that event's start_s, while
+    the uploaded video's temp file still exists (it's deleted right after _run_video
+    returns). Used both for the Gantt "click a bar -> see the frame" popup and for the
+    PDF's per-category flag images. Returns a list aligned 1:1 with `timeline`; an
+    unreadable/out-of-range timestamp yields None at that position rather than raising,
+    so one bad event doesn't blow up the whole report."""
+    import cv2  # noqa: PLC0415
+
+    frames: list[bytes | None] = [None] * len(timeline)
+    cap = cv2.VideoCapture(str(video_path))
+    try:
+        video_fps = cap.get(cv2.CAP_PROP_FPS) or 0
+        if video_fps <= 0:
+            return frames
+        for i, ev in enumerate(timeline):
+            cap.set(cv2.CAP_PROP_POS_FRAMES, int(float(ev["start_s"]) * video_fps))
+            ok, frame = cap.read()
+            if not ok:
+                continue
+            ok, buf = cv2.imencode(".jpg", frame, [cv2.IMWRITE_JPEG_QUALITY, 85])
+            if ok:
+                frames[i] = buf.tobytes()
+    finally:
+        cap.release()
+    return frames
+
+
 # ══════════════════════════════════════════════════════════════════════════════
 # PLOTLY CHARTS
 # ══════════════════════════════════════════════════════════════════════════════
-_PLOTLY_BASE = dict(paper_bgcolor="rgba(0,0,0,0)", font=dict(color="#94a3b8"))
+_PLOTLY_BASE = dict(paper_bgcolor="rgba(0,0,0,0)", font=dict(color="#475569"))
 
 
 def _gauge(value_0_1: float, title: str) -> go.Figure:
@@ -389,7 +417,7 @@ def _gauge(value_0_1: float, title: str) -> go.Figure:
     fig = go.Figure(go.Indicator(
         mode="gauge+number",
         value=pct,
-        number=dict(suffix="%", font=dict(size=30, color="#e2e8f0",
+        number=dict(suffix="%", font=dict(size=30, color="#1e293b",
                     family="Space Grotesk, sans-serif")),
         title=dict(text=title, font=dict(size=11, color="#475569")),
         gauge=dict(
@@ -425,7 +453,7 @@ def _donut(timeline: list[dict]) -> go.Figure | None:
         hole=0.65,
         marker=dict(colors=[_clr(l) for l in labels],
                     line=dict(color="rgba(5,12,24,.6)", width=2)),
-        textfont=dict(size=10, color="#e2e8f0"),
+        textfont=dict(size=10, color="#1e293b"),
         hovertemplate="<b>%{label}</b><br>%{value} events · %{percent}<extra></extra>",
     ))
     fig.update_layout(
@@ -440,34 +468,36 @@ def _donut(timeline: list[dict]) -> go.Figure | None:
 
 
 def _timeline(timeline: list[dict], duration_s: float) -> go.Figure | None:
+    """One bar per real event span (start_s..end_s), not a reconstructed guess --
+    the old version treated `timeline` as a flat sequence of same-time points and
+    inferred each bar's end from wherever the *next* point (of any label) fell,
+    which silently mangled anything that overlapped in time. `customdata` carries
+    each bar's original index into `timeline` so a click on it can be resolved
+    back to the exact event (see the on_select handler in _dashboard)."""
     if not timeline:
         return None
-    sorted_tl = sorted(timeline, key=lambda e: e["time_s"])
-    spans: list[tuple[str, float, float]] = []
-    cur, cur_s = sorted_tl[0]["label"], float(sorted_tl[0]["time_s"])
-    for ev in sorted_tl[1:]:
-        t = float(ev["time_s"])
-        if ev["label"] != cur:
-            spans.append((cur, cur_s, t))
-            cur, cur_s = ev["label"], t
-    spans.append((cur, cur_s, max(cur_s + 0.5, duration_s)))
+    entries = sorted(enumerate(timeline), key=lambda p: p[1]["start_s"])
 
-    labels  = list(dict.fromkeys(s[0] for s in spans))
+    labels  = list(dict.fromkeys(e["label"] for _, e in entries))
     y_map   = {l: i for i, l in enumerate(labels)}
     plotted: set[str] = set()
     fig = go.Figure()
 
-    for label, start, end in spans:
+    for orig_idx, ev in entries:
+        label = ev["label"]
+        start = float(ev["start_s"])
+        end   = max(float(ev["end_s"]), start + 0.15)  # keep near-instant events visible
         c = _clr(label)
         # glow layer
         fig.add_trace(go.Bar(
             x=[end - start], y=[y_map[label]], base=[start],
             orientation="h",
             marker=dict(color=c, opacity=0.15),
+            customdata=[[orig_idx]],
             showlegend=False, hoverinfo="skip",
             width=0.85,
         ))
-        # main bar
+        # main bar (clickable)
         fig.add_trace(go.Bar(
             x=[end - start], y=[y_map[label]], base=[start],
             orientation="h",
@@ -476,14 +506,16 @@ def _timeline(timeline: list[dict], duration_s: float) -> go.Figure | None:
             name=label.replace("_", " ").title(),
             showlegend=label not in plotted,
             width=0.55,
+            customdata=[[orig_idx]],
             hovertemplate=(
                 f"<b>{label.replace('_',' ').title()}</b><br>"
-                f"⏱ {start:.1f}s – {end:.1f}s  ({end-start:.1f}s)<extra></extra>"
+                f"⏱ {start:.1f}s – {end:.1f}s  ({end-start:.1f}s)<br>"
+                f"<i>Click to view the frame</i><extra></extra>"
             ),
         ))
         plotted.add(label)
 
-    ax = dict(gridcolor="rgba(255,255,255,.04)", zeroline=False,
+    ax = dict(gridcolor="rgba(15,23,42,.06)", zeroline=False,
               color="#334155", tickfont=dict(size=10))
     fig.update_layout(
         barmode="overlay",
@@ -492,7 +524,7 @@ def _timeline(timeline: list[dict], duration_s: float) -> go.Figure | None:
                    ticktext=[l.replace("_", " ").title() for l in labels], **ax),
         height=max(190, 60 + 46 * len(labels)),
         margin=dict(l=10, r=10, t=10, b=10),
-        plot_bgcolor="rgba(255,255,255,.012)",
+        plot_bgcolor="rgba(15,23,42,.015)",
         legend=dict(bgcolor="rgba(0,0,0,0)", font=dict(color="#64748b", size=9),
                     orientation="h", yanchor="bottom", y=1.01,
                     xanchor="right", x=1),
@@ -528,11 +560,11 @@ def _col_title(icon: str, text: str, kind: str) -> str:
 
 
 def _badge(score: float) -> str:
-    cls   = "rbadge-hi" if score >= 0.75 else "rbadge-med" if score >= 0.5 else "rbadge-lo"
-    dot   = "#22c55e"   if score >= 0.75 else "#eab308"    if score >= 0.5 else "#ef4444"
+    clr   = "#0891b2" if score >= 0.75 else "#b45309" if score >= 0.5 else "#dc2626"
+    dot   = "#22c55e" if score >= 0.75 else "#eab308" if score >= 0.5 else "#ef4444"
     label = ("High confidence" if score >= 0.75
              else "Moderate" if score >= 0.5 else "Low confidence")
-    return (f'<span class="rbadge {cls}">'
+    return (f'<span class="rlabel" style="color:{clr}">'
             f'<span class="rdot" style="background:{dot}"></span>'
             f'{label} &nbsp;·&nbsp; {score:.0%}</span>')
 
@@ -652,11 +684,17 @@ def _run_video(question: str, video_bytes: bytes, suffix: str) -> tuple[dict, di
             )
             status.update(label="✅ Analysis complete!", state="complete", expanded=False)
 
+        # Grab one frame per flagged moment now, while tmp_path still exists (it's
+        # deleted in `finally` below) -- powers both the Gantt click-to-preview popup
+        # and the PDF's per-category flag images.
+        event_frames = _grab_event_frames(tmp_path, report.timeline)
+
         return asdict(report), {
             "observations": reasoning_output.observations,
             "explanations": reasoning_output.explanations,
             "suggestions":  reasoning_output.suggestions,
             "transcript":   transcript.text,
+            "event_frames": event_frames,
         }
 
     finally:
@@ -674,15 +712,17 @@ def _run_video(question: str, video_bytes: bytes, suffix: str) -> tuple[dict, di
 def _build_pdf(data: dict, extra: dict) -> bytes:
     """Generate a professional PDF coaching report and return the raw bytes."""
     from datetime import datetime
+    import io
     import unicodedata
     from fpdf import FPDF  # noqa: PLC0415
 
-    observations = extra.get("observations") or data.get("strengths") or []
-    suggestions  = extra.get("suggestions")  or data.get("improvements") or []
-    strengths    = data.get("strengths") or []
+    observations = _clean_items(extra.get("observations") or data.get("strengths"))
+    suggestions  = _clean_items(extra.get("suggestions")  or data.get("improvements"))
+    strengths    = _clean_items(data.get("strengths"))
     transcript   = extra.get("transcript", "")
     reliability  = float(data["reliability_score"])
     timeline     = data.get("timeline", [])
+    event_frames = extra.get("event_frames") or []
     question     = extra.get("question", "")
 
     # ── Colours (RGB) ────────────────────────────────────────────────────────
@@ -924,12 +964,71 @@ def _build_pdf(data: dict, extra: dict) -> bytes:
         pdf.multi_cell(W - 24, 5, transcript)
         pdf.ln(2)
 
+    # ── Flagged moments (one image per distinct category that produced a flag) ──
+    # First occurrence per label, in time order -- not one image per individual event,
+    # per spec ("una imagen por cada una de las categorías que generó el flag").
+    first_per_label: dict[str, int] = {}
+    for idx in sorted(range(len(timeline)), key=lambda i: timeline[i]["start_s"]):
+        label = timeline[idx]["label"]
+        if label not in first_per_label:
+            first_per_label[label] = idx
+    gallery = [
+        (label, idx) for label, idx in first_per_label.items()
+        if idx < len(event_frames) and event_frames[idx]
+    ]
+
+    if gallery:
+        pdf.add_page()
+        _section_header("Flagged Moments", C_MUTED)
+        COLS, GAP = 3, 4
+        img_w = (W - 24 - GAP * (COLS - 1)) / COLS
+        img_h = img_w * 9 / 16
+        row_h = img_h + 10
+        for i, (label, idx) in enumerate(gallery):
+            col = i % COLS
+            if col == 0 and i > 0:
+                pdf.ln(row_h)
+            if pdf.get_y() + row_h > pdf.h - 18:
+                pdf.add_page()
+            x = 12 + col * (img_w + GAP)
+            y = pdf.get_y()
+            try:
+                pdf.image(io.BytesIO(event_frames[idx]), x=x, y=y, w=img_w, h=img_h)
+            except Exception:
+                pdf.set_draw_color(*C_MUTED)
+                pdf.rect(x, y, img_w, img_h)
+            ev = timeline[idx]
+            pdf.set_xy(x, y + img_h + 1)
+            pdf.set_font("Helvetica", "B", 7.5)
+            pdf.set_text_color(*C_TEXT)
+            pdf.multi_cell(img_w, 3.5, label.replace("_", " ").title(), align="L")
+            pdf.set_xy(x, pdf.get_y())
+            pdf.set_font("Helvetica", "", 6.5)
+            pdf.set_text_color(*C_MUTED)
+            pdf.multi_cell(img_w, 3, f"at {ev['start_s']:.1f}s", align="L")
+        pdf.ln(row_h)
+
     # ── Footer accent line ─────────────────────────────────────────────────────
     pdf.set_draw_color(*C_INDIGO)
     pdf.set_line_width(0.4)
     pdf.line(12, pdf.get_y() + 2, W - 12, pdf.get_y() + 2)
 
     return bytes(pdf.output())
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# GANTT CLICK -> FRAME POPUP
+# ══════════════════════════════════════════════════════════════════════════════
+@st.dialog("Flagged moment")
+def _show_event_popup(idx: int, timeline: list[dict], event_frames: list) -> None:
+    ev = timeline[idx]
+    label = ev["label"].replace("_", " ").title()
+    st.markdown(f"**{label}**  ·  {ev['start_s']:.1f}s – {ev['end_s']:.1f}s")
+    img = event_frames[idx] if idx < len(event_frames) else None
+    if img:
+        st.image(img, width="stretch")
+    else:
+        st.info("No frame was captured for this moment.")
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -941,9 +1040,9 @@ def _dashboard(data: dict, extra: dict) -> None:
     tracking    = float(data["valid_tracking_pct"]) / 100.0
     timeline    = data.get("timeline", [])
 
-    observations = extra.get("observations") or data.get("strengths") or []
-    suggestions  = extra.get("suggestions")  or data.get("improvements") or []
-    strengths    = data.get("strengths") or []
+    observations = _clean_items(extra.get("observations") or data.get("strengths"))
+    suggestions  = _clean_items(extra.get("suggestions")  or data.get("improvements"))
+    strengths    = _clean_items(data.get("strengths"))
     transcript   = extra.get("transcript", "")
 
     # ── Metrics ───────────────────────────────────────────────────────────────
@@ -982,7 +1081,21 @@ def _dashboard(data: dict, extra: dict) -> None:
     st.markdown(_sec("⏱", "Signal Timeline"), unsafe_allow_html=True)
     fig_t = _timeline(timeline, duration_s)
     if fig_t:
-        st.plotly_chart(fig_t, width="stretch")
+        st.markdown(
+            '<p style="color:#94a3b8;font-size:.73rem;margin:-.4rem 0 .5rem">'
+            'Click a bar to preview the frame captured at that moment.</p>',
+            unsafe_allow_html=True,
+        )
+        event = st.plotly_chart(
+            fig_t, width="stretch", on_select="rerun", selection_mode="points",
+            key="gantt_chart",
+        )
+        points = ((event or {}).get("selection") or {}).get("points") or []
+        if points:
+            idx = points[0].get("customdata", [None])[0]
+            if idx is not None and idx != st.session_state.get("_gantt_last_click"):
+                st.session_state["_gantt_last_click"] = idx
+                _show_event_popup(idx, timeline, extra.get("event_frames") or [])
     else:
         st.markdown(
             '<p style="color:#334155;font-size:.85rem">No signals to display.</p>',
@@ -1139,6 +1252,12 @@ if run_btn:
         st.session_state["extra"]  = {**extra, "question": question.strip()}
         st.session_state.pop("pdf_bytes", None)
     except Exception as exc:
+        # Drop any previous run's report/extra/pdf -- otherwise a failed run on a new
+        # video leaves the *last successful* run's dashboard (and its transcript) on
+        # screen with no visible link to the video that actually failed, which reads
+        # exactly like the report is "stuck" on old, hardcoded data.
+        for k in ("report", "extra", "pdf_bytes"):
+            st.session_state.pop(k, None)
         st.error(f"**Pipeline error:** {exc}")
         st.stop()
 

@@ -60,6 +60,21 @@ your "suggestions" entry for it must include a concrete fix: for low_mic_level, 
 closer to the microphone or increase input gain; for intermittent_audio, check the
 network/microphone connection and consider a wired connection instead of wifi/bluetooth.
 
+COACHING INTENSITY SCALES WITH THE EVIDENCE: the prompt below includes a signal summary
+with event counts and the percent of the clip flagged. Use it to calibrate how forceful
+your suggestions are:
+- Few, brief, low-recurrence signals (e.g. one event lasting under 2s, or under 15% of
+  the clip flagged): light touch -- a short, encouraging note is enough.
+- Several recurring signals, or 15-40% of the clip flagged: name the pattern explicitly
+  (how many times, roughly how much of the clip) and give one concrete drill to fix it.
+- Many signals, a high per-type event count, or over 40% of the clip flagged: this is a
+  candidate who needs real help, not a pat on the back. For every such signal, state the
+  frequency plainly and give a specific, practical exercise (e.g. "record yourself for
+  60 seconds keeping both hands on the desk", "do 3 practice run-throughs timing your
+  pauses"), not a vague platitude like "try to reduce this." Prioritize the highest-count
+  or longest-duration signal first.
+Never invent severity language for a signal that isn't in the evidence.
+
 Return STRICT JSON with this shape:
 {{
   "observations": ["<signal_type>: what happened and when, using only the evidence given"],
@@ -214,19 +229,32 @@ def _coerce_str_list(value, field_name: str) -> list[str]:
     flat string -- observed in real Qwen2.5-VL-3B-Instruct output once REQUIRED
     COVERAGE started asking it to enumerate several signal types at once. Silently
     trusting the shape here used to crash validate() downstream with
-    AttributeError: 'dict' object has no attribute 'lower'."""
+    AttributeError: 'dict' object has no attribute 'lower'.
+
+    JSON `null` entries and empty strings are dropped rather than stringified --
+    small local models (nemotron-mini) occasionally pad these arrays with nulls
+    to hit a perceived length, and str(None) used to leak the literal text
+    "None" into the UI as a repeated card for every null entry."""
     if not isinstance(value, list):
         return []
     out = []
     for item in value:
+        if item is None:
+            continue
         if isinstance(item, str):
-            out.append(item)
+            text = item.strip()
+            if text:
+                out.append(text)
         elif isinstance(item, dict):
             logger.warning("LLM returned a dict instead of a string in %r: %r — coercing.", field_name, item)
-            out.append(" ".join(str(v) for v in item.values()))
+            text = " ".join(str(v) for v in item.values() if v is not None).strip()
+            if text:
+                out.append(text)
         else:
             logger.warning("LLM returned an unexpected %s in %r: %r — coercing.", type(item).__name__, field_name, item)
-            out.append(str(item))
+            text = str(item).strip()
+            if text:
+                out.append(text)
     return out
 
 
@@ -251,24 +279,49 @@ def _parse_json_response(response: str, evidence: EvidencePackage) -> dict:
 
 def _mock_reasoning(evidence: EvidencePackage) -> dict:
     """Deterministic, evidence-grounded placeholder used when Ollama is
-    unavailable."""
+    unavailable. Scales how forceful the suggestions are with how much
+    evidence there is, same principle as the live-LLM prompt's "coaching
+    intensity" rule -- one stray event gets a light note, a recurring
+    pattern gets a named frequency and a concrete drill."""
     observations: list[str] = []
     explanations: list[str] = []
     suggestions: list[str] = []
 
     if evidence.audio_metrics.filler_word_count > 0:
-        observations.append(
-            f"{evidence.audio_metrics.filler_word_count} filler words detected."
-        )
+        n = evidence.audio_metrics.filler_word_count
+        observations.append(f"{n} filler words detected.")
         explanations.append("Frequent filler words can reduce perceived confidence.")
-        suggestions.append("Pause silently instead of using filler words.")
+        if n >= 5:
+            suggestions.append(
+                f"{n} filler words is enough to be noticeable -- practice pausing "
+                "silently instead, and try 2-3 timed run-throughs of this answer "
+                "counting your fillers out loud afterward."
+            )
+        else:
+            suggestions.append("Pause silently instead of using filler words.")
 
+    counts: dict[str, int] = {}
+    total_dur: dict[str, float] = {}
     for event in evidence.visual_events:
-        observations.append(
-            f"{event.signal_type.value.replace('_', ' ').title()} detected "
-            f"between {event.start_time_s:.1f}s and {event.end_time_s:.1f}s."
+        counts[event.signal_type] = counts.get(event.signal_type, 0) + 1
+        total_dur[event.signal_type] = (
+            total_dur.get(event.signal_type, 0.0) + (event.end_time_s - event.start_time_s)
         )
-        suggestions.append(f"Try to reduce {event.signal_type.value.replace('_', ' ')}.")
+
+    for signal_type, n in sorted(counts.items(), key=lambda kv: total_dur[kv[0]], reverse=True):
+        label = signal_type.value.replace("_", " ")
+        dur = total_dur[signal_type]
+        if n >= 3 or dur >= 10.0:
+            suggestions.append(
+                f"{label.capitalize()} showed up {n} times ({dur:.0f}s total) -- this is a "
+                f"pattern, not a one-off. Record a 60s practice answer focused only on "
+                f"eliminating {label}, then compare it to this clip."
+            )
+        else:
+            suggestions.append(f"Try to reduce {label}.")
+        observations.append(
+            f"{label.capitalize()} detected {n} time(s), {dur:.1f}s total."
+        )
 
     if not observations:
         observations.append("No significant distracting signals detected.")

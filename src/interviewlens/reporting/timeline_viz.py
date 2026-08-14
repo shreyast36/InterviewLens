@@ -23,9 +23,9 @@ def render_timeline(report: CoachingReport, out_path: str | None = None):
 
     for event in report.timeline:
         color = COLORS.get(event["label"], "gray")
-        ax.axvline(event["time_s"], color=color, linewidth=2)
+        ax.axvline(event["start_s"], color=color, linewidth=2)
         ax.text(
-            event["time_s"], 1.05, event["label"].replace("_", " "),
+            event["start_s"], 1.05, event["label"].replace("_", " "),
             rotation=90, fontsize=7, va="bottom", ha="center", color=color,
         )
 

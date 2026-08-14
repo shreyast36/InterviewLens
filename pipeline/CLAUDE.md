@@ -27,8 +27,9 @@ evidence package:
    tracking): clutter/distraction detection with temporal persistence and a 3-tier
    taxonomy (neutral / mild / distracting).
 
-Both feed a common timeline that a future (out-of-scope for this delivery) VLM reasoning
-stage would consume to produce coaching feedback. See `pipeline_final.jpeg` (high-level)
+Both feed a common timeline that an LLM reasoning stage consumes to produce coaching
+feedback — now implemented in `src/interviewlens/reasoning/` (see "Full pipeline &
+Streamlit app" below), separate from these notebooks. See `pipeline_final.jpeg` (high-level)
 and `pipeline_detallado.png` (full system architecture) for the target design, and
 `context.docx` for the design-conversation rationale behind every model choice.
 
@@ -37,22 +38,99 @@ models per problem, detailed comparative metrics, deployment/maintenance plan.
 
 ## Scope of this delivery
 
-Three notebooks only — everything past "Evidence Fusion & Timeline" in the architecture
-diagram (VLM reasoning, evidence validation, final coaching report, audio/ASR/quality
-supplementary modules) is **not** part of this delivery.
+Originally scoped as three notebooks only, stopping at "Evidence Fusion & Timeline" — VLM
+reasoning, evidence validation, coaching report, and real audio/ASR were explicitly
+out of scope. **That has since expanded.** The full pipeline — real ASR (faster-whisper),
+LLM reasoning (Ollama/Nemotron-Mini), evidence validation, and the final coaching
+report — is now implemented in `src/interviewlens/` (repo root, one level up from this
+`pipeline/` directory) and exposed through a Streamlit app, `scripts/app.py`. See
+"Full pipeline & Streamlit app" below. The notebooks in this directory remain the
+course-deliverable artifacts (Problems 1 & 2 champion/challenger comparisons); the
+`src/interviewlens` app is the separate, more complete productionized version built on
+top of the same models.
 
 | # | Notebook | Produces |
 |---|----------|----------|
 | 1 | `notebooks/01_pipeline_A_pose_estimation.ipynb` | `pose_evidence.json` |
 | 2 | `notebooks/02_pipeline_B_background_analysis.ipynb` | `background_evidence.json` |
 | 3 | `notebooks/03_evidence_fusion_timeline.ipynb` | `fused_evidence.json` |
+| 4 | `notebooks/04_inference_only.ipynb` | Same, via `champion_inference.py` — champion-only, no training, no network downloads (bundled ONNX/`.pt` weights) |
+| — | `notebooks/00_master_pipeline.ipynb` | Runs 01→02→03 in one notebook |
 
 Notebook 2 depends on Notebook 1's output (person-region suppression). Notebook 3 depends
-on both. Run in numeric order.
+on both. Run in numeric order. Notebook 4 is self-contained (hand-maintained copy of the
+champion-path logic from 01/02/03 — see `champion_inference.py`'s module docstring; if a
+threshold or heuristic changes in one place it must be mirrored by hand in the other).
 
-All three files (plus every figure/CSV each notebook produces) land in the same **per-run**
-directory, `outputs/<video_stem>_<YYYYmmdd_HHMMSS>/` — see "Per-run output directory"
-below.
+All three/four files (plus every figure/CSV each notebook produces) land in the same
+**per-run** directory, `outputs/<video_stem>_<YYYYmmdd_HHMMSS>/` — see "Per-run output
+directory" below.
+
+## Full pipeline & Streamlit app (repo root, `src/interviewlens/`)
+
+The productionized pipeline lives outside `pipeline/`, at the repo root:
+
+```
+interview_lens/                 # repo root (parent of this pipeline/ dir)
+├── src/interviewlens/
+│   ├── video_pipeline/         # pose estimation, keypoints, temporal windows, signal detection
+│   ├── audio_pipeline/         # capture, real ASR (faster-whisper), post-processing, delivery analytics
+│   ├── reasoning/               # evidence fusion, LLM reasoning (Ollama), evidence validation
+│   ├── reporting/               # coaching report, timeline visualization
+│   ├── orchestration/           # wires all subsystems together (pipeline.py)
+│   └── api/                     # FastAPI server
+├── scripts/app.py               # Streamlit UI — upload a video, get a coaching report
+└── tests/                       # pytest suite (test_audio_pipeline, test_reasoning, test_reporting, test_video_pipeline)
+```
+
+**Two Python environments, neither has everything on its own — this trips people up:**
+
+- `cv_env` (`/home/arcanegus/MSADS_/advanced_cv_31023/cv_env/`) — has `cv2`,
+  `faster-whisper`, `streamlit`, `ultralytics`, etc., but does **not** have `interviewlens`
+  installed (no `pip` in this env either).
+- `.venv` (repo root) — has `interviewlens` installed (editable) so `import interviewlens`
+  works, but is **missing `cv2`** (opencv), so it can't run anything touching
+  `video_pipeline`.
+
+To run the Streamlit app, use `cv_env` with `src/` added to `PYTHONPATH` explicitly
+(no editable install needed that way):
+
+```bash
+cd <repo root>
+PYTHONPATH=src /home/arcanegus/MSADS_/advanced_cv_31023/cv_env/bin/streamlit run scripts/app.py
+```
+
+To run the test suite (pure-Python subsystems only, no `cv2` needed by most of them),
+`.venv` is sufficient:
+
+```bash
+cd <repo root>
+.venv/bin/python -m pytest -q
+```
+
+Ollama must be running locally (`ollama serve`, model `nemotron-mini` pulled) for real
+LLM reasoning; the reasoner falls back to a deterministic, evidence-grounded mock when
+Ollama is unreachable so the pipeline never hard-blocks on it (see
+`src/interviewlens/reasoning/llm_reasoning.py`).
+
+## Known gotchas (`src/interviewlens` app, not the notebooks)
+
+- **Audio VAD fragmentation**: `audio_pipeline/preprocessing.py::detect_speech_segments`
+  is a placeholder energy-based VAD (`TODO(Person B): replace with webrtcvad /
+  silero-vad`). It now bridges silence gaps < 300ms and drops runs < 150ms — without
+  that merging step, real (noisy) audio gets chopped into dozens of tiny segments, each
+  paying faster-whisper's ~1-2s fixed per-call overhead on CPU, which reads as the
+  Streamlit app "hanging" at Stage 5/6. If VAD logic changes again, re-verify segment
+  count and Stage 5 wall-clock time on a real video, not just unit tests.
+- **LLM JSON nulls**: `reasoning/llm_reasoning.py::_coerce_str_list` drops `null`/empty
+  entries from the LLM's JSON arrays instead of stringifying them — small local models
+  (nemotron-mini) sometimes pad `observations`/`suggestions` arrays with `null`, and
+  `str(None)` used to leak literal `"None"` cards into the coaching report UI.
+- **Coaching feedback intensity**: both the live-LLM system prompt and the offline mock
+  fallback (`_mock_reasoning`) scale suggestion specificity with evidence volume — a
+  single brief signal gets a light note, a recurring/high-duration signal gets its
+  frequency named explicitly plus a concrete practice drill. Keep both paths in sync if
+  you touch one (mock is what actually renders whenever Ollama is unreachable).
 
 ## Champion–challenger models
 
@@ -188,8 +266,8 @@ excluded from the project's data manifest.
   standardized device-selection cell, reproducible seeds, a final summary/comparison
   section with real (non-placeholder) numbers.
 - Every evidence-JSON claim must carry a timestamp and a measurement — no unsupported
-  assertions (this rule is enforced formally in the (out-of-scope) Evidence Validation
-  layer, but the JSON schemas here should already satisfy it).
+  assertions (this rule is enforced formally by `src/interviewlens/reasoning/
+  evidence_validation.py`, but the JSON schemas here should already satisfy it).
 - Training scope: small subsets (2–5k images) for challenger fine-tuning, ~15–20 epochs
   with early stopping on a held-out val split — enough for genuine, non-trivial
   champion-challenger comparisons without multi-hour runs.

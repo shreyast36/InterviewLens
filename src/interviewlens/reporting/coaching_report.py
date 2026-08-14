@@ -58,14 +58,19 @@ def build_coaching_report(
 ) -> CoachingReport:
     snapshot = build_delivery_snapshot(duration_s, valid_tracking_pct, audio_metrics, visual_events)
 
+    # Carries both start_s and end_s (not just a point-in-time) so the Gantt chart can
+    # draw each event's real span instead of reconstructing it by guessing where the
+    # next differently-labeled point happens to fall -- that guess breaks as soon as two
+    # signal types overlap in time, which they routinely do (e.g. hand_to_face during a
+    # long_pause).
     timeline = [
-        {"time_s": e.start_time_s, "label": e.signal_type.value}
+        {"start_s": e.start_time_s, "end_s": e.end_time_s, "label": e.signal_type.value}
         for e in visual_events
     ] + [
-        {"time_s": start, "label": "long_pause"}
-        for start, _end in audio_metrics.long_pause_timestamps
+        {"start_s": start, "end_s": end, "label": "long_pause"}
+        for start, end in audio_metrics.long_pause_timestamps
     ]
-    timeline.sort(key=lambda x: x["time_s"])
+    timeline.sort(key=lambda x: x["start_s"])
 
     # Always show the coaching content — reliability_score communicates how much
     # to trust it.  Only fall back to an error message when reliability is very
