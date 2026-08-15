@@ -130,23 +130,20 @@ def s19(prs, pg):
       "AI feedback is often dismissed as hallucination."
       "  InterviewLens makes every claim auditable.", 13, False, MID)
 
-    R(sl, 995567, 1789424, 10370934, 674490, f=BANNER)
+    R(sl, 995567, 1870000, 10370934, 760000, f=BANNER)
 
     BADGE = 548640
-    BY    = 1862923
+    BY    = 1920000   # pushed down slightly for more room under the headline
     groups = [
         (1122092, "AUDIT", "TRAIL",
-         "Every claim cites a timestamped signal.",
-         "A reviewer can verify any observation"
-         " against the original detection data."),
-        (4500000, "RELI", "SCORE",
-         "Reliability shown to the candidate.",
-         "Failed validation checks reduce the score."
-         "  Candidates see how much to trust each claim."),
-        (7900000, "NO", "OPINION",
+         "Every claim links to a detected signal.",
+         "Any observation can be verified against the original data."),
+        (4700000, "RELI", "SCORE",
+         "Reliability score is shown to the candidate.",
+         "Candidates see how much to trust each claim."),
+        (8300000, "NO", "OPINION",
          "No claims beyond the evidence.",
-         "The model cannot comment on anything"
-         " not in the detected signal list."),
+         "The model cannot mention anything not in the signal list."),
     ]
     for bx, l1, l2, bold_txt, body_txt in groups:
         R(sl, bx, BY, BADGE, BADGE, f=NAVY_ICN)
@@ -161,17 +158,20 @@ def s19(prs, pg):
         r2 = p2.add_run(); r2.text = l2
         r2.font.size = Pt(12); r2.font.bold = True; r2.font.color.rgb = WHITE
 
-        tb = TB(sl, bx + BADGE + 120000, BY, 2450000, 100000)
-        P(tb, bold_txt, 13, True, NAVY, sa=4)
+        # Body text: wider box (3.1") so text fits in ~2 lines at 13pt
+        tb = TB(sl, bx + BADGE + 100000, BY + 60000, 3000000, 100000)
+        P(tb, bold_txt, 13, True, NAVY, sa=6)
         P(tb, body_txt, 12, False, MID)
 
-    R(sl, 502920, 2860000, W - 1005840, 360000, f=NAVY)
-    P(TB(sl, 700000, 2890000, W - 1400000, 300000),
+    # More breathing room before the result strip
+    R(sl, 502920, 3100000, W - 1005840, 360000, f=NAVY)
+    P(TB(sl, 700000, 3130000, W - 1400000, 300000),
       "Before evidence grounding: 1 in 4 claims referenced something"
-      " not in the interview (reliability 0.25)."
-      "  After: 0.85+.", 14, True, WHITE)
+      " not in the interview (reliability 0.25).  After: 0.85+.",
+      14, True, WHITE)
 
-    P(TB(sl, 759005, 3380000, W - 1600000, 300000),
+    # More breathing room before the four-checks section
+    P(TB(sl, 759005, 3620000, W - 1600000, 300000),
       "The validation layer — 4 checks on every claim", 16, True, NAVY)
 
     BW = (W - 1400000) // 4 - 80000
@@ -183,9 +183,9 @@ def s19(prs, pg):
     ]
     for i, (col, title, sub) in enumerate(checks):
         x = 700000 + i * (BW + 80000)
-        R(sl, x, 3770000, BW, 880000, f=CARD_GRY)
-        R(sl, x, 3770000, BW, 120000, f=col)
-        tb = TB(sl, x + 70000, 3930000, BW - 140000, 100000)
+        R(sl, x, 4010000, BW, 880000, f=CARD_GRY)
+        R(sl, x, 4010000, BW, 120000, f=col)
+        tb = TB(sl, x + 70000, 4170000, BW - 140000, 100000)
         P(tb, title, 13, True, NAVY, sa=4)
         P(tb, sub, 12, False, MUTED)
 
