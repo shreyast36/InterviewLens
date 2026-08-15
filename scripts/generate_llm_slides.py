@@ -1,7 +1,11 @@
 """
-4 LLM & Reasoning slides for the InterviewLens academic presentation.
-Font sizes match the deck exactly (body=14pt, headlines=20-25pt, card labels=18pt).
+4 LLM & Reasoning slides.  Story arc:
+  18 -- Detection gives data. Coaching needs more.
+  19 -- The LLM can only say what it was told.
+  20 -- What broke and what we changed.
+  21 -- Three things every candidate receives.
 
+Font sizes match the existing deck exactly.
 Usage:  python scripts/generate_llm_slides.py
 Output: C:/Users/shrey/Downloads/InterviewLens_LLM_Slides.pptx
 """
@@ -11,7 +15,6 @@ from pptx.util import Pt, Emu
 from pptx.dml.color import RGBColor
 from pptx.enum.text import PP_ALIGN
 
-# Deck palette
 BLUE     = RGBColor(0x2C, 0x7F, 0xB8)
 NAVY     = RGBColor(0x14, 0x30, 0x4F)
 NAVY_ICN = RGBColor(0x1F, 0x38, 0x64)
@@ -27,343 +30,324 @@ GREEN    = RGBColor(0x21, 0x96, 0x53)
 GREEN_BG = RGBColor(0xE6, 0xF4, 0xEA)
 MUTED    = RGBColor(0x5B, 0x7A, 0x99)
 WHITE    = RGBColor(0xFF, 0xFF, 0xFF)
-W = 12192000
-H =  6858000
+W = 12192000;  H = 6858000
 
 
-# ── Primitives ─────────────────────────────────────────────────────────────────
-def rect(s, l, t, w, h, fill=None, lc=None, lw=12700):
+def R(s, l, t, w, h, f=None, lc=None):
     sh = s.shapes.add_shape(1, l, t, w, h)
-    sh.fill.solid() if fill else sh.fill.background()
-    if fill: sh.fill.fore_color.rgb = fill
-    if lc: sh.line.color.rgb = lc; sh.line.width = Emu(lw)
+    sh.fill.solid() if f else sh.fill.background()
+    if f: sh.fill.fore_color.rgb = f
+    if lc: sh.line.color.rgb = lc; sh.line.width = Emu(12700)
     else: sh.line.fill.background()
     return sh
 
-def oval(s, l, t, w, h, fill):
+def O(s, l, t, w, h, f):
     sh = s.shapes.add_shape(9, l, t, w, h)
-    sh.fill.solid(); sh.fill.fore_color.rgb = fill
+    sh.fill.solid(); sh.fill.fore_color.rgb = f
     sh.line.fill.background(); return sh
 
-def tb(s, l, t, w, h):
+def T(s, l, t, w, h):
     sh = s.shapes.add_textbox(l, t, w, h)
     sh.line.fill.background(); return sh
 
-def first(sh, text, pt, bold=False, color=MID, align=PP_ALIGN.LEFT):
+def P(sh, txt, pt, bold=False, clr=MID, al=PP_ALIGN.LEFT):
     tf = sh.text_frame; tf.word_wrap = True
-    p = tf.paragraphs[0]; p.alignment = align
+    p = tf.paragraphs[0]; p.alignment = al
     r = p.add_run()
-    r.text = text; r.font.size = Pt(pt); r.font.bold = bold
-    r.font.color.rgb = color
+    r.text = txt; r.font.size = Pt(pt); r.font.bold = bold; r.font.color.rgb = clr
     return tf
 
-def nxt(tf, text, pt, bold=False, color=MID, align=PP_ALIGN.LEFT):
-    tf._txBody.add_p()
-    p = tf.paragraphs[-1]; p.alignment = align
-    if text:
+def N(tf, txt, pt, bold=False, clr=MID, al=PP_ALIGN.LEFT):
+    tf._txBody.add_p(); p = tf.paragraphs[-1]; p.alignment = al
+    if txt:
         r = p.add_run()
-        r.text = text; r.font.size = Pt(pt); r.font.bold = bold
-        r.font.color.rgb = color
+        r.text = txt; r.font.size = Pt(pt); r.font.bold = bold; r.font.color.rgb = clr
     return tf
 
-def chrome(slide, section, page):
-    oval(slide, 514495, 419029, 615315, 615315, BLUE)
-    first(tb(slide, 1252728, 588523, 9601200, 256032), section, 20, True, BLUE)
-    first(tb(slide, 11140135, 6528816, 548640, 256032), str(page), 9, False, MUTED, PP_ALIGN.RIGHT)
+def chrome(sl, sec, pg):
+    O(sl, 514495, 419029, 615315, 615315, BLUE)
+    P(T(sl, 1252728, 588523, 9601200, 256032), sec, 20, True, BLUE)
+    P(T(sl, 11140135, 6528816, 548640, 256032), str(pg), 9, False, MUTED, PP_ALIGN.RIGHT)
 
-def deco(slide):
-    oval(slide, 10252478, 5202936, 3840480, 3840480, BLUE)
+def deco(sl):
+    O(sl, 10252478, 5202936, 3840480, 3840480, BLUE)
 
-def insight(slide, text):
-    rect(slide, 502920, 5160000, W - 1005840, 1080000, fill=NAVY)
-    sh = tb(slide, 700000, 5230000, W - 1400000, 960000)
-    tf = first(sh, text, 13, False, WHITE)
+def bar(sl, txt):
+    R(sl, 502920, 5160000, W - 1005840, 1100000, f=NAVY)
+    tf = P(T(sl, 700000, 5220000, W - 1400000, 1000000), txt, 14, False, WHITE)
     tf.word_wrap = True
 
 
-# =============================================================================
-# SLIDE 18  Evidence-Grounded Coaching Reasoning
-# Three-card layout matching slide 7 (champion/baseline/image columns)
-# =============================================================================
+# ─────────────────────────────────────────────────────────────────────────────
+# 18  "Detection gives you data.  Coaching requires more."
+# ─────────────────────────────────────────────────────────────────────────────
 def s18(prs, pg):
     sl = prs.slides.add_slide(prs.slide_layouts[0])
     sl.background.fill.solid(); sl.background.fill.fore_color.rgb = WHITE
-    chrome(sl, "LLM & REASONING", pg)
-    deco(sl)
+    chrome(sl, "LLM & REASONING", pg); deco(sl)
 
-    # Main headline -- 25pt bold, matches deck's large results headlines
-    first(tb(sl, 1080412, 820000, 10037619, 460000),
-          "Evidence-Grounded Coaching Reasoning", 25, True, NAVY)
+    P(T(sl, 1080412, 810000, 10037619, 500000),
+      "Detection Gives You Data.  Coaching Requires More.", 25, True, NAVY)
 
-    # Sub-headline bar (DCEBF7, matches slide 9)
-    rect(sl, 502920, 1390000, W - 1005840, 400000, fill=CARD_LT)
-    sh_s = tb(sl, 700000, 1420000, W - 1400000, 360000)
-    first(sh_s,
-          "Detecting a signal is not coaching. The reasoning stage turns"
-          " timestamped evidence into explanations and specific actions.", 14, False, NAVY)
+    R(sl, 502920, 1390000, W - 1005840, 400000, f=CARD_LT)
+    tf_s = P(T(sl, 700000, 1420000, W - 1400000, 360000),
+             "The pose and audio pipelines produce timestamped signals with confidence scores."
+             "  That is necessary -- but it is not sufficient for a candidate to improve.", 14, False, NAVY)
+    tf_s.word_wrap = True
 
-    # Three columns, slide-7 geometry
-    cols = [
-        (502920,  NAVY,     "THE CHALLENGE",  WHITE, [
-            ("Detection produces:", False, WHITE),
-            ("timestamps + signal type", False, WHITE),
-            ("+ confidence score", False, WHITE),
-            ("", False, WHITE),
-            ("It cannot tell you why", False, WHITE),
-            ("or what to do about it", False, WHITE),
-        ]),
-        (4307738, CARD_GRY, "THE APPROACH",   NAVY,  [
-            ("Ground every LLM claim in a", False, MID),
-            ("timestamped, confidence-gated", False, MID),
-            ("pipeline event", False, MID),
-            ("", False, MID),
-            ("No claim without evidence", True,  NAVY),
-        ]),
-        (8112557, CARD_MD,  "THE OUTPUT",     NAVY,  [
-            ("For each signal:", False, MID),
-            ("What happened and when", False, MID),
-            ("Why it matters for interviews", False, MID),
-            ("One concrete fix to rehearse", False, MID),
-            ("", False, MID),
-            ("Reliability-scored", True, BLUE),
-        ]),
-    ]
-    for l, fill, title, tc, rows in cols:
-        rect(sl, l, 1920000, 3576218, 2700000, fill=fill)
-        first(tb(sl, l + 140000, 2040000, 3296218, 480000), title, 18, True, tc)
-        sh = tb(sl, l + 140000, 2580000, 3296218, 2000000)
-        tf = first(sh, rows[0][0], 14, rows[0][1], rows[0][2])
-        for text, bold, clr in rows[1:]:
-            nxt(tf, text, 14, bold, clr)
+    # Left dark card: raw detection output
+    R(sl, 502920, 1930000, 3576218, 2700000, f=NAVY)
+    P(T(sl, 640000, 2040000, 3300000, 420000), "WHAT DETECTION GIVES YOU", 16, True, CARD_LT)
+    sh = T(sl, 640000, 2540000, 3300000, 2050000)
+    tf = P(sh, "hands_near_face", 14, True, AMBER)
+    N(tf, "  start=2.1s  end=4.8s  conf=0.82", 13, False, WHITE)
+    N(tf, "", 6)
+    N(tf, "head_tilt", 14, True, AMBER)
+    N(tf, "  start=0.3s  end=7.1s  conf=0.71", 13, False, WHITE)
+    N(tf, "", 6)
+    N(tf, "body_lean", 14, True, AMBER)
+    N(tf, "  start=1.0s  end=8.0s  conf=0.69", 13, False, WHITE)
+    N(tf, "", 10)
+    N(tf, "Filler words: 2", 13, False, CARD_MD)
+    N(tf, "Speaking rate: 91 wpm", 13, False, CARD_MD)
 
-    # Arrows
-    for ax in [4040000, 7846000]:
-        first(tb(sl, ax + 60000, 3100000, 148000, 280000), ">", 20, True, BLUE, PP_ALIGN.CENTER)
+    # Arrow
+    P(T(sl, 4120000, 3080000, 200000, 300000), ">", 22, True, BLUE, PP_ALIGN.CENTER)
 
-    insight(sl,
-        "Key design decision: the LLM receives no video frames -- only structured text."
-        " This means every coaching claim is auditable: a reviewer can check it"
-        " against the original signal timestamps.")
+    # Middle card: what coaching needs
+    R(sl, 4380000, 1930000, 3576218, 2700000, f=CARD_GRY)
+    P(T(sl, 4520000, 2040000, 3300000, 420000), "WHAT COACHING REQUIRES", 16, True, NAVY)
+    sh2 = T(sl, 4520000, 2540000, 3300000, 2050000)
+    tf2 = P(sh2, "Why does touching my face matter?", 14, False, MID)
+    N(tf2, "", 6)
+    N(tf2, "Is this worse under pressure?", 14, False, MID)
+    N(tf2, "", 6)
+    N(tf2, "What should I physically do?", 14, False, MID)
+    N(tf2, "", 6)
+    N(tf2, "How confident should I be in this?", 14, False, MID)
+    N(tf2, "", 10)
+    N(tf2, "Rules cannot answer these.", 14, True, RED)
+
+    # Arrow
+    P(T(sl, 7990000, 3080000, 200000, 300000), ">", 22, True, BLUE, PP_ALIGN.CENTER)
+
+    # Right card: solution
+    R(sl, 8240000, 1930000, 3576218, 2700000, f=BLUE)
+    P(T(sl, 8380000, 2040000, 3300000, 420000), "THE LLM REASONING STAGE", 16, True, WHITE)
+    sh3 = T(sl, 8380000, 2540000, 3300000, 2050000)
+    tf3 = P(sh3, "Reads the evidence.", 14, True, WHITE)
+    N(tf3, "Explains each signal.", 14, True, WHITE)
+    N(tf3, "Suggests one specific fix.", 14, True, WHITE)
+    N(tf3, "", 8)
+    N(tf3, "Every claim is grounded in", 14, False, CARD_LT)
+    N(tf3, "a timestamped pipeline event.", 14, False, CARD_LT)
+    N(tf3, "", 8)
+    N(tf3, "Reliability-scored on output.", 14, False, CARD_LT)
+
+    bar(sl, "Rules scale poorly: there are 34 distinct signal types across body language,"
+        " framing, background, and audio.  An LLM that reasons over evidence handles"
+        " combinations and context that a rule tree never could.")
 
 
-# =============================================================================
-# SLIDE 19  Why the LLM Cannot Hallucinate
-# Four-column tier layout matching slide 10 (Neutral / Negative / Distracting)
-# =============================================================================
+# ─────────────────────────────────────────────────────────────────────────────
+# 19  "The LLM Can Only Say What It Was Told."
+# ─────────────────────────────────────────────────────────────────────────────
 def s19(prs, pg):
     sl = prs.slides.add_slide(prs.slide_layouts[0])
     sl.background.fill.solid(); sl.background.fill.fore_color.rgb = WHITE
-    chrome(sl, "LLM & REASONING", pg)
-    deco(sl)
+    chrome(sl, "LLM & REASONING", pg); deco(sl)
 
-    first(tb(sl, 1080412, 820000, 10037619, 460000),
-          "Why the LLM Cannot Hallucinate", 25, True, NAVY)
+    P(T(sl, 1080412, 810000, 10037619, 500000),
+      "The LLM Can Only Say What It Was Told.", 25, True, NAVY)
 
-    sh_i = tb(sl, 700000, 1360000, W - 1400000, 380000)
-    first(sh_i,
-          "The system constrains what the model can say before it generates a single token."
-          " Constraints are structural -- not guidelines.", 14, False, NAVY)
+    # Dark left: what multimodal models do vs. what we do
+    R(sl, 502920, 1430000, 5100000, 3800000, f=NAVY)
+    P(T(sl, 660000, 1540000, 4800000, 380000), "THE DESIGN DECISION", 16, True, CARD_LT)
 
-    CW, GAP, SX = 2750000, 105000, 466344
-    LH, BH = 480000, 3200000
-    LY, BY = 1880000, 2360000
+    sh = T(sl, 660000, 2020000, 4800000, 3150000)
+    tf = P(sh, "We do not show the LLM any video frames.", 14, True, WHITE)
+    N(tf, "", 8)
+    N(tf, "Multimodal models are trained to describe", 14, False, WHITE)
+    N(tf, "images. Given interview footage, they describe", 14, False, WHITE)
+    N(tf, "clothing, hairstyles, and furniture -- none of", 14, False, WHITE)
+    N(tf, "which the candidate can act on.", 14, False, WHITE)
+    N(tf, "", 8)
+    N(tf, "Instead: a structured text document listing", 14, False, WHITE)
+    N(tf, "every detected signal with its timestamps.", 14, False, WHITE)
+    N(tf, "", 8)
+    N(tf, "Result: reliability rose from 0.25 to 0.85+.", 14, True, AMBER)
 
-    cols = [
-        (BLUE,  CARD_MD,  "WHAT IT RECEIVES",   14, [
-            "A text document listing",
-            "every detected event:",
-            "",
-            "  hands_near_face",
-            "  start=2.1s  end=4.8s",
-            "  confidence=0.82",
-            "",
-            "No images. No video.",
-        ]),
-        (AMBER, AMBER_BG, "WHAT IT MUST DO",    14, [
-            "Every observation must",
-            "start with a <signal_type>:",
-            "token from the evidence",
-            "",
-            "One observation per",
-            "signal type present --",
-            "no early stopping",
-        ]),
-        (RED,   RED_BG,   "WHAT IS BLOCKED",    14, [
-            "Clothing, hair, skin",
-            "Food, furniture, decor",
-            "",
-            "Any claim with no",
-            "matching event in the",
-            "evidence document",
-        ]),
-        (GREEN, GREEN_BG, "HOW IT IS CHECKED",  14, [
-            "Validation layer runs",
-            "4 checks on every claim",
-            "",
-            "Failed checks reduce",
-            "the reliability score",
-            "shown to the user",
-        ]),
+    # Four constraints on the right
+    R(sl, 5760000, 1430000, 6000000, 3800000, f=CARD_MD)
+    P(T(sl, 5900000, 1520000, 5720000, 360000), "FOUR STRUCTURAL CONSTRAINTS", 16, True, NAVY)
+
+    constraints = [
+        (NAVY_ICN, "Closed vocabulary",
+         "Every observation must start with a <signal_type>:"
+         " token drawn from the evidence for this clip."),
+        (NAVY_ICN, "Required coverage",
+         "The prompt lists every signal type present."
+         " The model must cover all of them -- no early stopping."),
+        (NAVY_ICN, "Concrete fix mandate",
+         "'low_light' requires 'move toward a front-facing"
+         " light source' -- vague advice is not accepted."),
+        (NAVY_ICN, "Validation gate",
+         "Claims with no matching evidence, bad timestamps,"
+         " or low-confidence sources are flagged."),
     ]
-    for i, (lf, bf, title, bsz, rows) in enumerate(cols):
-        x = SX + i * (CW + GAP)
-        rect(sl, x, LY, CW, LH, fill=lf)
-        first(tb(sl, x + 80000, LY + 80000, CW - 160000, LH - 120000),
-              title, 14, True, WHITE, PP_ALIGN.CENTER)
-        rect(sl, x, BY, CW, BH, fill=bf)
-        sh = tb(sl, x + 100000, BY + 130000, CW - 200000, BH - 200000)
-        tf = first(sh, rows[0], bsz, False, NAVY)
-        for row in rows[1:]:
-            nxt(tf, row, bsz, False, NAVY)
+    CH = 760000
+    for i, (bf, title, body) in enumerate(constraints):
+        y = 1960000 + i * (CH + 60000)
+        R(sl, 5760000, y, 5900000, CH, f=CARD_GRY)
+        R(sl, 5760000, y, 340000, CH, f=bf)
+        P(T(sl, 5760000, y + CH // 2 - 200000, 340000, 400000),
+          str(i + 1), 20, True, WHITE, PP_ALIGN.CENTER)
+        sh = T(sl, 6160000, y + 80000, 5480000, CH - 160000)
+        tf = P(sh, title, 13, True, NAVY)
+        N(tf, body, 13, False, MID)
 
-    insight(sl,
-        "Early tests with a multimodal model produced observations like"
-        " 'wearing a white towel' and 'sandwich and coffee on the counter'"
-        " -- neither was in the evidence."
-        " Removing image tokens from the prompt eliminated appearance hallucinations entirely.")
+    bar(sl, "The validation layer runs 4 checks on every claim before the report is shown."
+        "  Reliability = max(0, 1.0 - 0.15 x failed checks)."
+        "  The score is visible to the candidate so they know how much to trust each observation.")
 
 
-# =============================================================================
-# SLIDE 20  Three Failures We Observed -- and Fixed
-# Champion card + numbered problem/fix rows
-# =============================================================================
+# ─────────────────────────────────────────────────────────────────────────────
+# 20  "What Broke and What We Changed."
+# ─────────────────────────────────────────────────────────────────────────────
 def s20(prs, pg):
     sl = prs.slides.add_slide(prs.slide_layouts[0])
     sl.background.fill.solid(); sl.background.fill.fore_color.rgb = WHITE
-    chrome(sl, "LLM & REASONING", pg)
-    deco(sl)
+    chrome(sl, "LLM & REASONING", pg); deco(sl)
 
-    first(tb(sl, 1080412, 820000, 10037619, 460000),
-          "Three Failures Observed -- and How We Fixed Them", 25, True, NAVY)
+    P(T(sl, 1080412, 810000, 10037619, 500000),
+      "What Broke -- and What We Changed", 25, True, NAVY)
 
     # Dark champion card
-    rect(sl, 502920, 1480000, 3800000, 3500000, fill=NAVY)
-    rect(sl, 502920, 1370000, 3800000, 110000,  fill=BLUE)
-    first(tb(sl, 502920, 1260000, 3800000, 280000), "Champion", 16, True, NAVY)
+    R(sl, 502920, 1480000, 3760000, 3550000, f=NAVY)
+    R(sl, 502920, 1375000, 3760000, 105000,  f=BLUE)
+    P(T(sl, 502920, 1270000, 3760000, 260000), "Champion", 16, True, NAVY)
 
-    sh_c = tb(sl, 650000, 1580000, 3500000, 3300000)
-    tf_c = first(sh_c, "Nemotron Mini 4B", 20, True, WHITE)
-    nxt(tf_c, "via Ollama  |  local  |  private", 13, False, CARD_MD)
-    nxt(tf_c, "", 8)
-    nxt(tf_c, "Runs on-device -- no data leaves", 14, False, WHITE)
-    nxt(tf_c, "the machine, no API key needed.", 14, False, WHITE)
-    nxt(tf_c, "", 8)
-    nxt(tf_c, "format='json' enforces structured", 14, False, WHITE)
-    nxt(tf_c, "output on every inference call.", 14, False, WHITE)
-    nxt(tf_c, "", 8)
-    nxt(tf_c, "Offline fallback: when the server", 14, False, WHITE)
-    nxt(tf_c, "is unreachable, deterministic mock", 14, False, WHITE)
-    nxt(tf_c, "output keeps the pipeline running.", 14, False, WHITE)
+    sh_c = T(sl, 650000, 1580000, 3460000, 3400000)
+    tf_c = P(sh_c, "Nemotron Mini 4B", 20, True, WHITE)
+    N(tf_c, "via Ollama  |  local  |  private", 13, False, CARD_MD)
+    N(tf_c, "", 10)
+    N(tf_c, "4 billion parameters", 14, False, WHITE)
+    N(tf_c, "~2.7 GB  --  runs on-device", 14, False, WHITE)
+    N(tf_c, "", 6)
+    N(tf_c, "No data leaves the machine", 14, False, WHITE)
+    N(tf_c, "No API key required", 14, False, WHITE)
+    N(tf_c, "", 6)
+    N(tf_c, "format='json' enforces", 14, False, WHITE)
+    N(tf_c, "structured output on every call", 14, False, WHITE)
+    N(tf_c, "", 6)
+    N(tf_c, "Falls back to deterministic mock", 14, False, WHITE)
+    N(tf_c, "when server is unreachable", 14, False, WHITE)
 
     # Three failure rows
-    rows = [
-        ("Model free-wrote about the scene",
-         "REQUIRED FORMAT: every observation must begin with a <signal_type>: token"
-         " drawn from this clip's evidence."
-         " The model cannot describe what it sees -- only what was measured."),
-        ("Model stopped after 1-2 signals out of 7",
-         "REQUIRED COVERAGE: the prompt lists every signal type flagged in the clip"
-         " and mandates one observation each."
-         " Coverage rose from 2 to 7 signals after this rule was added."),
-        ("Suggestions were too vague to act on",
-         "CONCRETE FIX MANDATE: lighting and audio signals require a specific remedy."
-         " 'low_light' must produce 'move toward a front-facing light source'"
-         " -- not 'consider improving your lighting'."),
+    failures = [
+        ("Model described the room, not the interview",
+         "A multimodal model given frames observed 'wearing a white towel'"
+         " and 'sandwich and coffee on the counter'."
+         " Neither was in the evidence.  Reliability: 0.25."
+         "  Fix: no images -- structured text only."),
+        ("Model stopped after covering 2 signals out of 7",
+         "Without enforcement, the model always led with the most obvious signal"
+         " and finished early.  Coverage jumped from 2 to 7 signals per clip"
+         " after REQUIRED COVERAGE listed every present signal type explicitly."),
+        ("Worked examples made things worse, not better",
+         "Adding a GOOD / BAD example pair to the prompt caused the model"
+         " to copy the BAD example verbatim in its output."
+         " A known small-model failure mode.  Fix: dynamic signal lists, no static examples."),
     ]
     RH = 1100000
-    for i, (problem, fix) in enumerate(rows):
+    for i, (problem, fix) in enumerate(failures):
         y = 1400000 + i * (RH + 80000)
-        rect(sl, 4450000, y, 7300000, RH, fill=CARD_MD)
-        rect(sl, 4450000, y, 380000, RH, fill=NAVY_ICN)
-        first(tb(sl, 4460000, y + RH // 2 - 240000, 360000, 480000),
-              str(i + 1), 22, True, WHITE, PP_ALIGN.CENTER)
-        sh = tb(sl, 4900000, y + 100000, 6750000, RH - 200000)
-        tf = first(sh, problem, 14, True, NAVY)
-        nxt(tf, fix, 13, False, MID)
+        R(sl, 4360000, y, 7440000, RH, f=CARD_MD)
+        R(sl, 4360000, y, 360000, RH, f=NAVY_ICN)
+        P(T(sl, 4360000, y + RH // 2 - 240000, 360000, 480000),
+          str(i + 1), 22, True, WHITE, PP_ALIGN.CENTER)
+        sh = T(sl, 4780000, y + 90000, 6920000, RH - 180000)
+        tf = P(sh, problem, 14, True, NAVY)
+        N(tf, fix, 13, False, MID)
 
-    insight(sl,
-        "A worked GOOD/BAD example pair in the prompt made things worse:"
-        " the model copied the example verbatim, word-for-word, including the BAD sentence."
-        " Dynamic signal-name lists replaced all static examples.")
+    bar(sl, "Each failure led to a structural change in the system, not a better prompt."
+        "  The constraints described on the previous slide emerged directly"
+        " from these three observations during development.")
 
 
-# =============================================================================
-# SLIDE 21  A Coaching Report -- What a Candidate Receives
-# Shows a concrete real-world example of the full output
-# =============================================================================
+# ─────────────────────────────────────────────────────────────────────────────
+# 21  "Three Things Every Candidate Receives."
+# ─────────────────────────────────────────────────────────────────────────────
 def s21(prs, pg):
     sl = prs.slides.add_slide(prs.slide_layouts[0])
     sl.background.fill.solid(); sl.background.fill.fore_color.rgb = WHITE
-    chrome(sl, "LLM & REASONING", pg)
-    deco(sl)
+    chrome(sl, "LLM & REASONING", pg); deco(sl)
 
-    first(tb(sl, 1080412, 820000, 10037619, 460000),
-          "A Coaching Report -- What a Candidate Receives", 25, True, NAVY)
+    P(T(sl, 1080412, 810000, 10037619, 500000),
+      "Three Things Every Candidate Receives", 25, True, NAVY)
 
-    # Signal input (left)
-    rect(sl, 502920, 1430000, 5200000, 3700000, fill=NAVY)
-    first(tb(sl, 660000, 1530000, 5000000, 380000), "SIGNAL DETECTED", 14, True, CARD_LT)
+    # Left: detected signals
+    R(sl, 502920, 1420000, 5060000, 3780000, f=NAVY)
+    P(T(sl, 660000, 1520000, 4780000, 360000), "DETECTED SIGNALS (this clip)", 16, True, CARD_LT)
 
-    sh_sig = tb(sl, 660000, 1980000, 4900000, 3100000)
-    tf_sig = first(sh_sig, "Type:         hands_near_face", 13, False, WHITE)
-    nxt(tf_sig, "Duration:     2.1 s  --  4.8 s", 13, False, WHITE)
-    nxt(tf_sig, "Confidence:   0.82", 13, False, WHITE)
-    nxt(tf_sig, "", 8)
-    nxt(tf_sig, "Also flagged in this clip:", 13, False, CARD_MD)
-    nxt(tf_sig, "  head_tilt       0.3s -- 7.1s", 13, False, WHITE)
-    nxt(tf_sig, "  body_lean       1.0s -- 8.0s", 13, False, WHITE)
-    nxt(tf_sig, "  looking_down    5.2s -- 8.0s", 13, False, WHITE)
-    nxt(tf_sig, "", 8)
-    nxt(tf_sig, "Audio:  91 wpm  |  2 fillers", 13, False, CARD_MD)
-    nxt(tf_sig, "Reliability score:  0.85", 13, True, AMBER)
+    sh_l = T(sl, 660000, 1970000, 4780000, 3180000)
+    tf_l = P(sh_l, "Signal               Time         Conf", 12, True, CARD_MD)
+    N(tf_l, "hands_near_face    2.1s - 4.8s   0.82", 13, False, WHITE)
+    N(tf_l, "head_tilt          0.3s - 7.1s   0.71", 13, False, WHITE)
+    N(tf_l, "body_lean          1.0s - 8.0s   0.69", 13, False, WHITE)
+    N(tf_l, "looking_down       5.2s - 8.0s   0.67", 13, False, WHITE)
+    N(tf_l, "", 8)
+    N(tf_l, "Filler words       2", 13, False, CARD_MD)
+    N(tf_l, "Speaking rate      91 wpm", 13, False, CARD_MD)
+    N(tf_l, "", 12)
+    R(sl, 660000, 4790000, 1400000, 350000, f=GREEN)
+    P(T(sl, 680000, 4820000, 1360000, 280000), "Reliability  0.85", 13, True, WHITE, PP_ALIGN.CENTER)
 
-    # Three output sections (right)
-    OX = 502920 + 5200000 + 220000
+    # Right: three output sections
+    OX = 502920 + 5060000 + 220000
     OW = W - OX - 402920
+    SH = 1180000
 
     sections = [
-        (BLUE,    WHITE,    "WHAT HAPPENED",
-         "hands_near_face: You touched your face 14 times"
-         " in the opening 5 seconds of your answer."),
-        (AMBER,   NAVY,     "WHY IT MATTERS",
+        (BLUE,  WHITE,    "WHAT HAPPENED",
+         "hands_near_face: You touched your face repeatedly"
+         " during the opening 5 seconds of your answer."),
+        (AMBER, NAVY,     "WHY IT MATTERS",
          "Repeated face-touching under pressure signals"
-         " anxiety to interviewers and draws attention"
-         " away from your words."),
-        (GREEN,   WHITE,    "WHAT TO DO",
-         "Before you answer, rest both hands flat on the desk."
-         " If they move to your face, pause, reposition, then continue."),
+         " anxiety to interviewers and shifts attention"
+         " away from what you are saying."),
+        (GREEN, WHITE,    "WHAT TO DO",
+         "Before you start, rest both hands flat on the desk."
+         " When you notice them moving to your face,"
+         " pause, reposition, then continue."),
     ]
-    SH = 1160000
-    for i, (lf, lc, label, body) in enumerate(sections):
-        y = 1430000 + i * (SH + 50000)
-        rect(sl, OX, y, OW, 360000, fill=lf)
-        first(tb(sl, OX + 110000, y + 80000, OW - 220000, 260000), label, 14, True, lc)
-        rect(sl, OX, y + 360000, OW, SH - 360000, fill=CARD_GRY)
-        sh = tb(sl, OX + 110000, y + 420000, OW - 220000, SH - 460000)
-        first(sh, body, 13, False, MID)
+    for i, (lf, lc, lbl, body) in enumerate(sections):
+        y = 1420000 + i * (SH + 55000)
+        R(sl, OX, y, OW, 360000, f=lf)
+        P(T(sl, OX + 110000, y + 75000, OW - 220000, 260000), lbl, 16, True, lc)
+        R(sl, OX, y + 360000, OW, SH - 360000, f=CARD_GRY)
+        tf = P(T(sl, OX + 110000, y + 430000, OW - 220000, SH - 480000), body, 13, False, MID)
+        tf.word_wrap = True
 
-    insight(sl,
-        "The three-part structure (what / why / what to do) is deliberate:"
-        " observation alone does not change behaviour."
-        " Candidates leave every session with one specific, rehearsable target.")
+    bar(sl, "WHAT HAPPENED answers a factual question."
+        "  WHY IT MATTERS connects the signal to interview perception."
+        "  WHAT TO DO gives one specific, rehearsable action."
+        "  Without all three, the candidate has data -- not a direction.")
 
 
-# =============================================================================
+# ─────────────────────────────────────────────────────────────────────────────
 def main():
     src  = Path(r"C:\Users\shrey\Downloads\InterviewLens_Presentation.pptx")
     dest = Path(r"C:\Users\shrey\Downloads\InterviewLens_LLM_Slides.pptx")
     prs  = Presentation(str(src))
-
     while len(prs.slides) > 17:
         rId = prs.slides._sldIdLst[-1].get("r:id")
         del prs.slides._sldIdLst[-1]
         prs.part.drop_rel(rId)
-
-    s18(prs, 18); print("  18 -- Evidence-Grounded Coaching Reasoning")
-    s19(prs, 19); print("  19 -- Why the LLM Cannot Hallucinate")
-    s20(prs, 20); print("  20 -- Three Failures Fixed")
-    s21(prs, 21); print("  21 -- A Coaching Report Example")
-
+    s18(prs, 18); print("  18 -- Detection gives data, coaching requires more")
+    s19(prs, 19); print("  19 -- The LLM can only say what it was told")
+    s20(prs, 20); print("  20 -- What broke and what we changed")
+    s21(prs, 21); print("  21 -- Three things every candidate receives")
     prs.save(str(dest))
     print(f"\nSaved -> {dest}  ({dest.stat().st_size / 1e6:.1f} MB)")
 
