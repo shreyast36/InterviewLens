@@ -92,25 +92,22 @@ def s18(prs, pg):
     sh = TB(sl, 1129810, 1500000, 9100000, 100000)
     tf = sh.text_frame
 
-    P(tf, "1.  Most candidates who practise get no useful feedback",
-      20, True, NAVY, sa=3)
+    P(tf, "1.  Most candidates who practise get no useful feedback", 20, True, NAVY)
     P(tf, "Human coaching costs hundreds of dollars per session."
-      "  InterviewLens delivers the same specificity after every practice run"
-      " at zero marginal cost.",
-      14, False, MID, sa=16)
+          "  InterviewLens delivers the same specificity at zero marginal cost.",
+          16, False, MID)
+    P(tf, "", 16)
 
-    P(tf, "2.  Generic feedback does not change behaviour",
-      20, True, NAVY, sa=3)
-    P(tf, "Telling a candidate they \"seemed nervous\" is not actionable."
-      "  Telling them their hands moved to their face in the first 5 seconds"
-      " — and giving them one specific thing to rehearse — is.",
-      14, False, MID, sa=16)
+    P(tf, "2.  Generic feedback cannot be acted on", 20, True, NAVY)
+    P(tf, "\u2018You seemed nervous\u2019 tells a candidate nothing."
+          "  A specific signal with a timestamped rehearsal target does.",
+          16, False, MID)
+    P(tf, "", 16)
 
-    P(tf, "3.  The LLM bridges detection and coaching",
-      20, True, NAVY, sa=3)
-    P(tf, "The pipeline detects signals.  The LLM explains why they matter"
-      " and what to do about them — grounded in the evidence, not opinion.",
-      14, False, MID)
+    P(tf, "3.  The LLM bridges detection and coaching", 20, True, NAVY)
+    P(tf, "The pipeline detects signals."
+          "  The LLM explains why they matter and what to do about each one.",
+          16, False, MID)
 
     strip(sl,
           "Scalability without specificity is noise."
@@ -212,16 +209,16 @@ def s20(prs, pg):
     # Left: what the system delivers now
     R(sl, 502920, 1800000, 14000, 3300000, f=BLUE)
     tb_l = TB(sl, 600000, 1800000, 4800000, 100000)
-    P(tb_l, "What the system delivers today", 18, True, NAVY, sa=3)
-    P(tb_l, "After all three iterations", 13, False, MUTED, sa=12)
+    P(tb_l, "What the system delivers today", 18, True, NAVY, sa=4)
+    P(tb_l, "After all three iterations", 13, False, MUTED, sa=14)
     for outcome in [
-        "Feedback grounded in measured signals, not scene description",
-        "Every signal in the clip addressed — none skipped",
-        "Each suggestion is a specific, rehearsable action",
-        "Reliability score tells the candidate how much to trust each claim",
-        "Validated before it reaches the user",
+        "Feedback grounded in measured signals",
+        "Every signal in the clip addressed",
+        "Each suggestion is specific and rehearsable",
+        "Reliability score shows how much to trust each claim",
+        "Output validated before it reaches the user",
     ]:
-        P(tb_l, outcome, 14, False, MID, sa=4)
+        P(tb_l, outcome, 15, False, MID, sa=6)
 
     # Right: three iterations
     iterations = [
