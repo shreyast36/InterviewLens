@@ -165,10 +165,18 @@ def s19(prs, pg):
     ]
     for bx, l1, l2, bold_txt, body_txt in groups:
         R(sl, bx, BY, BADGE, BADGE, f=NAVY_ICN)
-        para(textbox(sl, bx + 40000, BY + 80000, BADGE - 80000, 200000),
-             l1, 11, True, WHITE, PP_ALIGN.CENTER)
-        para(textbox(sl, bx + 40000, BY + 300000, BADGE - 80000, 200000),
-             l2, 11, True, WHITE, PP_ALIGN.CENTER)
+        # Single fixed-size label inside the badge — no auto_size or they overlap
+        sh_lbl = sl.shapes.add_textbox(bx, BY, BADGE, BADGE)
+        sh_lbl.line.fill.background()
+        tf_lbl = sh_lbl.text_frame; tf_lbl.word_wrap = False
+        p1 = tf_lbl.paragraphs[0]; p1.alignment = PP_ALIGN.CENTER
+        r1 = p1.add_run(); r1.text = l1
+        r1.font.size = Pt(12); r1.font.bold = True; r1.font.color.rgb = WHITE
+        tf_lbl._txBody.add_p(); p2 = tf_lbl.paragraphs[-1]
+        p2.alignment = PP_ALIGN.CENTER
+        r2 = p2.add_run(); r2.text = l2
+        r2.font.size = Pt(12); r2.font.bold = True; r2.font.color.rgb = WHITE
+        # Body text to the right
         tb = textbox(sl, bx + BADGE + 120000, BY, 2450000, 100000)
         para(tb, bold_txt, 13, True, NAVY, sa=4)
         para(tb, body_txt, 12, False, MID)
