@@ -230,10 +230,11 @@ def s20(prs, pg):
     para(tb_l, "Nemotron Mini 4B", 20, True, NAVY, sa=3)
     para(tb_l, "via Ollama  |  local  |  private", 13, False, MUTED, sa=12)
     for fact in [
-        "4 billion parameters  |  ~2.7 GB on-device",
-        "No API key  |  No data leaves the machine",
-        "format='json' enforces structured output every call",
-        "Deterministic mock fallback when server is offline",
+        "4-billion parameter instruction-tuned model",
+        "Runs fully offline — no cloud dependency",
+        "Candidate data never leaves the device",
+        "Strong instruction-following at 4B scale",
+        "Selected over cloud LLMs for data sovereignty",
     ]:
         para(tb_l, fact, 14, False, MID, sa=4)
     para(tb_l, "", 8)
