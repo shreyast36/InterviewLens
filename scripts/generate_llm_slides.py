@@ -228,13 +228,13 @@ def s20(prs, pg):
     R(sl, 502920, 1800000, 14000, 3300000, f=BLUE)
     tb_l = textbox(sl, 600000, 1800000, 4800000, 100000)
     para(tb_l, "Nemotron Mini 4B", 20, True, NAVY, sa=3)
-    para(tb_l, "via Ollama  |  local  |  private", 13, False, MUTED, sa=12)
+    para(tb_l, "Stage 5 of the InterviewLens pipeline", 13, False, MUTED, sa=12)
     for fact in [
-        "4-billion parameter instruction-tuned model",
-        "Runs fully offline — no cloud dependency",
-        "Candidate data never leaves the device",
-        "Strong instruction-following at 4B scale",
-        "Selected over cloud LLMs for data sovereignty",
+        "Receives the fused EvidencePackage as structured text",
+        "Produces one observation per detected signal type",
+        "Grounds every claim in a timestamped pipeline event",
+        "Output: observations, explanations, suggestions",
+        "Output is validated in Stage 6 before reaching the user",
     ]:
         para(tb_l, fact, 14, False, MID, sa=4)
     para(tb_l, "", 8)
