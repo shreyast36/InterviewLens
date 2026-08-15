@@ -1,419 +1,375 @@
 """
-Generate 4 LLM & Reasoning slides matching the exact visual style of
-InterviewLens_Presentation.pptx — dark navy hero cards, colored tier labels,
-decorative corner circle, icon badge squares, data bar backgrounds.
+4 LLM & Reasoning slides for InterviewLens_Presentation.pptx.
+Matches exact deck style: dark navy hero cards, colored tier columns,
+numbered badge strips, decorative corner circle.
 
 Usage:  python scripts/generate_llm_slides.py
 Output: C:/Users/shrey/Downloads/InterviewLens_LLM_Slides.pptx
 """
 from __future__ import annotations
 from pathlib import Path
-
 from pptx import Presentation
 from pptx.util import Pt, Emu
 from pptx.dml.color import RGBColor
 from pptx.enum.text import PP_ALIGN
 
-# ── Exact palette from the deck ────────────────────────────────────────────────
-BLUE      = RGBColor(0x2C, 0x7F, 0xB8)   # primary accent
-DARK_NAV  = RGBColor(0x14, 0x30, 0x4F)   # hero card / headlines
-NAVY_ICON = RGBColor(0x1F, 0x38, 0x64)   # small icon badge squares
-MID       = RGBColor(0x1A, 0x2B, 0x3C)   # body text
-CARD_LT   = RGBColor(0xDC, 0xEB, 0xF7)   # light blue data bar
-CARD_MD   = RGBColor(0xEA, 0xF2, 0xFA)   # medium blue card
-CARD_GREY = RGBColor(0xEE, 0xF1, 0xF4)   # neutral / challenger card
-AMBER     = RGBColor(0xF0, 0xB4, 0x29)   # amber tier label
-AMBER_BG  = RGBColor(0xFC, 0xF3, 0xDC)   # amber card body
-RED       = RGBColor(0xF0, 0x3B, 0x20)   # red tier
-RED_BG    = RGBColor(0xFC, 0xE3, 0xDD)   # red card body
-MUTED     = RGBColor(0x5B, 0x7A, 0x99)
-WHITE     = RGBColor(0xFF, 0xFF, 0xFF)
+# Exact palette from the deck
+BLUE      = RGBColor(0x2C, 0x7F, 0xB8)
+DARK_NAV  = RGBColor(0x14, 0x30, 0x4F)
+NAVY_ICN  = RGBColor(0x1F, 0x38, 0x64)
+MID       = RGBColor(0x1A, 0x2B, 0x3C)
+CARD_LT   = RGBColor(0xDC, 0xEB, 0xF7)
+CARD_MD   = RGBColor(0xEA, 0xF2, 0xFA)
+CARD_GRY  = RGBColor(0xEE, 0xF1, 0xF4)
+AMBER     = RGBColor(0xF0, 0xB4, 0x29)
+AMBER_BG  = RGBColor(0xFC, 0xF3, 0xDC)
+RED       = RGBColor(0xF0, 0x3B, 0x20)
+RED_BG    = RGBColor(0xFC, 0xE3, 0xDD)
 GREEN     = RGBColor(0x21, 0x96, 0x53)
 GREEN_BG  = RGBColor(0xE6, 0xF4, 0xEA)
+MUTED     = RGBColor(0x5B, 0x7A, 0x99)
+WHITE     = RGBColor(0xFF, 0xFF, 0xFF)
+W = 12192000
+H =  6858000
 
-W = 12192000   # slide width  EMU
-H =  6858000   # slide height EMU
 
-
-# ── Low-level helpers ──────────────────────────────────────────────────────────
-def _rect(slide, l, t, w, h, fill=None, line_color=None, lw=12700):
-    sh = slide.shapes.add_shape(1, l, t, w, h)
+def _rect(s, l, t, w, h, fill=None, lc=None):
+    sh = s.shapes.add_shape(1, l, t, w, h)
     sh.fill.solid() if fill else sh.fill.background()
     if fill: sh.fill.fore_color.rgb = fill
-    if line_color: sh.line.color.rgb = line_color; sh.line.width = Emu(lw)
+    if lc: sh.line.color.rgb = lc; sh.line.width = Emu(12700)
     else: sh.line.fill.background()
     return sh
 
-def _oval(slide, l, t, w, h, fill, line=None):
-    sh = slide.shapes.add_shape(9, l, t, w, h)
+def _oval(s, l, t, w, h, fill):
+    sh = s.shapes.add_shape(9, l, t, w, h)
     sh.fill.solid(); sh.fill.fore_color.rgb = fill
-    if line: sh.line.color.rgb = line; sh.line.width = Emu(12700)
-    else: sh.line.fill.background()
-    return sh
-
-def _tb(slide, l, t, w, h):
-    sh = slide.shapes.add_textbox(l, t, w, h)
     sh.line.fill.background()
     return sh
 
-def _tf(tb):
-    tf = tb.text_frame; tf.word_wrap = True; return tf
+def _tb(s, l, t, w, h):
+    sh = s.shapes.add_textbox(l, t, w, h)
+    sh.line.fill.background()
+    return sh
 
-def _p(tf, text, size, bold=False, color=MID, align=PP_ALIGN.LEFT, space=0):
+def _p(sh, txt, sz, bold=False, clr=MID, align=PP_ALIGN.LEFT):
+    tf = sh.text_frame; tf.word_wrap = True
     p = tf.paragraphs[0]; p.alignment = align
-    if space: p.space_before = Pt(space)
-    r = p.add_run(); r.text = text
-    r.font.size = Pt(size); r.font.bold = bold; r.font.color.rgb = color
-    return p
+    r = p.add_run(); r.text = txt
+    r.font.size = Pt(sz); r.font.bold = bold; r.font.color.rgb = clr
+    return tf
 
-def _row(tf, text, size, bold=False, color=MID, align=PP_ALIGN.LEFT):
-    tf._txBody.add_p()
-    para = tf.paragraphs[-1]; para.alignment = align
-    if text:
-        r = para.add_run(); r.text = text
-        r.font.size = Pt(size); r.font.bold = bold; r.font.color.rgb = color
-    return para
-
-def _row2(tf, label, lsize, lbold, lcolor, body, bsize, bbold, bcolor):
+def _row(tf, txt, sz, bold=False, clr=MID):
     tf._txBody.add_p()
     para = tf.paragraphs[-1]
-    r1 = para.add_run(); r1.text = label
-    r1.font.size = Pt(lsize); r1.font.bold = lbold; r1.font.color.rgb = lcolor
-    r2 = para.add_run(); r2.text = body
-    r2.font.size = Pt(bsize); r2.font.bold = bbold; r2.font.color.rgb = bcolor
+    if txt:
+        r = para.add_run(); r.text = txt
+        r.font.size = Pt(sz); r.font.bold = bold; r.font.color.rgb = clr
     return para
 
-
-# ── Standard chrome (oval badge + section label + page number) ─────────────────
 def _chrome(slide, section, page):
     _oval(slide, 514495, 419029, 615315, 615315, BLUE)
-    tb = _tb(slide, 1252728, 588523, 9601200, 256032)
-    _p(_tf(tb), section, 18, bold=True, color=BLUE)
-    pn = _tb(slide, 11140135, 6528816, 548640, 256032)
-    _p(_tf(pn), str(page), 9, color=MUTED, align=PP_ALIGN.RIGHT)
+    _p(_tb(slide, 1252728, 588523, 9601200, 256032), section, 18, True, BLUE)
+    _p(_tb(slide, 11140135, 6528816, 548640, 256032), str(page), 9, False, MUTED, PP_ALIGN.RIGHT)
 
-def _deco_circle(slide):
-    """Large decorative blue quarter-circle in bottom-right (matches slide 16)."""
+def _deco(slide):
     _oval(slide, 10252478, 5202936, 3840480, 3840480, BLUE)
 
-def _insight_bar(slide, text):
-    """Dark navy full-width insight strip at bottom (matches slides 7, 11, 14)."""
+def _bar(slide, txt):
     _rect(slide, 502920, 5180000, W - 1005840, 1050000, fill=DARK_NAV)
-    tb = _tb(slide, 700000, 5240000, W - 1400000, 950000)
-    tf = _tf(tb)
-    _p(tf, text, 11, color=WHITE)
+    tf = _p(_tb(slide, 700000, 5260000, W - 1400000, 900000), txt, 11, False, WHITE)
+    tf.word_wrap = True
 
 
-# ══════════════════════════════════════════════════════════════════════════════
-# SLIDE 18 — Pipeline overview (matches slide 7 style: dark + neutral + light)
-# ══════════════════════════════════════════════════════════════════════════════
-def slide_overview(prs, page):
-    slide = prs.slides.add_slide(prs.slide_layouts[0])
-    slide.background.fill.solid(); slide.background.fill.fore_color.rgb = WHITE
-    _chrome(slide, "LLM & REASONING", page)
-    _deco_circle(slide)
+# =============================================================================
+# SLIDE 18  The gap between detection and explanation
+# =============================================================================
+def s18(prs, pg):
+    sl = prs.slides.add_slide(prs.slide_layouts[0])
+    sl.background.fill.solid(); sl.background.fill.fore_color.rgb = WHITE
+    _chrome(sl, "LLM & REASONING", pg)
+    _deco(sl)
 
-    # Main headline
-    tb_h = _tb(slide, 1080412, 820000, 10037619, 520000)
-    _p(_tf(tb_h), "Evidence-Grounded LLM Reasoning", 28, bold=True, color=DARK_NAV)
+    _p(_tb(sl, 1080412, 820000, 10037619, 520000),
+       "From Signal Detection to Coaching Explanation", 28, True, DARK_NAV)
 
-    # Subtitle bar (matches the #DDEAF6 highlight bar in slide 9)
-    _rect(slide, 502920, 1420000, W - 1005840, 380000, fill=CARD_LT)
-    tb_sub = _tb(slide, 700000, 1460000, W - 1400000, 340000)
-    _p(_tf(tb_sub),
-       "After pose, background and audio signals are extracted, an LLM reasons "
-       "over structured timestamped evidence to produce a validated coaching report.",
-       11, color=MID)
+    _rect(sl, 502920, 1420000, W - 1005840, 380000, fill=CARD_LT)
+    tf_s = _p(_tb(sl, 700000, 1460000, W - 1400000, 340000),
+              "Detecting that a candidate fidgets is not coaching. Explaining when it "
+              "happened, why it hurts, and exactly how to fix it -- that is.", 12, False, DARK_NAV)
+    tf_s.word_wrap = True
 
-    # Three-card layout — exactly matching slide 7 geometry
     cards = [
-        (502920,   1930000, 3576218, 2606040, DARK_NAV,  "INPUT\nEVIDENCE",
-         WHITE, [
-             "Pose & framing signals",
-             "Background objects",
-             "Audio delivery metrics",
-             "Full answer transcript",
-         ]),
-        (4307738,  1930000, 3576218, 2606040, CARD_GREY, "LLM\nREASONER",
-         DARK_NAV, [
-             "Nemotron Mini 4B via Ollama",
-             "Strict JSON output format",
-             "Closed signal vocabulary",
-             "Coverage enforcement rules",
-         ]),
-        (8112557,  1930000, 3576218, 2606040, CARD_MD,   "COACHING\nREPORT",
-         DARK_NAV, [
-             "Observations per signal",
-             "Explanations for each issue",
-             "Concrete improvement tips",
-             "Reliability score (0–100%)",
-         ]),
+        (502920,  DARK_NAV, "THE PROBLEM", WHITE, [
+            "Pose & audio pipelines produce",
+            "timestamped events -- not advice",
+            "",
+            "A flag list is not feedback",
+            "a candidate can act on",
+        ]),
+        (4307738, CARD_GRY, "OUR APPROACH", DARK_NAV, [
+            "Ground every LLM claim in a",
+            "timestamped, confidence-gated",
+            "event from the pipeline",
+            "",
+            "No claim without evidence",
+        ]),
+        (8112557, CARD_MD,  "THE OUTPUT", DARK_NAV, [
+            "For each signal: what happened",
+            "and when, why it matters in an",
+            "interview, one concrete fix",
+            "",
+            "Reliability-scored end-to-end",
+        ]),
     ]
-    for l, t, w, h, fill, title, tclr, bullets in cards:
-        _rect(slide, l, t, w, h, fill=fill)
-        tb_t = _tb(slide, l + 150000, t + 130000, w - 300000, 560000)
-        _p(_tf(tb_t), title, 16, bold=True, color=tclr)
-        tb_b = _tb(slide, l + 150000, t + 750000, w - 300000, h - 850000)
-        tf_b = _tf(tb_b)
-        _p(tf_b, bullets[0], 11, color=tclr)
+    for l, fill, title, tclr, bullets in cards:
+        _rect(sl, l, 1930000, 3576218, 2606040, fill=fill)
+        _p(_tb(sl, l + 150000, 2060000, 3276218, 560000), title, 15, True, tclr)
+        tb = _tb(sl, l + 150000, 2680000, 3276218, 1800000)
+        tf = _p(tb, bullets[0], 11, False, tclr)
         for b in bullets[1:]:
-            _row(tf_b, b, 11, color=tclr)
+            _row(tf, b, 11, False, tclr)
 
-    # Arrow connectors between cards
     for ax in [4040000, 7846000]:
-        arr = _tb(slide, ax + 50000, 1930000 + 1303020 - 150000, 267738 - 100000, 300000)
-        _p(_tf(arr), "▶", 18, bold=True, color=BLUE, align=PP_ALIGN.CENTER)
+        _p(_tb(sl, ax + 50000, 3086000, 168000, 300000), "\u25b6", 18, True, BLUE, PP_ALIGN.CENTER)
 
-    _insight_bar(slide,
-        "Every LLM observation must start with a <signal_type>: prefix drawn from the "
-        "evidence for this specific clip — the model cannot generalise beyond what the "
-        "pipeline detected.")
+    _bar(sl, "Key design principle: the LLM never sees raw video frames. It reads only "
+         "structured evidence -- the same data a human reviewer would check -- so every "
+         "coaching claim is auditable against the original signals.")
 
 
-# ══════════════════════════════════════════════════════════════════════════════
-# SLIDE 19 — Signal inputs (matches slide 10 style: 3-tier colored columns)
-# ══════════════════════════════════════════════════════════════════════════════
-def slide_inputs(prs, page):
-    slide = prs.slides.add_slide(prs.slide_layouts[0])
-    slide.background.fill.solid(); slide.background.fill.fore_color.rgb = WHITE
-    _chrome(slide, "LLM & REASONING", page)
-    _deco_circle(slide)
+# =============================================================================
+# SLIDE 19  No hallucination by design
+# =============================================================================
+def s19(prs, pg):
+    sl = prs.slides.add_slide(prs.slide_layouts[0])
+    sl.background.fill.solid(); sl.background.fill.fore_color.rgb = WHITE
+    _chrome(sl, "LLM & REASONING", pg)
+    _deco(sl)
 
-    tb_h = _tb(slide, 1080412, 820000, 10037619, 520000)
-    _p(_tf(tb_h), "What the LLM Reasons Over", 28, bold=True, color=DARK_NAV)
+    _p(_tb(sl, 1080412, 820000, 10037619, 520000),
+       "No Hallucination by Design", 28, True, DARK_NAV)
 
-    # Intro text
-    tb_i = _tb(slide, 700000, 1360000, W - 1400000, 360000)
-    _p(_tf(tb_i),
-       "All four input streams are assembled into a single EvidencePackage "
-       "and serialised to structured text — no images, no free-form description.",
-       11, color=MID)
+    tf_i = _p(_tb(sl, 700000, 1360000, W - 1400000, 360000),
+              "The LLM is constrained to what the pipeline actually measured. "
+              "It cannot invent behaviour, appearance, or context it was not given.",
+              12, False, DARK_NAV)
+    tf_i.word_wrap = True
 
-    # Four colored columns (matching slide 10 geometry — label bar + body card)
-    COL_W = 2750000
-    GAP   = 105000
-    START = 466344
-    LABEL_H = 430000
-    BODY_H  = 3200000
-    LABEL_Y = 1870000
-    BODY_Y  = LABEL_Y + LABEL_H
+    CW, GAP, SX = 2750000, 105000, 466344
+    LH, BH = 430000, 3200000
+    LY, BY = 1870000, 2300000
 
     cols = [
-        (BLUE,     CARD_MD,   "BODY LANGUAGE",  [
-            "Hands near face / self-grooming",
-            "Arms crossed / not visible",
-            "Head tilt, body lean, swaying",
-            "Nodding, fidgeting, frozen",
-            "Sudden movements",
+        (BLUE,  CARD_MD,  "WHAT IS\nMEASURED",  [
+            "Every signal has a type,",
+            "start time, end time,",
+            "and confidence score",
+            "",
+            "e.g.  hands_near_face",
+            "      2.1s - 4.8s  conf=0.82",
         ]),
-        (AMBER,    AMBER_BG,  "FRAMING & SCENE", [
-            "Headroom too loose / tight",
-            "Off-centre camera framing",
-            "Roll / tilt angle",
-            "Distracting background objects",
-            "Dominant objects in frame",
+        (AMBER, AMBER_BG, "WHAT THE\nLLM SEES", [
+            "Timestamped event list",
+            "for this clip only --",
+            "no static vocabulary",
+            "",
+            "Signal summary counts,",
+            "longest clean streak",
         ]),
-        (RED,      RED_BG,    "AUDIO DELIVERY", [
-            "Speaking rate (WPM)",
-            "Filler word count",
-            "Long pauses & timestamps",
-            "Low microphone level",
-            "Intermittent audio dropout",
+        (RED,   RED_BG,   "WHAT IS\nFORBIDDEN", [
+            "Clothing, hair, skin,",
+            "food, furniture, decor",
+            "",
+            "Any claim not backed",
+            "by a named event in",
+            "the evidence text",
         ]),
-        (GREEN,    GREEN_BG,  "CONTEXT", [
-            "Interview question text",
-            "Full answer transcript",
-            "Signal count summary",
-            "Longest clean streak",
-            "Per-signal durations",
+        (GREEN, GREEN_BG, "HOW IT IS\nENFORCED", [
+            "Every observation must",
+            "begin with a signal type",
+            "token from this clip",
+            "",
+            "Validation layer rejects",
+            "uncategorised claims",
         ]),
     ]
-    for i, (lbl_fill, body_fill, title, bullets) in enumerate(cols):
-        x = START + i * (COL_W + GAP)
-        _rect(slide, x, LABEL_Y, COL_W, LABEL_H, fill=lbl_fill)
-        tb_lbl = _tb(slide, x + 100000, LABEL_Y + 90000, COL_W - 200000, LABEL_H - 180000)
-        _p(_tf(tb_lbl), title, 13, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
-        _rect(slide, x, BODY_Y, COL_W, BODY_H, fill=body_fill)
-        tb_bod = _tb(slide, x + 120000, BODY_Y + 120000, COL_W - 240000, BODY_H - 200000)
-        tf_b = _tf(tb_bod)
-        _p(tf_b, f"• {bullets[0]}", 10, color=DARK_NAV)
+    for i, (lf, bf, title, bullets) in enumerate(cols):
+        x = SX + i * (CW + GAP)
+        _rect(sl, x, LY, CW, LH, fill=lf)
+        _p(_tb(sl, x + 60000, LY + 50000, CW - 120000, LH - 80000), title, 11, True, WHITE, PP_ALIGN.CENTER)
+        _rect(sl, x, BY, CW, BH, fill=bf)
+        tb = _tb(sl, x + 100000, BY + 120000, CW - 200000, BH - 200000)
+        tf = _p(tb, bullets[0], 10, False, DARK_NAV)
         for b in bullets[1:]:
-            _row(tf_b, f"• {b}", 10, color=DARK_NAV)
+            _row(tf, b, 10, False, DARK_NAV)
 
-    _insight_bar(slide,
-        "Required Coverage: the prompt lists only the signal types present in this clip "
-        "and mandates one observation per type — the LLM cannot stop after 1–2 signals "
-        "even when 7+ are flagged.")
+    _bar(sl, "Early tests produced observations like 'wearing a white towel' and "
+         "'sandwich and coffee on the counter' -- neither was in the evidence. "
+         "Both were rejected by the validation layer (reliability 0.25). "
+         "Removing image tokens from the prompt eliminated appearance hallucinations entirely.")
 
 
-# ══════════════════════════════════════════════════════════════════════════════
-# SLIDE 20 — Nemotron Mini (matches slide 7 + insight strip style)
-# ══════════════════════════════════════════════════════════════════════════════
-def slide_model(prs, page):
-    slide = prs.slides.add_slide(prs.slide_layouts[0])
-    slide.background.fill.solid(); slide.background.fill.fore_color.rgb = WHITE
-    _chrome(slide, "LLM & REASONING", page)
-    _deco_circle(slide)
+# =============================================================================
+# SLIDE 20  Three prompt failures we solved
+# =============================================================================
+def s20(prs, pg):
+    sl = prs.slides.add_slide(prs.slide_layouts[0])
+    sl.background.fill.solid(); sl.background.fill.fore_color.rgb = WHITE
+    _chrome(sl, "LLM & REASONING", pg)
+    _deco(sl)
 
-    tb_h = _tb(slide, 1080412, 820000, 10037619, 520000)
-    _p(_tf(tb_h), "Nemotron Mini 4B — Local LLM via Ollama", 28, bold=True, color=DARK_NAV)
+    _p(_tb(sl, 1080412, 820000, 10037619, 520000),
+       "Three Prompt Failures -- and How We Fixed Them", 28, True, DARK_NAV)
 
-    # Champion dark card (left — matches slide 7 dark card)
-    _rect(slide, 502920, 1480000, 3800000, 3500000, fill=DARK_NAV)
-    tb_c = _tb(slide, 650000, 1580000, 3500000, 3300000)
-    tf_c = _tf(tb_c)
-    _p(tf_c, "nemotron-mini", 20, bold=True, color=WHITE)
-    _row(tf_c, "Champion Model", 11, bold=False, color=CARD_MD)
+    # Dark champion card (left)
+    _rect(sl, 502920, 1480000, 3800000, 3500000, fill=DARK_NAV)
+    _rect(sl, 502920, 1370000, 3800000, 110000,  fill=BLUE)
+    _p(_tb(sl, 502920, 1270000, 3800000, 280000), "Champion", 16, True, DARK_NAV)
+
+    tb_c = _tb(sl, 650000, 1580000, 3500000, 3300000)
+    tf_c = _p(tb_c, "Nemotron Mini 4B", 18, True, WHITE)
+    _row(tf_c, "via Ollama  |  local  |  private", 10, False, CARD_MD)
     _row(tf_c, "", 6)
-    facts = [
-        ("4B parameters  ·  ~2.7 GB", WHITE),
-        ("Runs locally — no cloud, no API key", WHITE),
-        ("Instruction-tuned for structured output", WHITE),
-        ("format='json' enforces valid JSON every time", WHITE),
-        ("Offline fallback to deterministic mock", WHITE),
-        ("Zero data leaves the device", WHITE),
+    _row(tf_c, "Why local?", 11, True, CARD_LT)
+    _row(tf_c, "", 4)
+    _row(tf_c, "Interview responses contain", 10, False, WHITE)
+    _row(tf_c, "personal performance data.", 10, False, WHITE)
+    _row(tf_c, "Nothing leaves the device.", 10, False, WHITE)
+    _row(tf_c, "", 6)
+    _row(tf_c, "Why instruction-tuned?", 11, True, CARD_LT)
+    _row(tf_c, "", 4)
+    _row(tf_c, "format='json' enforces", 10, False, WHITE)
+    _row(tf_c, "structured output on every call", 10, False, WHITE)
+    _row(tf_c, "-- no parsing workarounds.", 10, False, WHITE)
+
+    # Three failure/fix cards (right)
+    fixes = [
+        ("Failure: model ignores evidence and free-writes",
+         "Fix: REQUIRED FORMAT forces every observation to start with a <signal_type>: "
+         "token present in this clip's evidence. The model cannot describe what it sees -- "
+         "only what was measured."),
+        ("Failure: model stops after 1-2 signals out of 7+",
+         "Fix: REQUIRED COVERAGE lists every signal type flagged in the clip and mandates "
+         "one observation each. Coverage jumped from 2 to 7 after this rule was added."),
+        ("Failure: vague suggestions candidates cannot act on",
+         "Fix: lighting and audio signals require a specific remedy. "
+         "'low_light' must produce 'move toward a front light source' -- "
+         "not 'consider improving your lighting'."),
     ]
-    for txt, clr in facts:
-        _row(tf_c, "", 4)
-        _row(tf_c, f"✓  {txt}", 10, bold=False, color=clr)
+    rh = 1100000
+    for i, (problem, fix) in enumerate(fixes):
+        y = 1400000 + i * (rh + 80000)
+        _rect(sl, 4450000, y, 7300000, rh, fill=CARD_MD)
+        _rect(sl, 4450000, y, 380000, rh, fill=NAVY_ICN)
+        _p(_tb(sl, 4460000, y + rh // 2 - 200000, 360000, 400000),
+           str(i + 1), 22, True, WHITE, PP_ALIGN.CENTER)
+        tb = _tb(sl, 4900000, y + 80000, 6750000, rh - 160000)
+        tf = _p(tb, problem, 11, True, DARK_NAV)
+        _row(tf, fix, 10, False, MID)
 
-    # Label bar above champion card
-    _rect(slide, 502920, 1370000, 3800000, 110000, fill=BLUE)
-    lbl = _tb(slide, 502920, 1280000, 3800000, 280000)
-    _p(_tf(lbl), "Champion", 16, bold=True, color=DARK_NAV)
-
-    # Three prompt-rule cards (right — icon badge style from slide 9)
-    rules = [
-        (NAVY_ICON, "Closed Vocabulary",
-         "Every observation must start with a <signal_type>: token "
-         "from the SignalType enum. Invented signal names are rejected downstream."),
-        (NAVY_ICON, "Coverage Enforcement",
-         "The prompt lists every signal type flagged in this clip. "
-         "The LLM must produce one observation per type — no early stopping."),
-        (NAVY_ICON, "Concrete Fix Mandate",
-         "Lighting and audio signals require a specific remedy, not a vague comment. "
-         "e.g. 'move toward a front-facing light source' for low_light."),
-    ]
-    rule_h = 1100000
-    for i, (badge_fill, title, body) in enumerate(rules):
-        y = 1400000 + i * (rule_h + 80000)
-        _rect(slide, 4450000, y, 7300000, rule_h, fill=CARD_MD)
-        # icon badge
-        _rect(slide, 4450000, y, 380000, rule_h, fill=badge_fill)
-        badge_n = _tb(slide, 4460000, y + rule_h // 2 - 200000, 360000, 400000)
-        _p(_tf(badge_n), str(i + 1), 22, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
-        # text
-        tb_r = _tb(slide, 4900000, y + 120000, 6750000, rule_h - 240000)
-        tf_r = _tf(tb_r)
-        _p(tf_r, title, 13, bold=True, color=DARK_NAV)
-        _row(tf_r, body, 10, color=MID)
-
-    _insight_bar(slide,
-        "A static example in the prompt caused small models to copy the example verbatim "
-        "instead of reasoning about the actual clip. REQUIRED FORMAT replaces examples "
-        "with a dynamic list of real signal names — forcing the model to read the evidence.")
+    _bar(sl, "A worked example in the prompt made things worse: the model copied the example "
+         "verbatim -- word-for-word, including the sentence explicitly labelled BAD -- "
+         "instead of reasoning about the actual clip. "
+         "Dynamic signal-name lists replaced static examples entirely.")
 
 
-# ══════════════════════════════════════════════════════════════════════════════
-# SLIDE 21 — Validation + Report (matches slide 8/12 results layout)
-# ══════════════════════════════════════════════════════════════════════════════
-def slide_output(prs, page):
-    slide = prs.slides.add_slide(prs.slide_layouts[0])
-    slide.background.fill.solid(); slide.background.fill.fore_color.rgb = WHITE
-    _chrome(slide, "LLM & REASONING", page)
-    _deco_circle(slide)
+# =============================================================================
+# SLIDE 21  What candidates actually receive
+# =============================================================================
+def s21(prs, pg):
+    sl = prs.slides.add_slide(prs.slide_layouts[0])
+    sl.background.fill.solid(); sl.background.fill.fore_color.rgb = WHITE
+    _chrome(sl, "LLM & REASONING", pg)
+    _deco(sl)
 
-    tb_h = _tb(slide, 1080412, 820000, 10037619, 520000)
-    _p(_tf(tb_h), "Validation Layer & Coaching Report", 28, bold=True, color=DARK_NAV)
+    _p(_tb(sl, 1080412, 820000, 10037619, 520000),
+       "What Candidates Actually Receive", 28, True, DARK_NAV)
 
-    # Left: validation checks (4 rows, alternating light/dark)
+    # Left: 4 validation checks
     checks = [
-        (BLUE,      "Category Check",
-         "Every claim must contain a keyword from the allowed signal vocabulary."),
-        (DARK_NAV,  "Timestamp Check",
-         "Timestamps in claims must fall within 0 – clip duration seconds."),
-        (BLUE,      "Confidence Gate",
-         "Low-confidence detections (< 0.5) reduce the reliability score."),
-        (DARK_NAV,  "Coverage Check",
-         "Claims without matching evidence data points are flagged as unsupported."),
+        (BLUE,     "Does every claim name a real signal?",
+         "Generic statements ('you seemed nervous') have no signal anchor "
+         "and are rejected before the report reaches the user."),
+        (DARK_NAV, "Are timestamps inside the actual clip?",
+         "Any second cited in a claim must fall within 0 - clip duration. "
+         "Out-of-range citations are caught automatically."),
+        (BLUE,     "Is the underlying detection trustworthy?",
+         "Low-confidence detections (< 0.5) reduce the reliability score. "
+         "The report shows how much to trust each observation."),
+        (DARK_NAV, "Is there enough evidence for this claim?",
+         "If no visual events and no audio flags exist, strong conclusions "
+         "are blocked. The system self-limits when the data is thin."),
     ]
-    chk_w = 5500000
-    chk_h = 920000
-    ct = 1480000
+    CW, CH, CT = 5500000, 920000, 1480000
     for i, (accent, title, body) in enumerate(checks):
-        y = ct + i * (chk_h + 80000)
+        y = CT + i * (CH + 80000)
         bg = CARD_MD if accent == BLUE else CARD_LT
-        _rect(slide, 502920, y, chk_w, chk_h, fill=bg)
-        _rect(slide, 502920, y, 380000, chk_h, fill=accent)
-        num = _tb(slide, 502920, y + chk_h // 2 - 200000, 380000, 400000)
-        _p(_tf(num), str(i + 1), 22, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
-        tb_tx = _tb(slide, 990000, y + 100000, chk_w - 600000, chk_h - 200000)
-        tf_tx = _tf(tb_tx)
-        _p(tf_tx, title, 12, bold=True, color=DARK_NAV)
-        _row(tf_tx, body, 10, color=MID)
+        _rect(sl, 502920, y, CW, CH, fill=bg)
+        _rect(sl, 502920, y, 380000, CH, fill=accent)
+        _p(_tb(sl, 502920, y + CH // 2 - 200000, 380000, 400000),
+           str(i + 1), 22, True, WHITE, PP_ALIGN.CENTER)
+        tb = _tb(sl, 990000, y + 100000, CW - 600000, CH - 200000)
+        tf = _p(tb, title, 11, True, DARK_NAV)
+        _row(tf, body, 10, False, MID)
 
-    # Reliability score formula label
-    rel_y = ct + 4 * (chk_h + 80000) + 20000
-    _rect(slide, 502920, rel_y, chk_w, 360000, fill=BLUE)
-    tb_rel = _tb(slide, 620000, rel_y + 60000, chk_w - 240000, 240000)
-    _p(_tf(tb_rel),
-       "Reliability = max(0,  1.0 − 0.15 × failed_checks)   →   0–100%",
-       11, bold=True, color=WHITE)
+    # Reliability formula bar
+    ry = CT + 4 * (CH + 80000) + 20000
+    _rect(sl, 502920, ry, CW, 360000, fill=BLUE)
+    _p(_tb(sl, 620000, ry + 60000, CW - 240000, 240000),
+       "Reliability = max(0,  1.0 - 0.15 x failed checks)   --   shown as a percentage",
+       11, True, WHITE)
 
-    # Right: output sections (3 rows matching the tier style)
-    out_x = 502920 + chk_w + 220000
-    out_w = W - out_x - 502920
+    # Right: 3 output sections + PDF strip
+    OX = 502920 + CW + 220000
+    OW = W - OX - 502920
     outputs = [
-        (BLUE,   WHITE,    "OBSERVATIONS",
-         "What happened and when, tied to each flagged signal with timestamp."),
-        (AMBER,  DARK_NAV, "IMPROVEMENTS",
-         "One concrete, actionable suggestion per signal type in the evidence."),
-        (GREEN,  WHITE,    "STRENGTHS",
-         "Positive observations from reasoning output when reliability ≥ 0.75."),
+        (BLUE,    WHITE,    "WHAT HAPPENED",
+         "Timestamped observation tied to each signal.\n"
+         "e.g. 'hands_near_face: detected 2.1s - 4.8s'"),
+        (AMBER,   DARK_NAV, "WHY IT MATTERS",
+         "How the signal affects interview perception.\n"
+         "e.g. 'touching your face signals anxiety to interviewers'"),
+        (GREEN,   WHITE,    "WHAT TO DO",
+         "One concrete, specific action per signal.\n"
+         "e.g. 'Rest hands on the desk; notice when they move to your face'"),
     ]
-    out_h_each = (4 * (chk_h + 80000) - 80000) // 3 - 60000
-    for i, (lbl_fill, lbl_clr, title, body) in enumerate(outputs):
-        y = ct + i * (out_h_each + 80000)
-        _rect(slide, out_x, y, out_w, 380000, fill=lbl_fill)
-        tb_lbl = _tb(slide, out_x + 120000, y + 80000, out_w - 240000, 280000)
-        _p(_tf(tb_lbl), title, 14, bold=True, color=lbl_clr)
-        _rect(slide, out_x, y + 380000, out_w, out_h_each - 380000, fill=CARD_GREY)
-        tb_bod = _tb(slide, out_x + 120000, y + 480000, out_w - 240000, out_h_each - 600000)
-        _p(_tf(tb_bod), body, 10, color=MID)
+    EH = (4 * (CH + 80000) - 80000) // 3 - 60000
+    for i, (lf, lc, title, body) in enumerate(outputs):
+        y = CT + i * (EH + 80000)
+        _rect(sl, OX, y, OW, 380000, fill=lf)
+        _p(_tb(sl, OX + 120000, y + 80000, OW - 240000, 280000), title, 13, True, lc)
+        _rect(sl, OX, y + 380000, OW, EH - 380000, fill=CARD_GRY)
+        tf = _p(_tb(sl, OX + 120000, y + 470000, OW - 240000, EH - 550000), body, 10, False, MID)
+        tf.word_wrap = True
 
-    # PDF export tag
-    _rect(slide, out_x, ct + 3 * (out_h_each + 80000) - 60000, out_w, 420000, fill=DARK_NAV)
-    tb_pdf = _tb(slide, out_x + 120000, ct + 3 * (out_h_each + 80000) - 60000 + 80000, out_w - 240000, 260000)
-    _p(_tf(tb_pdf), "⬇   Full report exported as a branded PDF from the Streamlit dashboard",
-       11, bold=True, color=WHITE)
+    _rect(sl, OX, CT + 3 * (EH + 80000) - 60000, OW, 420000, fill=DARK_NAV)
+    _p(_tb(sl, OX + 120000, CT + 3 * (EH + 80000) - 60000 + 80000, OW - 240000, 260000),
+       "\u2b07   Downloadable as a branded PDF report after every session", 11, True, WHITE)
 
-    _insight_bar(slide,
-        "Reliability ≥ 0.75 → High confidence  ·  0.50–0.75 → Moderate  ·  < 0.50 → Low.  "
-        "Content is always shown above 0.30 so coaching is never silently suppressed by a "
-        "single low-confidence detection.")
+    _bar(sl, "The three-part structure (what / why / what to do) is deliberate: "
+         "an observation alone does not change behaviour. "
+         "Candidates leave with a specific rehearsal target, not a score card.")
 
 
-# ══════════════════════════════════════════════════════════════════════════════
+# =============================================================================
 def main():
     src  = Path(r"C:\Users\shrey\Downloads\InterviewLens_Presentation.pptx")
     dest = Path(r"C:\Users\shrey\Downloads\InterviewLens_LLM_Slides.pptx")
+    prs  = Presentation(str(src))
 
-    prs = Presentation(str(src))
-    n   = len(prs.slides)
-
-    # Keep only the original 17 slides (drop any previous attempts)
     while len(prs.slides) > 17:
         rId = prs.slides._sldIdLst[-1].get("r:id")
         del prs.slides._sldIdLst[-1]
         prs.part.drop_rel(rId)
 
-    slide_overview(prs, 18); print("  18 — Pipeline Overview")
-    slide_inputs  (prs, 19); print("  19 — Signal Inputs")
-    slide_model   (prs, 20); print("  20 — Nemotron Mini")
-    slide_output  (prs, 21); print("  21 — Validation & Report")
+    s18(prs, 18); print("  18 -- From Detection to Explanation")
+    s19(prs, 19); print("  19 -- No Hallucination by Design")
+    s20(prs, 20); print("  20 -- Three Prompt Failures Fixed")
+    s21(prs, 21); print("  21 -- What Candidates Receive")
 
     prs.save(str(dest))
-    print(f"\nSaved → {dest}  ({dest.stat().st_size / 1e6:.1f} MB, 21 slides)")
+    print(f"\nSaved -> {dest}  ({dest.stat().st_size / 1e6:.1f} MB)")
 
 
 if __name__ == "__main__":
