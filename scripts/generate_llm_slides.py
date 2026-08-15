@@ -258,36 +258,32 @@ def s21(prs, pg):
     # Left dark panel — what was detected
     R(sl, 502920, 1420000, 5060000, 3780000, f=NAVY)
     P(TB(sl, 660000, 1530000, 4780000, 340000, auto=False),
-      "DETECTED IN THIS SESSION", 16, True, BANNER)
+      "COACHING REPORT  (sample output)", 16, True, BANNER)
+    # Left: session summary — not a raw data table
+    tb_sum = TB(sl, 660000, 1960000, 4780000, 100000)
+    P(tb_sum, "Session summary", 14, True, MUTED, sa=10)
+    P(tb_sum, "4 coaching signals identified", 16, False, WHITE, sa=8)
+    P(tb_sum, "Response duration:  8 seconds", 16, False, WHITE, sa=8)
+    P(tb_sum, "Speaking rate:  91 wpm", 16, False, WHITE, sa=8)
+    P(tb_sum, "Filler words:  2", 16, False, WHITE, sa=8)
+    P(tb_sum, "", 12)
+    P(tb_sum, "Report reliability:  0.85", 18, True, AMBER)
 
-    tb_d = TB(sl, 660000, 1970000, 4780000, 100000)
-    P(tb_d, "Signal               Time           Conf", 12, True, MUTED, sa=6)
-    for sig, t, c in [
-        ("hands_near_face", "2.1s - 4.8s", "0.82"),
-        ("head_tilt",       "0.3s - 7.1s", "0.71"),
-        ("body_lean",       "1.0s - 8.0s", "0.69"),
-        ("looking_down",    "5.2s - 8.0s", "0.67"),
-    ]:
-        P(tb_d, f"{sig:<20} {t:<14} {c}", 13, False, WHITE, sa=3)
-    P(tb_d, "", 8)
-    P(tb_d, "Filler words: 2  |  Speaking rate: 91 wpm", 13, False, MUTED)
-    P(tb_d, "Reliability:  0.85", 14, True, AMBER, sb=12)
-
-    # Right: 3 output tiers
+    # Right: 3 coaching output sections
     OX = 502920 + 5060000 + 260000
     OW = W - OX - 402920
     SH = 1185000
 
     tiers = [
-        (BLUE,  "WHAT HAPPENED",
-         "hands_near_face: face touched repeatedly"
-         " in the opening 5 seconds of the answer."),
-        (AMBER, "WHY IT MATTERS",
-         "Face-touching under pressure signals anxiety"
-         " and draws the interviewer's attention away from the answer."),
-        (GREEN, "WHAT TO DO",
-         "Rest both hands flat on the desk before starting."
-         "  When they move to the face, pause, reposition, then continue."),
+        (BLUE,  "OBSERVATION",
+         "Hands near face detected in the opening"
+         " 5 seconds of the response."),
+        (AMBER, "EXPLANATION",
+         "Face-touching during responses is associated"
+         " with perceived anxiety in interview settings."),
+        (GREEN, "RECOMMENDATION",
+         "Practise placing hands flat on the desk"
+         " before beginning to speak."),
     ]
     for i, (col, label, body) in enumerate(tiers):
         y = 1420000 + i * (SH + 55000)
