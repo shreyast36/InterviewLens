@@ -279,7 +279,7 @@ def detect_signal_events(pose_evidence: dict) -> list[dict]:
         vals = [v for v in feat[key] if v is not None]
         return float(np.median(vals)) if vals else None
 
-    med = {k: clip_median(k) for k in ("head_height", "ear_sh", "eye_ratio", "pitch")}
+    med = {k: clip_median(k) for k in ("head_height", "ear_sh", "eye_ratio", "pitch", "shoulder_deg")}
     first_sw = [v for v in feat["sw"] if v is not None][:sample_fps]
     baseline_sw = float(np.median(first_sw)) if first_sw else None
 
@@ -302,6 +302,7 @@ def detect_signal_events(pose_evidence: dict) -> list[dict]:
             max_jump[i] = max(jumps)
 
     rule_series: dict[str, list[bool]] = {}
+    head_tilt_deg: list[float | None] = [None] * n
 
     def series(name):
         return rule_series.setdefault(name, [False] * n)
@@ -340,12 +341,33 @@ def detect_signal_events(pose_evidence: dict) -> list[dict]:
         if feat["pitch"][i] is not None and med["pitch"] is not None:
             series("looking_down")[i] = feat["pitch"][i] > med["pitch"] + 0.25
         if feat["eye_deg"][i] is not None and feat["shoulder_deg"][i] is not None:
-            series("head_tilt")[i] = abs(feat["eye_deg"][i] - feat["shoulder_deg"][i]) > 8.0
-        if feat["shoulder_deg"][i] is not None:
-            series("body_lean")[i] = abs(feat["shoulder_deg"][i]) > 8.0
+            head_tilt_deg[i] = feat["eye_deg"][i] - feat["shoulder_deg"][i]
         if baseline_sw:
             series("leaning_in")[i] = sw > 1.2 * baseline_sw
             series("leaning_out")[i] = sw < 0.8 * baseline_sw
+
+    # head_tilt: eye-line angle relative to shoulder-line angle. Raw per-frame eye_deg
+    # is noisy (small pixel baseline between the two eye keypoints amplifies angle
+    # error), so a low threshold on the raw value flagged jitter as "tilt" almost
+    # continuously. Smooth over ~1s before thresholding, and require a wider
+    # (genuinely tilted, not jitter) 15 deg swing plus ~1s of sustained support.
+    head_tilt_roll = _rolling_mean(head_tilt_deg, max(3, round(sample_fps)))
+    for i in range(n):
+        if head_tilt_roll[i] is not None:
+            series("head_tilt")[i] = abs(head_tilt_roll[i]) > 15.0
+
+    # body_lean: a camera that isn't perfectly level, or a subject who normally sits
+    # with a slight rotation, gives a non-zero baseline shoulder_deg for the *whole*
+    # clip -- thresholding the raw angle against 0 deg flagged that baseline itself as
+    # "leaning" almost continuously. Compare against the person's own median shoulder
+    # angle instead, and smooth first so single-frame jitter around that baseline
+    # doesn't flip the flag on and off.
+    shoulder_deg_roll = _rolling_mean(feat["shoulder_deg"], max(3, round(sample_fps)))
+    baseline_shoulder_deg = med["shoulder_deg"]
+    if baseline_shoulder_deg is not None:
+        for i in range(n):
+            if shoulder_deg_roll[i] is not None:
+                series("body_lean")[i] = abs(shoulder_deg_roll[i] - baseline_shoulder_deg) > 15.0
 
     wm_roll = _rolling_mean(wrist_motion, 6)
     combo = [None if (w is None and nn is None) else float(np.mean([v for v in (w, nn) if v is not None]))
@@ -373,9 +395,16 @@ def detect_signal_events(pose_evidence: dict) -> list[dict]:
                 for i in range(start, start + period_window):
                     series(name)[i] = True
 
+    sustained_min_consec = max(min_consec, round(1.0 * sample_fps))
     signal_events = []
     for name, flags in sorted(rule_series.items()):
-        signal_events.extend(events_from_boolean_series(name, flags, ts, 1 if name == "sudden_movement" else min_consec))
+        if name == "sudden_movement":
+            event_min_consec = 1
+        elif name in ("head_tilt", "body_lean"):
+            event_min_consec = sustained_min_consec
+        else:
+            event_min_consec = min_consec
+        signal_events.extend(events_from_boolean_series(name, flags, ts, event_min_consec))
     signal_events.sort(key=lambda e: (e["start_s"], e["type"]))
     return signal_events
 

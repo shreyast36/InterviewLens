@@ -17,11 +17,11 @@ import numpy as np
 
 HEADROOM_MIN, HEADROOM_MAX = 0.05, 0.25
 CENTERING_MAX_OFFSET = 0.15
-ROLL_MAX_DEG = 10.0
+ROLL_MAX_DEG = 15.0
 DOMINANT_OBJECT_AREA_FRAC = 0.18  # a track occupying >=18% of the frame area is "dominant"
 
 
-def _framing_flags(framing: dict | None) -> list[str]:
+def _framing_flags(framing: dict | None, roll_baseline_deg: float = 0.0) -> list[str]:
     if framing is None or framing.get("bbox") is None:
         return ["no_subject_detected"]
     flags = []
@@ -35,9 +35,30 @@ def _framing_flags(framing: dict | None) -> list[str]:
     if offset is not None and max(abs(offset[0]), abs(offset[1])) > CENTERING_MAX_OFFSET:
         flags.append("off_center")
     roll = framing["roll_deg"]
-    if roll is not None and abs(roll) > ROLL_MAX_DEG:
+    # Compare against the subject's own baseline roll (a slightly off-level camera, or
+    # a person who naturally sits a bit rotated, gives a nonzero "resting" roll for the
+    # whole clip) rather than absolute horizontal -- otherwise that baseline itself
+    # gets flagged as "tilted" for the entire video.
+    if roll is not None and abs(roll - roll_baseline_deg) > ROLL_MAX_DEG:
         flags.append("tilted")
     return flags
+
+
+def _debounce(flags: list[bool], min_consec: int) -> list[bool]:
+    """Zero out True-runs shorter than min_consec so single/few-tick roll-angle noise
+    around the tilt threshold doesn't become a "tilted" flag on its own -- mirrors the
+    consecutive-support gating batch_pose.py's rule-based signals already apply."""
+    out = list(flags)
+    run_start = None
+    for i, v in enumerate(flags + [False]):
+        if v and run_start is None:
+            run_start = i
+        elif not v and run_start is not None:
+            if i - run_start < min_consec:
+                for j in range(run_start, i):
+                    out[j] = False
+            run_start = None
+    return out
 
 
 def fuse_evidence(pose_evidence: dict, background_evidence: dict, audio_evidence: dict | None = None) -> dict:
@@ -81,10 +102,26 @@ def fuse_evidence(pose_evidence: dict, background_evidence: dict, audio_evidence
             return None
         return pose_by_ts[nearest_ts]
 
+    frames_by_ts = [nearest_pose_frame(float(ts)) for ts in fusion_grid]
+    rolls = [fr["framing"]["roll_deg"] for fr in frames_by_ts
+             if fr is not None and fr["framing"] and fr["framing"].get("roll_deg") is not None]
+    roll_baseline_deg = float(np.median(rolls)) if rolls else 0.0
+
+    tilted_bool = [
+        fr is not None and fr["framing"] and fr["framing"].get("roll_deg") is not None
+        and abs(fr["framing"]["roll_deg"] - roll_baseline_deg) > ROLL_MAX_DEG
+        for fr in frames_by_ts
+    ]
+    tilted_bool = _debounce(tilted_bool, min_consec=max(1, round(1.0 * fusion_fps)))
+
     pose_timeline = []
-    for ts in fusion_grid:
-        fr = nearest_pose_frame(float(ts))
-        flags = _framing_flags(fr["framing"]) if fr is not None else ["no_pose_sample"]
+    for fr, tilted, ts in zip(frames_by_ts, tilted_bool, fusion_grid):
+        if fr is None:
+            flags = ["no_pose_sample"]
+        else:
+            flags = [f for f in _framing_flags(fr["framing"], roll_baseline_deg) if f != "tilted"]
+            if tilted:
+                flags.append("tilted")
         pose_timeline.append({"timestamp_s": float(ts), "framing": fr["framing"] if fr is not None else None, "flags": flags})
 
     def active_tracks_at(ts: float) -> list[dict]:

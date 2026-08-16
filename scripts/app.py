@@ -61,6 +61,17 @@ html, body, [data-testid="stAppViewContainer"] {
     backdrop-filter: blur(20px);
 }
 [data-testid="stSidebar"] * { font-family: 'Inter', sans-serif !important; }
+/* Confirmed via DevTools: the file uploader's icon is
+   <span data-testid="stIconMaterial">upload</span> -- Material Symbols renders icons
+   via font ligatures (the literal word "upload" is substituted for the glyph only
+   when the element's font-family is actually the Material Symbols font). The blanket
+   `[data-testid="stSidebar"] *` rule above forces Inter onto it too, breaking that
+   substitution, so the raw ligature word renders as plain text right next to the
+   "Upload" button label ("uploadUpload"). It's purely decorative, so just hide it by
+   its exact testid instead of trying to restore the right icon font. */
+[data-testid="stFileUploaderDropzone"] [data-testid="stIconMaterial"] {
+    display: none !important;
+}
 
 /* ─── hero title ─────────────────────────────────────────────────────────────── */
 @keyframes gradient-pan {
@@ -261,6 +272,24 @@ html, body, [data-testid="stAppViewContainer"] {
     padding-bottom: .5rem; border-bottom: 1px solid rgba(15,23,42,.08);
 }
 
+/* ─── file uploader ──────────────────────────────────────────────────────────── */
+/* Only touch text wrapping here -- an earlier attempt also forced flex-wrap/height
+   on the dropzone itself and that broke the "Browse files" button's own internal
+   layout (it rendered doubled/overlapping text). Streamlit's default flex row for
+   [icon | instructions | button] is left alone; just let the instructions text
+   (and the "200MB per file..." limit line under it) wrap and shrink instead of
+   overflowing under the button in the narrow sidebar column. */
+[data-testid="stFileUploaderDropzoneInstructions"] {
+    min-width: 0;
+    flex: 1 1 auto;
+}
+[data-testid="stFileUploaderDropzoneInstructions"] div,
+[data-testid="stFileUploaderDropzoneInstructions"] span,
+[data-testid="stFileUploaderDropzoneInstructions"] small {
+    overflow-wrap: break-word;
+    white-space: normal !important;
+}
+
 /* ─── ollama box ─────────────────────────────────────────────────────────────── */
 .ollama-box {
     border-radius: 12px; padding: .7rem .9rem;
@@ -376,13 +405,99 @@ def _clean_items(items: list) -> list[str]:
     return [str(x).strip() for x in (items or []) if x is not None and str(x).strip()]
 
 
-def _grab_event_frames(video_path: str, timeline: list[dict]) -> list[bytes | None]:
+# Which category of evidence a timeline label belongs to, so the extracted frame can
+# be annotated with the thing that actually triggered the flag (skeleton for a pose
+# rule, bounding box for a background object/lighting rule) instead of a bare,
+# unannotated frame that leaves the viewer guessing what was flagged.
+_POSE_LABELS = {
+    "repetitive_hand_movement", "frequent_posture_shifting", "hand_to_face_activity",
+    "headroom_too_loose", "off_center", "tilted",
+    "hands_near_face", "self_grooming", "arms_crossed", "hands_not_visible",
+    "head_drop", "shoulders_raised", "head_turned_away", "looking_down", "head_tilt",
+    "body_lean", "leaning_in", "leaning_out", "fidgeting", "frozen", "sudden_movement",
+    "swaying", "nodding", "unstable_tracking",
+}
+_BACKGROUND_LABELS = {
+    "background_distracting", "background_mild", "transient_object",
+    "cluttered_background", "dominant_object", "low_light", "overexposed",
+    "backlit_face",
+}
+
+# COCO17 upper-body bones (index pairs into batch_pose.UPPER_BODY_NAMES order).
+_POSE_BONES = [
+    ("left_shoulder", "right_shoulder"),
+    ("left_shoulder", "left_elbow"), ("left_elbow", "left_wrist"),
+    ("right_shoulder", "right_elbow"), ("right_elbow", "right_wrist"),
+    ("nose", "left_eye"), ("nose", "right_eye"),
+    ("left_eye", "left_ear"), ("right_eye", "right_ear"),
+    ("left_shoulder", "left_ear"), ("right_shoulder", "right_ear"),
+]
+
+
+def _nearest_by_ts(entries: list[dict], target_s: float) -> dict | None:
+    if not entries:
+        return None
+    return min(entries, key=lambda e: abs(float(e["timestamp_s"]) - target_s))
+
+
+def _draw_pose_skeleton(frame, pose_evidence: dict, start_s: float, conf_thresh: float = 0.3):
+    import cv2  # noqa: PLC0415
+    from interviewlens.video_pipeline.batch_pose import UPPER_BODY_NAMES  # noqa: PLC0415
+
+    fr = _nearest_by_ts(pose_evidence.get("frames", []), start_s)
+    if fr is None:
+        return frame
+    by_name = dict(zip(UPPER_BODY_NAMES, fr["keypoints"]))
+    for a, b in _POSE_BONES:
+        pa, pb = by_name.get(a), by_name.get(b)
+        if pa and pb and pa[2] > conf_thresh and pb[2] > conf_thresh:
+            cv2.line(frame, (int(pa[0]), int(pa[1])), (int(pb[0]), int(pb[1])),
+                      (34, 211, 238), 2, cv2.LINE_AA)
+    for x, y, c in by_name.values():
+        if c > conf_thresh:
+            cv2.circle(frame, (int(x), int(y)), 4, (34, 211, 238), -1, cv2.LINE_AA)
+            cv2.circle(frame, (int(x), int(y)), 4, (5, 12, 24), 1, cv2.LINE_AA)
+    return frame
+
+
+def _draw_background_boxes(frame, background_evidence: dict, start_s: float):
+    import cv2  # noqa: PLC0415
+    from interviewlens.video_pipeline.batch_background import (  # noqa: PLC0415
+        DISPLAY_NAMES, TIER_BY_CLASS_ID,
+    )
+
+    fr = _nearest_by_ts(background_evidence.get("frames", []), start_s)
+    if fr is None:
+        return frame
+    tier_color = {"distracting": (239, 68, 68), "mild": (234, 179, 8)}
+    for det in fr.get("detections", []):
+        x1, y1, x2, y2 = (int(v) for v in det["bbox_xyxy"])
+        tier = TIER_BY_CLASS_ID.get(det["class_id"], "neutral")
+        color = tier_color.get(tier, (129, 140, 248))
+        cv2.rectangle(frame, (x1, y1), (x2, y2), color, 2, cv2.LINE_AA)
+        name = DISPLAY_NAMES[det["class_id"]] if det["class_id"] < len(DISPLAY_NAMES) else "object"
+        (tw, th), _ = cv2.getTextSize(name, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 1)
+        cv2.rectangle(frame, (x1, max(0, y1 - th - 6)), (x1 + tw + 6, y1), color, -1)
+        cv2.putText(frame, name, (x1 + 3, max(12, y1 - 4)),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (5, 12, 24), 1, cv2.LINE_AA)
+    return frame
+
+
+def _grab_event_frames(
+    video_path: str, timeline: list[dict],
+    pose_evidence: dict | None = None, background_evidence: dict | None = None,
+) -> list[bytes | None]:
     """Grab one JPEG-encoded frame per timeline entry, at that event's start_s, while
     the uploaded video's temp file still exists (it's deleted right after _run_video
     returns). Used both for the Gantt "click a bar -> see the frame" popup and for the
     PDF's per-category flag images. Returns a list aligned 1:1 with `timeline`; an
     unreadable/out-of-range timestamp yields None at that position rather than raising,
-    so one bad event doesn't blow up the whole report."""
+    so one bad event doesn't blow up the whole report.
+
+    Each frame is annotated with what actually triggered its flag -- the pose
+    skeleton for a pose/framing rule, or the detected object's bounding box for a
+    background/lighting rule -- rather than handed back as a bare, unannotated frame.
+    """
     import cv2  # noqa: PLC0415
 
     frames: list[bytes | None] = [None] * len(timeline)
@@ -392,16 +507,58 @@ def _grab_event_frames(video_path: str, timeline: list[dict]) -> list[bytes | No
         if video_fps <= 0:
             return frames
         for i, ev in enumerate(timeline):
-            cap.set(cv2.CAP_PROP_POS_FRAMES, int(float(ev["start_s"]) * video_fps))
+            start_s = float(ev["start_s"])
+            cap.set(cv2.CAP_PROP_POS_FRAMES, int(start_s * video_fps))
             ok, frame = cap.read()
             if not ok:
                 continue
+            label = ev.get("label", "")
+            if label in _POSE_LABELS and pose_evidence:
+                frame = _draw_pose_skeleton(frame, pose_evidence, start_s)
+            elif label in _BACKGROUND_LABELS and background_evidence:
+                frame = _draw_background_boxes(frame, background_evidence, start_s)
             ok, buf = cv2.imencode(".jpg", frame, [cv2.IMWRITE_JPEG_QUALITY, 85])
             if ok:
                 frames[i] = buf.tobytes()
     finally:
         cap.release()
     return frames
+
+
+def _grab_background_snapshot(video_path: str, background_evidence: dict | None) -> bytes | None:
+    """One representative background-detection frame for the PDF, independent of
+    whether any background *flag* actually fired -- the "Flagged Moments" gallery in
+    _build_pdf only ever shows a category once it's been flagged, so a clean clip with
+    zero distracting/cluttered/lighting events produced a report with a pose skeleton
+    example but no background-detection image at all, even though background
+    detection did run. Picks the sampled frame with the most tracked objects (the
+    most informative one to show); falls back to the first sampled frame if none has
+    any detections.
+    """
+    import cv2  # noqa: PLC0415
+
+    if not background_evidence:
+        return None
+    frames = background_evidence.get("frames", [])
+    if not frames:
+        return None
+    best = max(frames, key=lambda f: len(f.get("detections", [])))
+    start_s = float(best["timestamp_s"])
+
+    cap = cv2.VideoCapture(str(video_path))
+    try:
+        video_fps = cap.get(cv2.CAP_PROP_FPS) or 0
+        if video_fps <= 0:
+            return None
+        cap.set(cv2.CAP_PROP_POS_FRAMES, int(start_s * video_fps))
+        ok, frame = cap.read()
+        if not ok:
+            return None
+        frame = _draw_background_boxes(frame, background_evidence, start_s)
+        ok, buf = cv2.imencode(".jpg", frame, [cv2.IMWRITE_JPEG_QUALITY, 85])
+        return buf.tobytes() if ok else None
+    finally:
+        cap.release()
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -687,7 +844,11 @@ def _run_video(question: str, video_bytes: bytes, suffix: str) -> tuple[dict, di
         # Grab one frame per flagged moment now, while tmp_path still exists (it's
         # deleted in `finally` below) -- powers both the Gantt click-to-preview popup
         # and the PDF's per-category flag images.
-        event_frames = _grab_event_frames(tmp_path, report.timeline)
+        event_frames = _grab_event_frames(
+            tmp_path, report.timeline,
+            pose_evidence=pose_evidence, background_evidence=background_evidence,
+        )
+        background_snapshot = _grab_background_snapshot(tmp_path, background_evidence)
 
         return asdict(report), {
             "observations": reasoning_output.observations,
@@ -695,6 +856,8 @@ def _run_video(question: str, video_bytes: bytes, suffix: str) -> tuple[dict, di
             "suggestions":  reasoning_output.suggestions,
             "transcript":   transcript.text,
             "event_frames": event_frames,
+            "background_snapshot": background_snapshot,
+            "failed_checks": validation.failed_checks,
         }
 
     finally:
@@ -723,7 +886,6 @@ def _build_pdf(data: dict, extra: dict) -> bytes:
     reliability  = float(data["reliability_score"])
     timeline     = data.get("timeline", [])
     event_frames = extra.get("event_frames") or []
-    question     = extra.get("question", "")
 
     # ── Colours (RGB) ────────────────────────────────────────────────────────
     C_BG_DARK   = (5,   12,  24)
@@ -808,16 +970,6 @@ def _build_pdf(data: dict, extra: dict) -> bytes:
     pdf.set_line_width(0.6)
     pdf.line(12, pdf.get_y(), W - 12, pdf.get_y())
     pdf.ln(4)
-
-    # ── Question ─────────────────────────────────────────────────────────────
-    if question:
-        pdf.set_font("Helvetica", "B", 9)
-        pdf.set_text_color(*C_MUTED)
-        pdf.cell(0, 5, "INTERVIEW QUESTION", ln=True)
-        pdf.set_font("Helvetica", "I", 10)
-        pdf.set_text_color(*C_TEXT)
-        pdf.multi_cell(W - 24, 6, f'"{question}"', align="L")
-        pdf.ln(3)
 
     # ── Metrics row ───────────────────────────────────────────────────────────
     def _section_header(title: str, color=C_INDIGO):
@@ -913,7 +1065,10 @@ def _build_pdf(data: dict, extra: dict) -> bytes:
             row_y3 = pdf.get_y()
             for j, (lbl, cnt) in enumerate(row_items):
                 x = 12 + j * cell_w
-                pdf.set_fill_color(254, 243, 199) if cnt > 3 else pdf.set_fill_color(241, 245, 249)
+                if cnt > 3:
+                    pdf.set_fill_color(254, 243, 199)
+                else:
+                    pdf.set_fill_color(241, 245, 249)
                 pdf.rect(x + 1, row_y3, cell_w - 2, 7, style="F")
                 pdf.set_font("Helvetica", "", 8)
                 pdf.set_text_color(*C_TEXT)
@@ -972,41 +1127,60 @@ def _build_pdf(data: dict, extra: dict) -> bytes:
         label = timeline[idx]["label"]
         if label not in first_per_label:
             first_per_label[label] = idx
-    gallery = [
+    gallery_entries = [
         (label, idx) for label, idx in first_per_label.items()
         if idx < len(event_frames) and event_frames[idx]
     ]
+    gallery_items = [
+        (label.replace("_", " ").title(), event_frames[idx], f"at {timeline[idx]['start_s']:.1f}s")
+        for label, idx in gallery_entries
+    ]
+    # Background detection ran on every clip regardless of whether anything about it
+    # got flagged -- a clean/uncluttered background means the "Flagged Moments" loop
+    # above never includes a background image at all (nothing in _BACKGROUND_LABELS
+    # fired), leaving the gallery with pose examples only. Always show a representative
+    # background-detection snapshot too, unless a flagged background/lighting image is
+    # already in the gallery (then it'd be redundant). Checked against `gallery_entries`
+    # (already filtered by a successful frame grab), not the raw label set -- a
+    # background label can exist in `first_per_label` even when its frame extraction
+    # failed and it never actually made it into the gallery, which was silently
+    # suppressing the snapshot fallback and leaving the PDF with zero background images.
+    has_background_flag_image = any(label in _BACKGROUND_LABELS for label, _ in gallery_entries)
+    background_snapshot = extra.get("background_snapshot")
+    if not has_background_flag_image and background_snapshot:
+        gallery_items.append(("Background Detection", background_snapshot, "environment snapshot"))
 
-    if gallery:
+    if gallery_items:
         pdf.add_page()
         _section_header("Flagged Moments", C_MUTED)
         COLS, GAP = 3, 4
         img_w = (W - 24 - GAP * (COLS - 1)) / COLS
         img_h = img_w * 9 / 16
         row_h = img_h + 10
-        for i, (label, idx) in enumerate(gallery):
+        row_y4 = pdf.get_y()
+        for i, (label_text, img_bytes, caption) in enumerate(gallery_items):
             col = i % COLS
             if col == 0 and i > 0:
-                pdf.ln(row_h)
-            if pdf.get_y() + row_h > pdf.h - 18:
+                row_y4 = row_y4 + row_h
+            if row_y4 + row_h > pdf.h - 18:
                 pdf.add_page()
+                row_y4 = pdf.get_y()
             x = 12 + col * (img_w + GAP)
-            y = pdf.get_y()
+            y = row_y4
             try:
-                pdf.image(io.BytesIO(event_frames[idx]), x=x, y=y, w=img_w, h=img_h)
+                pdf.image(io.BytesIO(img_bytes), x=x, y=y, w=img_w, h=img_h)
             except Exception:
                 pdf.set_draw_color(*C_MUTED)
                 pdf.rect(x, y, img_w, img_h)
-            ev = timeline[idx]
             pdf.set_xy(x, y + img_h + 1)
             pdf.set_font("Helvetica", "B", 7.5)
             pdf.set_text_color(*C_TEXT)
-            pdf.multi_cell(img_w, 3.5, label.replace("_", " ").title(), align="L")
+            pdf.multi_cell(img_w, 3.5, label_text, align="L")
             pdf.set_xy(x, pdf.get_y())
             pdf.set_font("Helvetica", "", 6.5)
             pdf.set_text_color(*C_MUTED)
-            pdf.multi_cell(img_w, 3, f"at {ev['start_s']:.1f}s", align="L")
-        pdf.ln(row_h)
+            pdf.multi_cell(img_w, 3, caption, align="L")
+        pdf.set_y(row_y4 + row_h)
 
     # ── Footer accent line ─────────────────────────────────────────────────────
     pdf.set_draw_color(*C_INDIGO)
@@ -1123,26 +1297,29 @@ def _dashboard(data: dict, extra: dict) -> None:
 
     # ── Footer ────────────────────────────────────────────────────────────────
     st.markdown("<hr class='glow-divider'>", unsafe_allow_html=True)
-    left_f, mid_f, right_f = st.columns([2, 2, 1])
-    with left_f:
-        st.markdown(_badge(reliability), unsafe_allow_html=True)
-    with mid_f:
-        pdf_bytes = st.session_state.get("pdf_bytes")
-        if pdf_bytes is None:
-            pdf_bytes = _build_pdf(data, extra)
-            st.session_state["pdf_bytes"] = pdf_bytes
-        st.download_button(
-            label="⬇️  Download PDF Report",
-            data=pdf_bytes,
-            file_name="interviewlens_report.pdf",
-            mime="application/pdf",
-            use_container_width=False,
-        )
-    with right_f:
-        if st.button("🔄  New Analysis", width="content"):
-            for k in ("report", "extra", "pdf_bytes"):
-                st.session_state.pop(k, None)
-            st.rerun()
+    pdf_bytes = st.session_state.get("pdf_bytes")
+    if pdf_bytes is None:
+        pdf_bytes = _build_pdf(data, extra)
+        st.session_state["pdf_bytes"] = pdf_bytes
+    footer = st.container()
+    footer.markdown(_badge(reliability), unsafe_allow_html=True)
+    failed_checks = extra.get("failed_checks") or []
+    if failed_checks:
+        with footer.expander(f"Why is reliability low? ({len(failed_checks)} check(s) failed)"):
+            for check in failed_checks:
+                st.markdown(f"- `{check}`")
+    fcol1, fcol2 = footer.columns(2)
+    fcol1.download_button(
+        label="⬇️  Download PDF Report",
+        data=pdf_bytes,
+        file_name="interviewlens_report.pdf",
+        mime="application/pdf",
+        width="content",
+    )
+    if fcol2.button("🔄  New Analysis", width="content"):
+        for k in ("report", "extra", "pdf_bytes"):
+            st.session_state.pop(k, None)
+        st.rerun()
 
     if transcript:
         with st.expander("📝 Transcript"):
@@ -1172,13 +1349,6 @@ st.markdown("""
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 with st.sidebar:
     st.markdown('<div class="sb-label">Configuration</div>', unsafe_allow_html=True)
-
-    question = st.text_area(
-        "Interview question",
-        value="Tell me about a time you resolved a conflict at work.",
-        height=110,
-        help="The question the candidate is answering.",
-    )
 
     _MAX_UPLOAD_MB = 500
     uploaded_file = st.file_uploader(
@@ -1236,20 +1406,17 @@ if "report" not in st.session_state:
 
 # ── Run ───────────────────────────────────────────────────────────────────────
 if run_btn:
-    if not question.strip():
-        st.warning("Please enter an interview question.")
-        st.stop()
     if uploaded_file is None:
         st.warning("Please upload a video file.")
         st.stop()
     try:
         rd, extra = _run_video(
-            question.strip(),
+            "",
             uploaded_file.read(),
             Path(uploaded_file.name).suffix.lower(),
         )
         st.session_state["report"] = rd
-        st.session_state["extra"]  = {**extra, "question": question.strip()}
+        st.session_state["extra"]  = extra
         st.session_state.pop("pdf_bytes", None)
     except Exception as exc:
         # Drop any previous run's report/extra/pdf -- otherwise a failed run on a new

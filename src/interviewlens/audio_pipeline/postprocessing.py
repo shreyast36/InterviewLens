@@ -32,7 +32,18 @@ def normalize_disfluencies(transcript: Transcript) -> Transcript:
     """TODO(Person B): replace with a real disfluency-removal model
     (e.g. a fine-tuned seq2seq or rule-based grammar). Placeholder strips
     filler words from the display text but keeps them in `words` for
-    delivery-analytics scoring."""
-    fillers = {w.word.lower().strip(",.") for w in identify_filler_words(transcript)}
-    clean_words = [w.word for w in transcript.words if w.word.lower().strip(",.") not in fillers]
-    return Transcript(text=" ".join(clean_words), words=transcript.words)
+    delivery-analytics scoring.
+
+    Filters filler tokens out of `transcript.text` directly rather than
+    rebuilding it by joining `transcript.words` -- faster-whisper occasionally
+    returns segment-level text without matching word-level timestamps (an
+    empty/partial `words` list for that segment), and reconstructing the display
+    text purely from `words` silently dropped those segments entirely, which is
+    what was producing incomplete transcripts even though the un-normalized
+    `transcript.text` (built by joining every segment's `seg.text`) had the
+    full content."""
+    clean_tokens = [
+        token for token in transcript.text.split()
+        if token.lower().strip(",.") not in FILLER_WORDS
+    ]
+    return Transcript(text=" ".join(clean_tokens), words=transcript.words)

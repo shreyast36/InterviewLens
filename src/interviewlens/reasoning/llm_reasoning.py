@@ -75,6 +75,24 @@ your suggestions are:
   or longest-duration signal first.
 Never invent severity language for a signal that isn't in the evidence.
 
+BASELINE COVERAGE -- NEVER return empty arrays. Even when this clip has few or no
+flagged visual signals, you still have audio delivery metrics (words-per-minute,
+filler-word count, long-pause count) and a transcript to work with, and the candidate
+always deserves real feedback:
+- Always include at least one "observations" entry about the speaking pace (state the
+  actual wpm and whether it is inside/outside the 120-160 wpm target range) or the
+  filler/pause counts -- use the literal "delivery: " prefix for this one instead of a
+  visual signal token, since it isn't a visual signal.
+- Always include at least one specific strength grounded only in the metrics/transcript
+  you were given (e.g. "delivery: speaking pace was a steady 135 wpm, inside the target
+  range" or "delivery: no filler words detected") -- never a generic line like "keep up
+  the good work" with nothing underneath it.
+- Always include at least one concrete, actionable suggestion, even for a clean clip
+  (e.g. a specific thing to practice next, tied to whatever in the transcript or metrics
+  has the most room to improve -- content structure, pacing, pause placement).
+Do not pad with vague filler text ("nothing notable", "keep practicing") that isn't
+tied to a specific number or event from the evidence above.
+
 Return STRICT JSON with this shape:
 {{
   "observations": ["<signal_type>: what happened and when, using only the evidence given"],
@@ -94,14 +112,33 @@ def build_prompt(evidence: EvidencePackage) -> str:
     # and require one observation per type. Without this, a model will happily stop
     # after 1-2 signals even when several are present (seen in testing: a clip with
     # 7 distinct flagged signal types got only 2 covered).
+    #
+    # Capped at MAX_COVERAGE_TYPES, prioritized by total flagged duration: a clip with
+    # degraded pose tracking can spuriously trip a dozen-plus distinct rule types at
+    # once (most of them borderline/low-signal), and demanding a correctly-formatted,
+    # individually-prefixed observation for *every one* of them from a small local
+    # model reliably produces several malformed/unprefixed entries -- each one fails
+    # evidence_validation's category-grounding check and costs 0.15 reliability, so a
+    # clip with enough distinct types was tanking the score to 0 regardless of how
+    # sound any individual observation was. Covering the handful of most significant
+    # signals well beats covering all of them badly.
+    MAX_COVERAGE_TYPES = 6
+    per_type_durations = (summary or {}).get("per_type", {})
     present_types = sorted({e["type"] for e in evidence.event_timestamps.get("visual_events", [])})
+    if len(present_types) > MAX_COVERAGE_TYPES:
+        present_types = sorted(
+            present_types,
+            key=lambda t: per_type_durations.get(t, {}).get("total_s", 0.0),
+            reverse=True,
+        )[:MAX_COVERAGE_TYPES]
     coverage_line = ""
     if present_types:
         coverage_line = (
-            f"REQUIRED COVERAGE: this clip's evidence contains these signal types: "
-            f"{', '.join(present_types)}. You MUST include at least one observation "
-            f"for EACH one listed here -- do not stop after covering only some of "
-            f"them.\n\n"
+            f"REQUIRED COVERAGE: at minimum, include one observation for EACH of these "
+            f"signal types (the most significant ones in this clip): "
+            f"{', '.join(present_types)}. You may mention other signal types from the "
+            f"evidence too, but do not stop before covering all of the ones listed "
+            f"here.\n\n"
         )
 
     summary_line = ""
@@ -116,8 +153,9 @@ def build_prompt(evidence: EvidencePackage) -> str:
             f"Longest clean streak: {summary.get('longest_clean_streak_s', 0)}s.\n\n"
         )
 
+    question_line = f"Question: {evidence.question}\n\n" if evidence.question else ""
     return (
-        f"Question: {evidence.question}\n\n"
+        f"{question_line}"
         f"Transcript: {evidence.transcript.text}\n\n"
         f"Audio metrics: wpm={evidence.audio_metrics.words_per_minute}, "
         f"fillers={evidence.audio_metrics.filler_word_count}, "
@@ -267,7 +305,7 @@ def _parse_json_response(response: str, evidence: EvidencePackage) -> dict:
     cleaned = re.sub(r"```(?:json)?\s*|\s*```", "", response).strip()
     try:
         parsed = json.loads(cleaned)
-        return {
+        result = {
             "observations": _coerce_str_list(parsed.get("observations", []), "observations"),
             "explanations": _coerce_str_list(parsed.get("explanations", []), "explanations"),
             "suggestions":  _coerce_str_list(parsed.get("suggestions", []), "suggestions"),
@@ -275,6 +313,24 @@ def _parse_json_response(response: str, evidence: EvidencePackage) -> dict:
     except (json.JSONDecodeError, AttributeError):
         logger.warning("LLM returned non-JSON output; falling back to mock.")
         return _mock_reasoning(evidence)
+
+    # A small local model can return syntactically valid JSON that is still useless --
+    # empty (or near-empty) arrays despite there being real transcript/audio evidence to
+    # comment on. That produced a coaching report with nothing but generic placeholder
+    # text ("Nothing notable detected" / "Keep up the steady delivery") for every clip.
+    # Deterministic mock reasoning is always evidence-grounded (see _mock_reasoning), so
+    # use it to fill in whichever fields the model left empty instead of showing nothing.
+    if not result["observations"] or not result["suggestions"]:
+        logger.warning(
+            "LLM returned thin output (observations=%d, suggestions=%d) — "
+            "backfilling with deterministic evidence-grounded reasoning.",
+            len(result["observations"]), len(result["suggestions"]),
+        )
+        mock = _mock_reasoning(evidence)
+        for key in ("observations", "explanations", "suggestions"):
+            if not result[key]:
+                result[key] = mock[key]
+    return result
 
 
 def _mock_reasoning(evidence: EvidencePackage) -> dict:
@@ -286,6 +342,33 @@ def _mock_reasoning(evidence: EvidencePackage) -> dict:
     observations: list[str] = []
     explanations: list[str] = []
     suggestions: list[str] = []
+
+    # Always ground at least one observation/suggestion in the delivery metrics --
+    # these exist for every clip with any speech at all, unlike visual_events, so this
+    # is what keeps a clean clip (no flagged body-language/background signals) from
+    # producing a report with nothing in it but generic placeholder text.
+    wpm = evidence.audio_metrics.words_per_minute
+    if wpm > 0:
+        in_range = 120 <= wpm <= 160
+        observations.append(
+            f"delivery: speaking pace was {wpm:.0f} wpm "
+            f"({'inside' if in_range else 'outside'} the 120-160 wpm target range)."
+        )
+        explanations.append(
+            f"Speaking at {wpm:.0f} wpm, inside the target range, reads as confident "
+            f"and is easy for an interviewer to follow."
+            if in_range else
+            f"Speaking at {wpm:.0f} wpm, outside the target range, can make an answer "
+            f"feel rushed or dragging, which affects delivery confidence."
+        )
+        if in_range:
+            suggestions.append(f"Pace ({wpm:.0f} wpm) is solid -- keep this pace in future answers.")
+        else:
+            direction = "slow down" if wpm > 160 else "add more energy/pace"
+            suggestions.append(
+                f"Pace was {wpm:.0f} wpm, {'above' if wpm > 160 else 'below'} the "
+                f"120-160 wpm target -- practice a few timed run-throughs to {direction}."
+            )
 
     if evidence.audio_metrics.filler_word_count > 0:
         n = evidence.audio_metrics.filler_word_count
@@ -314,7 +397,7 @@ def _mock_reasoning(evidence: EvidencePackage) -> dict:
         if n >= 3 or dur >= 10.0:
             suggestions.append(
                 f"{label.capitalize()} showed up {n} times ({dur:.0f}s total) -- this is a "
-                f"pattern, not a one-off. Record a 60s practice answer focused only on "
+                f"pattern, not a one-off. Record a one-minute practice answer focused only on "
                 f"eliminating {label}, then compare it to this clip."
             )
         else:

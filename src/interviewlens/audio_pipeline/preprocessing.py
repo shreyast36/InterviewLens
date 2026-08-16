@@ -34,7 +34,7 @@ def detect_speech_segments(
     audio: np.ndarray,
     sample_rate: int,
     frame_ms: int = 30,
-    energy_threshold: float = 0.01,
+    energy_threshold: float | None = None,
     min_silence_ms: float = 300,
     min_speech_ms: float = 150,
 ) -> list[SpeechSegment]:
@@ -50,15 +50,33 @@ def detect_speech_segments(
     time. Two passes fix it: (1) bridge silence gaps shorter than
     `min_silence_ms` so brief pauses within a sentence don't split it, then
     (2) drop whatever is still shorter than `min_speech_ms` as noise.
+
+    `energy_threshold` defaults to an adaptive floor (noise-floor percentile x
+    multiplier) rather than a fixed 0.01 -- a fixed threshold tuned against a
+    loud test clip silently drops entire quieter passages of a softer-spoken
+    recording as "silence", which is what was producing incomplete
+    transcripts (only the loudest stretches of the response got transcribed).
     """
     frame_len = max(1, int(sample_rate * frame_ms / 1000))
+    n_frames = max(0, (len(audio) - frame_len) // frame_len)
+    frame_energies = np.array([
+        float(np.mean(audio[i * frame_len:i * frame_len + frame_len] ** 2))
+        for i in range(n_frames)
+    ])
+
+    if energy_threshold is None:
+        if len(frame_energies) == 0:
+            energy_threshold = 0.01
+        else:
+            noise_floor = float(np.percentile(frame_energies, 20))
+            energy_threshold = max(noise_floor * 3.0, 1e-5)
+
     raw_runs: list[tuple[int, int]] = []
     in_speech = False
     seg_start = 0
 
-    for i in range(0, max(len(audio) - frame_len, 0), frame_len):
-        frame = audio[i:i + frame_len]
-        energy = float(np.mean(frame ** 2))
+    for idx, energy in enumerate(frame_energies):
+        i = idx * frame_len
         is_speech = energy > energy_threshold
 
         if is_speech and not in_speech:

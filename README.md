@@ -1,103 +1,73 @@
 # InterviewLens
 
-Real-time multimodal interview preparation and feedback pipeline.
-
-InterviewLens watches a mock-interview response (webcam video + microphone
-audio) and produces an evidence-grounded coaching report: what you said, how
-you said it, what your body language was doing, and concrete suggestions for
-improvement — all backed by explicit, checkable evidence rather than
-free-form LLM opinion.
-
-> Add the original architecture diagram image to `docs/architecture.png`.
-> The pipeline stages below mirror that diagram 1:1.
-
-## Pipeline overview
-
-```mermaid
-flowchart LR
-    subgraph Inputs["1. Real-Time Inputs"]
-        A[Webcam Stream]
-        B[Microphone Stream]
-    end
-
-    subgraph Visual["2. Visual Pipeline — Person A"]
-        A --> V1["2.1 Pose Estimation"]
-        V1 --> V2["2.2 Keypoint Output"]
-        V2 --> V3["2.3 Temporal Sequence Builder"]
-        V3 --> V4["2.4 Distracting-Signal Detection"]
-    end
-
-    subgraph Audio["3. Audio Pipeline — Person B"]
-        B --> U1["3.1 Preprocessing"]
-        U1 --> U2["3.2 Speech Recognition"]
-        U2 --> U3["3.3 Post-Processing"]
-        U3 --> U4["3.4 Delivery Analytics"]
-    end
-
-    subgraph Reasoning["Reasoning Core — Person C"]
-        V4 --> F["4. Multimodal Fusion & Evidence Assembly"]
-        U4 --> F
-        F --> R["5. VLM Reasoning"]
-        R --> E["6. Evidence Validation"]
-    end
-
-    subgraph Reporting["Reporting & Infra — Person D"]
-        E --> C1["7. Coaching Report"]
-        C1 --> C2["Timeline Visualization"]
-    end
-```
-
-## Repository layout
-
-```
-src/interviewlens/
-├── common/           # shared schemas + config — read by everyone, owned by no one
-├── video_pipeline/   # Person A — pose estimation, keypoints, temporal windows, signal detection
-├── audio_pipeline/   # Person B — capture, ASR, post-processing, delivery analytics
-├── reasoning/        # Person C — evidence fusion, VLM reasoning, evidence validation
-├── reporting/        # Person D — coaching report, timeline visualization
-├── orchestration/    # Person D — wires all four subsystems together
-└── api/              # Person D — FastAPI server
-```
-
-See [ROLES.md](ROLES.md) for the full 4-person task breakdown, interfaces,
-milestones, and definition of done for each role.
+Evidence-grounded AI interview coaching. Upload a mock-interview video and
+InterviewLens produces a coaching report — what you said, how you said it,
+what your body language was doing, and concrete suggestions for improvement —
+backed by explicit, checkable evidence rather than free-form LLM opinion.
 
 ## Quickstart
 
 ```bash
 python -m venv .venv
-.venv\Scripts\activate        # Windows
+source .venv/bin/activate     # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 pip install -e .
 
-# Runs the full pipeline end-to-end with synthetic audio/video and mocked
-# models (demo_mode) — no camera, microphone, or GPU required.
-python scripts/run_demo.py
+# Also required (system binary, not pip-installable):
+#   ffmpeg + ffprobe on PATH — used to decode the uploaded video's audio track.
 
-# Run the test suite
-pytest -q
+# Pull the local LLM used for coaching reasoning (one-time, ~2.7 GB):
+ollama pull nemotron-mini
+ollama serve
 
-# Serve the API
-uvicorn interviewlens.api.server:app --reload
+# Launch the app
+streamlit run scripts/app.py
 ```
 
-## Design principle: mock-first, swap-in-real-models-later
+Upload an interview video (MP4/MOV/AVI/WebM/MKV, up to 500 MB) and click
+**Run Analysis**. The dashboard shows pose/framing/background signal
+timelines, delivery metrics, LLM coaching cards, and a downloadable PDF
+report.
 
-Every model-backed component (`PoseEstimator`, `SignalDetector`, `ASRModel`,
-`VLMReasoner`) has a stable abstract interface plus a working mock
-implementation. This means:
+## What it actually does
 
-- The whole pipeline runs and is testable from day one, before any real
-  model is trained.
-- Each person can develop, train, and swap in their real model without
-  touching anyone else's code — only the shared `common/schemas.py`
-  contracts need to stay stable.
-- Champion/challenger model pairs (documented per-stage in
-  `configs/config.yaml`) can be A/B compared using the exact same
-  downstream pipeline.
+Every stage runs real inference on the uploaded video — no synthetic or
+mocked data in this path:
+
+| Stage | Model | Output |
+|---|---|---|
+| Pose & framing | RTMPose-S (ONNX, bundled weights) | 17-keypoint skeleton, geometric signal rules (head tilt, body lean, hands near face, etc.) |
+| Background | YOLO-World-S + ByteTrack | Object detection/tracking, clutter and lighting signals |
+| Speech | faster-whisper | Transcript, filler words, pauses, speaking rate |
+| Coaching reasoning | Ollama (nemotron-mini, local) | Evidence-grounded observations, explanations, suggestions |
+| Evidence validation | Rule-based | Reliability score — flags/downweights ungrounded LLM claims |
+
+Model weights for RTMPose-S and YOLO-World-S are bundled in the repo (see
+`requirements.txt` for exact paths); Ollama's LLM is pulled separately.
+
+## Repository layout
+
+```
+scripts/app.py               # the Streamlit app — main entry point
+src/interviewlens/
+├── common/           # shared schemas + config
+├── video_pipeline/   # pose estimation, framing/background signal detection
+├── audio_pipeline/   # audio extraction, ASR, delivery analytics
+├── reasoning/        # evidence fusion, LLM reasoning, evidence validation
+├── reporting/        # coaching report assembly
+├── orchestration/    # end-to-end pipeline wiring (demo/synthetic-data path)
+└── api/              # FastAPI server (demo/synthetic-data path)
+```
+
+See [ROLES.md](ROLES.md) for the original 4-person task breakdown and
+per-subsystem interfaces.
+
+## Testing
+
+```bash
+pytest -q
+```
 
 ## License
 
-Add a license appropriate for your course/project (e.g. MIT) before making
-the repository public.
+[Apache License 2.0](LICENSE).

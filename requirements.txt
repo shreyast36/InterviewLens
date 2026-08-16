@@ -21,6 +21,12 @@
 #   3. YOLO-World-S weights (~25 MB)
 #      Already bundled in the repo: pipeline/notebooks/yolov8s-worldv2.pt
 #      batch_background.py searches for this file automatically.
+#
+# SYSTEM DEPENDENCIES (not pip-installable):
+#
+#   ffmpeg + ffprobe on PATH — used by batch_audio_quality.py to decode the
+#   uploaded video's real audio track. Install via your OS package manager
+#   (e.g. `apt install ffmpeg`, `brew install ffmpeg`).
 # ══════════════════════════════════════════════════════════════════════════════
 
 
@@ -28,9 +34,7 @@
 numpy>=1.24
 opencv-python>=4.8          # frame decoding; if ultralytics installed first you
                             # may have opencv-contrib-python instead — both work
-scipy>=1.10                  # rolling statistics in batch_pose.py signal rules
-pandas>=1.5                  # signal event aggregation (detect_signal_events)
-matplotlib>=3.7              # chart helpers
+matplotlib>=3.7              # chart helpers (reporting/timeline_viz.py)
 pyyaml>=6.0                  # configs/config.yaml loader
 
 # ── API server ────────────────────────────────────────────────────────────────
@@ -72,5 +76,3 @@ pytest>=7.4
 # torch>=2.1               # if you want local GPU inference beyond onnxruntime
 #transformers>=4.40       # HuggingFace model hub (no longer needed — using Ollama)
 faster-whisper           # real ASR on the uploaded audio track (Person B scope)
-mediapipe                # alternative pose backend
-webrtcvad                # voice activity detection

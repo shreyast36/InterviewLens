@@ -21,9 +21,9 @@ from interviewlens.common.schemas import EvidencePackage, ReasoningOutput, Signa
 MIN_EVENT_CONFIDENCE = 0.5
 ALLOWED_KEYWORDS = {
     # audio delivery
-    "filler", "pause", "wpm", "speaking", "delivery",
+    "filler", "pause", "wpm", "speaking", "delivery", "pace", "paced",
     # body language / gesture (original temporal-model signals)
-    "hand", "posture", "movement", "eye", "gesture",
+    "hand", "hands", "posture", "movement", "eye", "gesture", "visible",
     # framing signals (RTMPose-S, from A/B branch)
     "headroom", "framing", "center", "centering", "tilt", "tilted", "camera",
     # background signals (YOLO-World-S, from A/B branch)
@@ -70,7 +70,18 @@ def _mentions_allowed_category(claim: str) -> bool:
 
 
 def _timestamps_in_claim(claim: str) -> list[float]:
-    return [float(x) for x in re.findall(r"(\d+(?:\.\d+)?)\s*s\b", claim)]
+    """Extract clip-position timestamps (e.g. "at 12.3s") from a claim, while
+    excluding aggregate *duration* figures ("...3 time(s), 77.7s total") -- those
+    are a sum across every occurrence of a recurring signal and routinely exceed the
+    clip's own length (three 26s-long occurrences legitimately total 78s in a 27s
+    clip), which is not a hallucinated out-of-range timestamp. Without this
+    exclusion, any signal that recurred enough to make its total duration exceed the
+    clip length -- or even just round up to match it -- got flagged as a fabricated
+    timestamp, which could cascade into failing nearly every claim on a clip with
+    several recurring signals."""
+    return [
+        float(x) for x in re.findall(r"(\d+(?:\.\d+)?)\s*s\b(?!\s*total)", claim)
+    ]
 
 
 def validate(evidence: EvidencePackage, reasoning: ReasoningOutput) -> ValidationResult:
@@ -96,8 +107,17 @@ def validate(evidence: EvidencePackage, reasoning: ReasoningOutput) -> Validatio
     if low_conf_events:
         failed_checks.append(f"low_confidence_events: {len(low_conf_events)}")
 
-    if not evidence.visual_events and not evidence.audio_metrics.filler_word_count:
-        # Nothing concrete to support a strongly-worded report
+    has_audio_evidence = bool(
+        evidence.audio_metrics.filler_word_count
+        or evidence.audio_metrics.long_pause_count
+        or evidence.audio_metrics.words_per_minute
+    )
+    if not evidence.visual_events and not has_audio_evidence:
+        # Nothing concrete at all (no visual signals, no audio metrics) to support a
+        # strongly-worded report. Note: wpm/pause/filler counts *are* concrete
+        # evidence on their own -- a clean clip with only delivery-metric-grounded
+        # observations (pace, pauses, filler count) shouldn't be penalized here just
+        # because it has no flagged visual_events.
         if len(reasoning.observations) > 1:
             failed_checks.append("insufficient_supporting_evidence")
 

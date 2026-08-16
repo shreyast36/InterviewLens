@@ -355,6 +355,11 @@ def extract_background_evidence(video_path: str, pose_evidence: dict, sample_fps
         "model": "YOLO-World-S",
         "taxonomy": {name: CATEGORY_INFO[name][1] for name in CLASS_NAMES},
         "signal_events": signal_events,
+        # Per-frame kept detections (post clutter-suppression), keyed by timestamp --
+        # lets a caller (e.g. the Streamlit Gantt/PDF frame overlay) find the boxes
+        # actually visible near a given event's start_s. The aggregated "detections"
+        # below only carries one box_area_frac per track, not per-frame bbox_xyxy.
+        "frames": [{"timestamp_s": f["timestamp_s"], "detections": f["detections"]} for f in tracked_frames],
         "detections": [
             {
                 "track_id": t["track_id"],
