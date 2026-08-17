@@ -29,10 +29,7 @@ Upload an interview video (MP4/MOV/AVI/WebM/MKV, up to 500 MB) and click
 timelines, delivery metrics, LLM coaching cards, and a downloadable PDF
 report.
 
-## What it actually does
-
-Every stage runs real inference on the uploaded video — no synthetic or
-mocked data in this path:
+## What it actually does?
 
 | Stage | Model | Output |
 |---|---|---|
