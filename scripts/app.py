@@ -469,17 +469,28 @@ def _draw_background_boxes(frame, background_evidence: dict, start_s: float):
     fr = _nearest_by_ts(background_evidence.get("frames", []), start_s)
     if fr is None:
         return frame
+    # Boxes/labels are drawn at the video's full resolution, then this frame gets
+    # shrunk to a ~60mm-wide thumbnail in the PDF gallery -- a fixed 2px line and
+    # 0.5-scale text (fine on-screen) becomes sub-pixel and unreadable at that print
+    # size. Scale line thickness and font size to the frame's own resolution so the
+    # box/label stay legible after the thumbnail downscale, on any camera resolution.
+    frame_w = frame.shape[1]
+    thickness   = max(4, round(frame_w / 220))
+    font_scale  = max(1.1, frame_w / 900)
+    font_thick  = max(2, round(frame_w / 500))
     tier_color = {"distracting": (239, 68, 68), "mild": (234, 179, 8)}
     for det in fr.get("detections", []):
         x1, y1, x2, y2 = (int(v) for v in det["bbox_xyxy"])
         tier = TIER_BY_CLASS_ID.get(det["class_id"], "neutral")
         color = tier_color.get(tier, (129, 140, 248))
-        cv2.rectangle(frame, (x1, y1), (x2, y2), color, 2, cv2.LINE_AA)
+        cv2.rectangle(frame, (x1, y1), (x2, y2), color, thickness, cv2.LINE_AA)
         name = DISPLAY_NAMES[det["class_id"]] if det["class_id"] < len(DISPLAY_NAMES) else "object"
-        (tw, th), _ = cv2.getTextSize(name, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 1)
-        cv2.rectangle(frame, (x1, max(0, y1 - th - 6)), (x1 + tw + 6, y1), color, -1)
-        cv2.putText(frame, name, (x1 + 3, max(12, y1 - 4)),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (5, 12, 24), 1, cv2.LINE_AA)
+        (tw, th), _ = cv2.getTextSize(name, cv2.FONT_HERSHEY_SIMPLEX, font_scale, font_thick)
+        pad = max(6, thickness)
+        label_y1 = max(0, y1 - th - 2 * pad)
+        cv2.rectangle(frame, (x1, label_y1), (x1 + tw + 2 * pad, y1), color, -1)
+        cv2.putText(frame, name, (x1 + pad, y1 - pad),
+                    cv2.FONT_HERSHEY_SIMPLEX, font_scale, (5, 12, 24), font_thick, cv2.LINE_AA)
     return frame
 
 
