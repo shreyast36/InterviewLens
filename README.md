@@ -45,6 +45,27 @@ mocked data in this path:
 Model weights for RTMPose-S and YOLO-World-S are bundled in the repo (see
 `requirements.txt` for exact paths); Ollama's LLM is pulled separately.
 
+## Workflow
+
+```mermaid
+flowchart TD
+    U[User uploads interview video] --> A[1. Pose estimation — RTMPose-S]
+    A --> B[2. Background detection — YOLO-World-S + ByteTrack]
+    B --> C[3. Audio quality analysis]
+    C --> D[4. A/B evidence fusion]
+    D --> E[5. Transcription — faster-whisper]
+    E --> F[5. LLM coaching reasoning — Ollama / nemotron-mini]
+    F --> G[6. Evidence validation — reliability score]
+    G --> H[6. Coaching report]
+    H --> I[Streamlit dashboard: gauges, Gantt timeline, coaching cards]
+    H --> J[Downloadable PDF report]
+```
+
+Background detection needs pose's per-frame subject bounding box (to keep the
+interviewee's own body from registering as clutter), so stage 2 always runs
+after stage 1. Every stage runs real inference on the uploaded video's actual
+frames/audio — no synthetic or mocked data anywhere in this path.
+
 ## Repository layout
 
 ```
