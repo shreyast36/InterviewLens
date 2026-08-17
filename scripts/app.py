@@ -762,7 +762,6 @@ def _run_video(question: str, video_bytes: bytes, suffix: str) -> tuple[dict, di
     )
     from interviewlens.audio_pipeline.delivery_analytics import compute_metrics
     from interviewlens.audio_pipeline.postprocessing import normalize_disfluencies
-    from interviewlens.audio_pipeline.preprocessing import preprocess
     from interviewlens.common.config import load_config
     from interviewlens.common.schemas import Transcript
     from interviewlens.reasoning.evidence_assembly import from_fused_evidence_json
@@ -811,14 +810,16 @@ def _run_video(question: str, video_bytes: bytes, suffix: str) -> tuple[dict, di
 
             st.write("📝 **Stage 5 / 6** — Transcribing real audio (faster-whisper) & LLM reasoning…")
             asr = _get_asr_model(cfg.audio.asr_model)
-            raw_audio  = extract_audio_samples(tmp_path, sample_rate=cfg.audio.sample_rate)
-            segs       = preprocess(raw_audio, cfg.audio.sample_rate) if raw_audio is not None and len(raw_audio) else []
-            trans_list = [asr.transcribe(seg) for seg in segs]
-            transcript = normalize_disfluencies(Transcript(
-                text=" ".join(t.text for t in trans_list if t.text),
-                words=[w for t in trans_list for w in t.words],
-            ))
-            if not segs:
+            raw_audio = extract_audio_samples(tmp_path, sample_rate=cfg.audio.sample_rate)
+            if raw_audio is not None and len(raw_audio):
+                # One call over the whole track (faster-whisper's own internal VAD
+                # chunks it) instead of our own VAD segments each paying a separate
+                # ~2-6s fixed per-call overhead -- on a 27s test clip with 7 segments
+                # that was 23.6s of ASR alone (52% of total pipeline time), more than
+                # the clip itself. See asr.py's transcribe_full docstring.
+                transcript = normalize_disfluencies(asr.transcribe_full(raw_audio))
+            else:
+                transcript = Transcript(text="", words=[])
                 st.write("   ⚠ no usable audio track found — transcript will be empty")
             audio_metrics = compute_metrics(transcript, total_duration_s=duration_s)
             probe      = from_fused_evidence_json(fused, question=question,

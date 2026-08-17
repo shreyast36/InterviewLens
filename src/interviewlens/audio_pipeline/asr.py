@@ -11,6 +11,8 @@ from __future__ import annotations
 
 import abc
 
+import numpy as np
+
 from interviewlens.audio_pipeline.preprocessing import SpeechSegment
 from interviewlens.common.schemas import Transcript, WordTiming
 
@@ -65,6 +67,37 @@ class WhisperSmallASR(ASRModel):
                     word=w.word.strip(),
                     start_time_s=segment.start_time_s + w.start,
                     end_time_s=segment.start_time_s + w.end,
+                    confidence=float(w.probability),
+                ))
+        return Transcript(text=" ".join(text_parts), words=words)
+
+    def transcribe_full(self, audio: np.ndarray) -> Transcript:
+        """Transcribe the whole audio track in one call instead of chunking it into
+        our own VAD segments and calling transcribe() once per chunk.
+
+        faster-whisper's fixed per-call overhead (~2-6s on CPU, observed independent
+        of segment length) dominates when a clip has several separate VAD segments --
+        a 27s clip with 7 short segments spent 23.6s in ASR alone (52% of total
+        pipeline time), more than the clip itself. Whisper already does its own
+        internal VAD-based chunking (vad_filter=True, using Silero VAD) when given
+        long-form audio, so a single call amortizes that fixed overhead across the
+        whole track instead of paying it once per our own, finer-grained segment.
+        """
+        model = self._get_model()
+        segments, _info = model.transcribe(
+            audio, language="en", word_timestamps=True, vad_filter=True,
+        )
+        words: list[WordTiming] = []
+        text_parts: list[str] = []
+        for seg in segments:
+            seg_text = seg.text.strip()
+            if seg_text:
+                text_parts.append(seg_text)
+            for w in seg.words or []:
+                words.append(WordTiming(
+                    word=w.word.strip(),
+                    start_time_s=w.start,
+                    end_time_s=w.end,
                     confidence=float(w.probability),
                 ))
         return Transcript(text=" ".join(text_parts), words=words)
