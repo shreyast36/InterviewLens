@@ -757,6 +757,7 @@ def _run_video(question: str, video_bytes: bytes, suffix: str) -> tuple[dict, di
     faster-whisper). No synthetic placeholders anywhere in this path.
     """
     import gc
+    from concurrent.futures import ThreadPoolExecutor
     from interviewlens.audio_pipeline.batch_audio_quality import (
         extract_audio_quality_evidence, extract_audio_samples,
     )
@@ -774,6 +775,40 @@ def _run_video(question: str, video_bytes: bytes, suffix: str) -> tuple[dict, di
         grab_frames, valid_tracking_pct as batch_valid_tracking_pct,
     )
 
+    def _video_branch(video_path: str):
+        pose_evidence = extract_pose_evidence(video_path, sample_fps=5)
+        if not pose_evidence.get("frames"):
+            raise ValueError(
+                "No frames decoded — check the file is a valid MP4/MOV/AVI/WebM."
+            )
+        pose_evidence["signal_events"] = detect_signal_events(pose_evidence)
+        tracking_pct = batch_valid_tracking_pct(pose_evidence)
+        # Background detection needs pose_evidence's per-frame subject bbox (to
+        # suppress the interviewee's own body from registering as "clutter") and
+        # its keypoints (for the backlit-face check), so it can't start until pose
+        # is fully done -- this branch stays sequential internally.
+        background_evidence = extract_background_evidence(video_path, pose_evidence, sample_fps=3)
+        return pose_evidence, tracking_pct, background_evidence
+
+    def _audio_branch(video_path: str, cfg):
+        # Audio has no dependency on pose/background at all -- runs concurrently
+        # with _video_branch instead of after it. On a 27s test clip this hid ~6s
+        # of ASR time entirely inside the video branch's ~16s, cutting total
+        # pipeline time by ~24%.
+        audio_quality_evidence = extract_audio_quality_evidence(video_path)
+        asr = _get_asr_model(cfg.audio.asr_model)
+        raw_audio = extract_audio_samples(video_path, sample_rate=cfg.audio.sample_rate)
+        if raw_audio is not None and len(raw_audio):
+            # One call over the whole track (faster-whisper's own internal VAD
+            # chunks it) instead of our own VAD segments each paying a separate
+            # ~2-6s fixed per-call overhead -- on a 27s test clip with 7 segments
+            # that was 23.6s of ASR alone (52% of total pipeline time), more than
+            # the clip itself. See asr.py's transcribe_full docstring.
+            transcript = normalize_disfluencies(asr.transcribe_full(raw_audio))
+        else:
+            transcript = Transcript(text="", words=[])
+        return audio_quality_evidence, transcript
+
     cfg = load_config()
     tmp_path: str | None = None
     try:
@@ -783,44 +818,27 @@ def _run_video(question: str, video_bytes: bytes, suffix: str) -> tuple[dict, di
 
         with st.status("🚀 Analysing uploaded video…", expanded=True) as status:
 
-            st.write("📐 **Stage 1 / 6** — Pose estimation (RTMPose-S)…")
-            pose_evidence = extract_pose_evidence(tmp_path, sample_fps=5)
-            if not pose_evidence.get("frames"):
-                raise ValueError(
-                    "No frames decoded — check the file is a valid MP4/MOV/AVI/WebM."
-                )
-            pose_evidence["signal_events"] = detect_signal_events(pose_evidence)
-            tracking_pct = batch_valid_tracking_pct(pose_evidence)
-            st.write(f"   ✔ {len(pose_evidence['frames'])} pose frames, "
+            st.write("📐🔊 **Stage 1 / 4** — Pose + background (video) and transcription "
+                      "(audio) running in parallel…")
+            with ThreadPoolExecutor(max_workers=2) as pool:
+                video_future = pool.submit(_video_branch, tmp_path)
+                audio_future = pool.submit(_audio_branch, tmp_path, cfg)
+                pose_evidence, tracking_pct, background_evidence = video_future.result()
+                audio_quality_evidence, transcript = audio_future.result()
+            st.write(f"   ✔ pose: {len(pose_evidence['frames'])} frames, "
                      f"{len(pose_evidence['signal_events'])} signal events")
-
-            st.write("🖼️ **Stage 2 / 6** — Background detection (YOLO-World-S + ByteTrack)…")
-            background_evidence = extract_background_evidence(tmp_path, pose_evidence, sample_fps=3)
-            st.write(f"   ✔ {len(background_evidence.get('detections', []))} background tracks")
-
-            st.write("🔊 **Stage 3 / 6** — Audio quality analysis…")
-            audio_quality_evidence = extract_audio_quality_evidence(tmp_path)
+            st.write(f"   ✔ background: {len(background_evidence.get('detections', []))} tracks")
             st.write(f"   ✔ audio: {'present' if audio_quality_evidence.get('has_audio') else 'none'}, "
                      f"{len(audio_quality_evidence.get('signal_events', []))} quality events")
+            if not transcript.text:
+                st.write("   ⚠ no usable audio track found — transcript will be empty")
 
-            st.write("🧩 **Stage 4 / 6** — A/B evidence fusion…")
+            st.write("🧩 **Stage 2 / 4** — A/B evidence fusion…")
             fused      = fuse_evidence(pose_evidence, background_evidence, audio_quality_evidence)
             duration_s = float(fused.get("duration_s") or 1.0)
             st.write(f"   ✔ {len(fused.get('timeline', []))} fused timestamps, {duration_s:.1f}s")
 
-            st.write("📝 **Stage 5 / 6** — Transcribing real audio (faster-whisper) & LLM reasoning…")
-            asr = _get_asr_model(cfg.audio.asr_model)
-            raw_audio = extract_audio_samples(tmp_path, sample_rate=cfg.audio.sample_rate)
-            if raw_audio is not None and len(raw_audio):
-                # One call over the whole track (faster-whisper's own internal VAD
-                # chunks it) instead of our own VAD segments each paying a separate
-                # ~2-6s fixed per-call overhead -- on a 27s test clip with 7 segments
-                # that was 23.6s of ASR alone (52% of total pipeline time), more than
-                # the clip itself. See asr.py's transcribe_full docstring.
-                transcript = normalize_disfluencies(asr.transcribe_full(raw_audio))
-            else:
-                transcript = Transcript(text="", words=[])
-                st.write("   ⚠ no usable audio track found — transcript will be empty")
+            st.write("🤖 **Stage 3 / 4** — LLM reasoning…")
             audio_metrics = compute_metrics(transcript, total_duration_s=duration_s)
             probe      = from_fused_evidence_json(fused, question=question,
                                                    transcript=transcript, audio_metrics=audio_metrics)
@@ -833,7 +851,7 @@ def _run_video(question: str, video_bytes: bytes, suffix: str) -> tuple[dict, di
             )
             reasoning_output = reasoner.reason(evidence)
 
-            st.write("📊 **Stage 6 / 6** — Building coaching report…")
+            st.write("📊 **Stage 4 / 4** — Building coaching report…")
             validation = validate(evidence, reasoning_output)
             report     = build_coaching_report(
                 duration_s=duration_s, valid_tracking_pct=tracking_pct,
